@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.example.no_teacher_andorid.R;
 
-public class LoginPhoneActivity extends AppCompatActivity {
+public class LoginEmailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_phone);
+        setContentView(R.layout.activity_login_email);
     }
 }

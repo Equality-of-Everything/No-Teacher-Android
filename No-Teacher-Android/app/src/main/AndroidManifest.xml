@@ -12,7 +12,7 @@
         android:theme="@style/Theme.NoTeacherAndorid"
         tools:targetApi="31">
         <activity
-            android:name="com.example.no_teacher_andorid.ui.activity.LoginPhoneActivity"
+            android:name="com.example.no_teacher_andorid.ui.activity.LoginEmailActivity"
             android:exported="true" />
     </application>
 
