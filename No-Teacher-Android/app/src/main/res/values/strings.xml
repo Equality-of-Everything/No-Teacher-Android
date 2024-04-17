@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">No-Teacher-Andorid</string>
+    <string name="Txt_username">用户名</string>
+    <string name="edtTxt_enter_name">请输入你的用户名</string>
+    <string name="Txt_email">邮箱</string>
+    <string name="edTxt_enter_email">请输入邮箱</string>
+    <string name="Txt_password">密码</string>
+    <string name="edTxt_enter_password">请输入密码</string>
+    <string name="Txt_confirm_password">确认密码</string>
+    <string name="edTxt_enter_confirm_password">请再次确认密码</string>
+    <string name="btn_enroll">注册</string>
+    <string name="Txt_sign_up_jump">没有账号？点击注册</string>
+    <string name="Txt_forget_jump">忘记密码</string>
+    <string name="Txt_verify_number">获取验证码</string>
+    <string name="edTxt_verify_number">请输入验证码</string>
+    <string name="btn_verify">验证</string>
+    <string name="btn_reset">确认</string>
+    <string name="edTxt_reset_password">请输入重置密码</string>
+    <string name="edTxt_reset_confirm_password">请求再次输入重置密码</string>
+    <string name="edTxt_share_upload">发布</string>
 </resources>
