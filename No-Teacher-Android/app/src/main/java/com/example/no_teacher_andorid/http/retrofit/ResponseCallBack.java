@@ -2,9 +2,8 @@ package com.example.no_teacher_andorid.http.retrofit;
 
 import android.content.Intent;
 
-import com.zhilehuo.advenglish.base.BaseApplication;
-import com.zhilehuo.advenglish.http.respone.BaseResponse;
-import com.zhilehuo.advenglish.ui.activity.AccountInvalidDialogActivity;
+
+import com.example.no_teacher_andorid.http.respone.BaseResponse;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -50,10 +49,8 @@ public abstract class ResponseCallBack<T> implements Callback<BaseResponse<T>> {
             if (SUCCESS_CODE == code) {
                 success(response.body().getData());
             } else if (INVALID_ACCOUNT == code){
-                showAccountInvalidDialog();
-            } /*else if (INVALID_VIP == code || UN_BUY_VIP == code){
-                showVipDialog(code);
-            } */else {
+//                showAccountInvalidDialog();
+            }  else {
                 failure(response.body().getData(),code,response.body().getMsg());
             }
         } else {
@@ -74,17 +71,19 @@ public abstract class ResponseCallBack<T> implements Callback<BaseResponse<T>> {
         }
     }
 
-    private void showAccountInvalidDialog() {
-        if (showInvalidDialog) {
-            return;
-        }
-        showInvalidDialog = true;
-        Intent intent = new Intent(BaseApplication.mInstance, AccountInvalidDialogActivity.class);
-        intent.putExtra("title","温馨提示");
-        intent.putExtra("content","账户状态异常");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        BaseApplication.mInstance.startActivity(intent);
-    }
+
+    //没有会员弹窗 显示账号异常等
+//    private void showAccountInvalidDialog() {
+//        if (showInvalidDialog) {
+//            return;
+//        }
+//        showInvalidDialog = true;
+//        Intent intent = new Intent(BaseApplication.mInstance, AccountInvalidDialogActivity.class);
+//        intent.putExtra("title","温馨提示");
+//        intent.putExtra("content","账户状态异常");
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        BaseApplication.mInstance.startActivity(intent);
+//    }
 
    /* private void showVipDialog(int code) {
         if (showVipDialog) {

@@ -2,8 +2,8 @@ package com.example.no_teacher_andorid.http.retrofit;
 
 import android.content.Context;
 
-import com.zhilehuo.advenglish.constants.Constants;
-import com.zhilehuo.advenglish.http.intercepter.HeaderInterceptor;
+import com.example.no_teacher_andorid.constants.Constants;
+import com.example.no_teacher_andorid.http.intercepter.HeaderInterceptor;
 
 import java.io.File;
 import java.security.KeyManagementException;

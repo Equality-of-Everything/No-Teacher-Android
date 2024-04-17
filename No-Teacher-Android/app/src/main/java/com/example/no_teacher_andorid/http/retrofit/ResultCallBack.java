@@ -2,8 +2,9 @@ package com.example.no_teacher_andorid.http.retrofit;
 
 import android.text.TextUtils;
 
-import com.zhilehuo.advenglish.gson.GsonUtils;
-import com.zhilehuo.advenglish.http.respone.BaseResponse;
+
+import com.example.no_teacher_andorid.gson.GsonUtils;
+import com.example.no_teacher_andorid.http.respone.BaseResponse;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
