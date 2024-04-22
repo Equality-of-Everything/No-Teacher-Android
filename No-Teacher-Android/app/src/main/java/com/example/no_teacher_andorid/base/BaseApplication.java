@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.util;
+package com.example.no_teacher_andorid.base;
 
 import android.app.Application;
 
@@ -6,11 +6,12 @@ import com.google.android.material.color.DynamicColors;
 
 /**
  * @Author : zhang
- * @Date : Created in 2023/12/2 19:31
- * @Decription :动态颜色Application
+ * @Date : Created in 2024/4/22 14:28
+ * @Decription :
  */
 
-public class DynamicColorsUtil extends Application {
+
+public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
