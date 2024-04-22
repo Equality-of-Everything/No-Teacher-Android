@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,93 +8,183 @@
     android:gravity="center_horizontal"
     tools:context=".ui.activity.LoginEmailActivity">
 
-    <!--输入验证邮箱-->
-    <LinearLayout
+
+    <ImageView
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="30dp">
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:hint="@string/edTxt_enter_email"
-            app:boxStrokeColor="?attr/colorPrimary"
-            app:boxStrokeWidth="2dp"
-            app:startIconDrawable="@drawable/email"
-            app:endIconMode="clear_text"
-            app:startIconContentDescription="账号"
-            tools:ignore="ExtraText,MissingConstraints"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edTxt_verify_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="emailAddress"
-                android:inputType="textEmailAddress"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-    <!--输入验证码-->
+        android:layout_height="match_parent"
+        android:src="@drawable/img"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        >
+    </ImageView>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="高阶英语"-->
+<!--        android:textColor="?attr/colorPrimary"-->
+<!--        android:textSize="30sp"-->
+<!--        >-->
+<!--    </TextView>-->
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
-
-        <com.google.android.material.textfield.TextInputLayout
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/semi_transparent_white_background">
+        <!--输入验证邮箱-->
+        <LinearLayout
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:hint="@string/edTxt_verify_number"
-            app:boxStrokeColor="?attr/colorPrimary"
-            app:boxStrokeWidth="2dp"
-            app:startIconContentDescription="账号"
-            tools:ignore="ExtraText,MissingConstraints"
-            >
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtTxt_verify_number"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:autofillHints="verify_number" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/edTxt_enter_email"
+                android:textSize="18sp"
+                app:boxStrokeColor="?attr/colorPrimary"
+                app:boxStrokeWidth="2dp"
+                app:endIconMode="clear_text"
+                app:startIconContentDescription="账号"
+                app:startIconDrawable="@drawable/email"
+                tools:ignore="ExtraText,MissingConstraints">
 
-        <Button
-            android:id="@+id/Txt_verify_number"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_alignParentTop="true"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edTxt_verify_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="emailAddress"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!--输入验证码-->
+        <RelativeLayout
+            android:id="@+id/email1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/edtTxt_verify_number"
-            android:text="@string/Txt_verify_number"
-            android:layout_marginTop="10dp"
-            app:rippleColor="@color/m3_text_button_ripple_color_selector"
-            tools:ignore="NotSibling" />
-    </RelativeLayout>
-    <!--  验证按钮  -->
-    <Button
-        style="@style/Widget.Material3.Button.Icon"
-        app:backgroundTint="?attr/colorPrimary"
-        android:id="@+id/btn_verify"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:textSize="25sp"
-        android:text="@string/btn_verify"
-        app:rippleColor="@color/m3_button_ripple_color_selector"
-        android:onClick="emailOnclick"
-        />
+            android:layout_below="@+id/email"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp">
 
-</LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edTxt_verify_number"
+                android:textSize="18sp"
+                app:boxStrokeColor="?attr/colorPrimary"
+                app:boxStrokeWidth="2dp"
+                app:startIconContentDescription="账号"
+                tools:ignore="ExtraText,MissingConstraints">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTxt_verify_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints="verify_number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/Txt_verify_number"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/edtTxt_verify_number"
+                android:text="@string/Txt_verify_number"
+                app:rippleColor="@color/m3_text_button_ripple_color_selector"
+                tools:ignore="NotSibling" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_verify"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/email1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="emailOnclick"
+            android:text="@string/btn_verify"
+            android:textSize="25sp"
+            app:backgroundTint="?attr/colorPrimary"
+            app:rippleColor="@color/m3_button_ripple_color_selector" />
+
+
+    </RelativeLayout>
+
+
+<!--    &lt;!&ndash;输入验证码&ndash;&gt;-->
+<!--    <RelativeLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="20dp"-->
+<!--        android:layout_marginRight="20dp"-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_alignParentLeft="true" >-->
+
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="18sp"-->
+<!--            android:hint="@string/edTxt_verify_number"-->
+<!--            app:boxStrokeColor="?attr/colorPrimary"-->
+<!--            app:boxStrokeWidth="2dp"-->
+<!--            app:startIconContentDescription="账号"-->
+<!--            tools:ignore="ExtraText,MissingConstraints"-->
+<!--            >-->
+
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:id="@+id/edtTxt_verify_number"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:autofillHints="verify_number" />-->
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/Txt_verify_number"-->
+<!--            style="@style/Widget.Material3.Button.TextButton"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_toRightOf="@+id/edtTxt_verify_number"-->
+<!--            android:text="@string/Txt_verify_number"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:rippleColor="@color/m3_text_button_ripple_color_selector"-->
+<!--            tools:ignore="NotSibling" />-->
+<!--    </RelativeLayout>-->
+<!--    &lt;!&ndash;  验证按钮  &ndash;&gt;-->
+<!--    <Button-->
+<!--        style="@style/Widget.Material3.Button.Icon"-->
+<!--        app:backgroundTint="?attr/colorPrimary"-->
+<!--        android:id="@+id/btn_verify"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="20dp"-->
+<!--        android:layout_marginRight="20dp"-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        android:textSize="25sp"-->
+<!--        android:text="@string/btn_verify"-->
+<!--        app:rippleColor="@color/m3_button_ripple_color_selector"-->
+<!--        android:onClick="emailOnclick"-->
+<!--        />-->
+
+</RelativeLayout>
