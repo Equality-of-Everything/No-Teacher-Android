@@ -46,6 +46,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
     // LiveData
     implementation 'androidx.lifecycle:lifecycle-livedata:2.4.0'
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    //gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // Material3框架
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
