@@ -54,4 +54,7 @@ dependencies {
     // Material3框架
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
 
+    //圆形头像
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }
