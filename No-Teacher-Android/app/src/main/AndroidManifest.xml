@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.no_teacher_andorid.com.example.android.ui.activity.SelectLevelActivity"
+            android:name="com.example.android.ui.activity.SelectLevelActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
