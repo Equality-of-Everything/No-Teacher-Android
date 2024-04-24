@@ -52,6 +52,14 @@ public class BaseResponse<T> {
     public void setCode(int code) {
         this.code = code;
     }
+
+    public boolean isSuccess() {
+        return flag;
+    }
+
+    public T getMessage() {
+        return (T) msg;
+    }
 }
 
 

@@ -80,22 +80,22 @@ public class UserEditViewModel extends ViewModel {
                 enteredSex,
                 enteredImage
         );
-        apiService.registerUser(registerRequest).enqueue(new Callback<BaseResponse<Void>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isFlag()) {
-                    statusMsg.postValue("信息已保存");
-
-                } else {
-                    statusMsg.postValue("保存失败：" + response.body().getMsg());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
-                statusMsg.postValue("网络请求失败：" + t.getMessage());
-            }
-        });
+//        apiService.registerUser(registerRequest).enqueue(new Callback<BaseResponse<Void>>() {
+//            @Override
+//            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+//                if (response.isSuccessful() && response.body() != null && response.body().isFlag()) {
+//                    statusMsg.postValue("信息已保存");
+//
+//                } else {
+//                    statusMsg.postValue("保存失败：" + response.body().getMsg());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+//                statusMsg.postValue("网络请求失败：" + t.getMessage());
+//            }
+//        });
     }
 
     /**

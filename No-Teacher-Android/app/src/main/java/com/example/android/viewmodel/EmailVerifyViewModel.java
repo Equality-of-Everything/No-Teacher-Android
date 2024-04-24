@@ -14,6 +14,9 @@ import com.example.android.bean.entity.User;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.GsonUtils;
+import com.example.android.util.GsonWrapper;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 
@@ -66,7 +69,13 @@ public class EmailVerifyViewModel extends ViewModel {
     }
 
 
-    // 请求发送验证码
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 请求发送验证码
+     * @date 2024/4/24 15:45
+     */
     public void requestSendVerificationCode(Context context) {
         EmailRequest request = new EmailRequest(email.getValue());
         HashMap<String, String> params = new HashMap<>();
@@ -77,7 +86,26 @@ public class EmailVerifyViewModel extends ViewModel {
                 .enqueue(new Callback<BaseResponse<User>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
-                        Log.e("Reuqest Success", response.body().toString());
+                        Log.e("Reuqest Success(RequestBody)", response.body().toString());
+                        if (response.isSuccessful() && response.body() != null) {
+                            BaseResponse<User> body = response.body();
+                            if (body.isSuccess()) {
+
+                                Gson gson = new Gson();
+                                Result<User> result = gson.fromJson(response.body().toString(), Result.class);
+
+                                String userData = body.getData().toString();
+                                User user = gson.fromJson(userData, User.class);
+
+//                                Log.e("Request Success(userId) : ", userId);
+                                Log.e("Request Success(user) :" , user.toString());
+                            } else {
+                                Log.e("Request Error", "Error from server: " + body.getMessage());
+                            }
+                        } else {
+                            // HTTP错误处理
+                            Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
+                        }
 
                     }
 
@@ -90,7 +118,13 @@ public class EmailVerifyViewModel extends ViewModel {
 
     }
 
-    // 验证输入的验证码
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 验证验证码是否正确以登录
+     * @date 2024/4/24 15:45
+     */
     public void verifyVerificationCode() {
         VerifyEmailRequest request = new VerifyEmailRequest(email.getValue(), verifyCode.getValue());
         apiService.verifyEmail(request).enqueue(new Callback<BaseResponse<Void>>() {

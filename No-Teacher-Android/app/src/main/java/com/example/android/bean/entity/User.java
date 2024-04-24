@@ -86,6 +86,20 @@ public class User {
         this.level = level;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", code='" + code + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                ", level='" + level + '\'' +
+                ", sex='" + sex + '\'' +
+                '}';
+    }
+
     public User(String userId, String username, String email, String code, String avatar, String birthdate, String level) {
         this.userId = userId;
         this.username = username;
