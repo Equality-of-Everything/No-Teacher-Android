@@ -2,4 +2,6 @@
 <resources>
     <item name="email" type="id" />
     <item name="email1" type="id" />
+    <item name="pick_date_button" type="id" />
+    <item name="show_selected_date" type="id" />
 </resources>
