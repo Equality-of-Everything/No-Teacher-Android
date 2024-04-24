@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.android.viewmodel.UserEditViewModel" />
+    </data>
+    <RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -103,11 +108,10 @@
                         android:layout_height="wrap_content"
                         android:text="出生日期"
                         android:textSize="20sp"/>
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <Button
                             style="?attr/materialIconButtonStyle"
                             android:id="@+id/pick_date_button"
@@ -115,11 +119,15 @@
                             android:layout_height="wrap_content"
                             app:icon="@drawable/date" />
                         <TextView
+                            android:layout_toEndOf="@+id/pick_date_button"
+                            android:layout_margin="10dp"
                             android:id="@+id/show_selected_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="请选择出生日期"
+                            android:textColor="@color/md_theme_dark_outline"
                             android:textSize="18sp" />
-                    </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -198,3 +206,4 @@
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
+</layout>
