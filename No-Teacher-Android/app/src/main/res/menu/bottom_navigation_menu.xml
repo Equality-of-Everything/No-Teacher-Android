@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_a"
+        android:icon="@drawable/email"
+        android:title="a"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/navigation_b"
+        android:icon="@drawable/email"
+        android:title="b"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/navigation_c"
+        android:icon="@drawable/email"
+        android:title="c"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/navigation_d"
+        android:icon="@drawable/mine"
+        android:title="d"
+        app:showAsAction="always" />
+
+
+</menu>
