@@ -7,32 +7,35 @@ package com.example.android.bean.entity;
  */
 
 public class User {
-
-    private String userid;
-    private String username;
+    private String userId;
+    private String username;;
     private String email;
-    private String verifyCode;
-    private  String headImgUrl;
+    private String code;
+    private String avatar;
+    private String birthdate;
+    // 英文水平
+    private String level;
+
     private String sex;
-    private String birthday;
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public User() {
     }
-    public User(String userid, String username, String email, String verifyCode, String headImgUrl, String sex, String birthday) {
-        this.userid = userid;
-        this.username = username;
-        this.email = email;
-        this.verifyCode = verifyCode;
-        this.headImgUrl = headImgUrl;
-        this.sex = sex;
-        this.birthday = birthday;
+
+    public String getUserId() {
+
+        return userId;
     }
 
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -51,36 +54,46 @@ public class User {
         this.email = email;
     }
 
-    public String getVerifyCode() {
-        return verifyCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setVerifyCode(String verifyCode) {
-        this.verifyCode = verifyCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getHeadImgUrl() {
-        return headImgUrl;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setHeadImgUrl(String headImgUrl) {
-        this.headImgUrl = headImgUrl;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public String getSex() {
-        return sex;
+    public String getBirthdate() {
+        return birthdate;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getLevel() {
+        return level;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public User(String userId, String username, String email, String code, String avatar, String birthdate, String level) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.code = code;
+        this.avatar = avatar;
+        this.birthdate = birthdate;
+        this.level = level;
     }
 }
 
