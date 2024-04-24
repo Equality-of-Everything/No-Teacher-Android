@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.adapter;
+package com.example.android.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

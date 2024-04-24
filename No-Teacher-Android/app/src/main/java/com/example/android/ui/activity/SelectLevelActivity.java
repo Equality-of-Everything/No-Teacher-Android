@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.ui.activity;
+package com.example.android.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,7 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.no_teacher_andorid.R;
-import com.example.no_teacher_andorid.adapter.SelectLevelAdapter;
+import com.example.android.adapter.SelectLevelAdapter;
 
 import java.util.ArrayList;
 
