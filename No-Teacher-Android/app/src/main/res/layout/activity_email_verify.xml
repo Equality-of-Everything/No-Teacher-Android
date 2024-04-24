@@ -116,6 +116,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/edtTxt_verify_number"
                     android:text="@string/Txt_verify_number"
+                    android:textColor="@color/md_theme_dark_inversePrimary"
                     android:onClick="emailOnclick"
                     app:rippleColor="@color/m3_text_button_ripple_color_selector"
                     tools:ignore="NotSibling" />
@@ -132,6 +133,7 @@
                 android:layout_marginBottom="120dp"
                 android:text="@string/btn_verify"
                 android:textSize="25sp"
+                android:onClick="loginOnclick"
                 app:backgroundTint="?attr/colorPrimaryInverse"
                 app:rippleColor="@color/m3_button_ripple_color_selector" />
 
