@@ -60,9 +60,9 @@ public class EmailVerifyActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(emailInput)) {
             Toast.makeText(this, "请接收验证码", Toast.LENGTH_LONG).show();
             viewModel.setEmail(emailInput);
-            viewModel.requestSendVerificationCode();
+            viewModel.requestSendVerificationCode(this);
         } else {
-            Toast.makeText(this, "请输入验证码", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "请输入邮箱", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -1,13 +1,21 @@
 package com.example.android.viewmodel;
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
 import com.example.android.bean.EmailRequest;
+import com.example.android.bean.entity.Result;
+import com.example.android.bean.entity.User;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
+import com.example.android.http.retrofit.RetrofitManager;
+
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,23 +67,27 @@ public class EmailVerifyViewModel extends ViewModel {
 
 
     // 请求发送验证码
-    public void requestSendVerificationCode() {
+    public void requestSendVerificationCode(Context context) {
         EmailRequest request = new EmailRequest(email.getValue());
-        apiService.sendVerificationEmail(request).enqueue(new Callback<BaseResponse<Void>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isFlag()) {
-                    statusMsg.postValue("验证码已发送到您的邮箱。");
-                } else {
-                    statusMsg.postValue("发送验证码失败：" + response.body().getMsg());
-                }
-            }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email.getValue());
+        RetrofitManager.getInstance(context).
+                getApi(ApiService.class)
+                .sendVerificationEmail(params)
+                .enqueue(new Callback<BaseResponse<User>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
+                        Log.e("Reuqest Success", response.body().toString());
 
-            @Override
-            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
-                statusMsg.postValue("网络请求失败：" + t.getMessage());
-            }
-        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
+                        Log.e("LoginActivity-Error", "NetWOrk-Error");
+                        t.printStackTrace();
+                    }
+                });
+
     }
 
     // 验证输入的验证码
