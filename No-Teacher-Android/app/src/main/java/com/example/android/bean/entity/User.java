@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.bean;
+package com.example.android.bean.entity;
 
 /**
  * @Author : Lee

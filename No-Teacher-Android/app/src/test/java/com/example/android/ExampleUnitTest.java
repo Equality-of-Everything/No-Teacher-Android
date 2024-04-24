@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid;
+package com.example.android;
 
 import org.junit.Test;
 

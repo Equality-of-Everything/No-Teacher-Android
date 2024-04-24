@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.constants;
+package com.example.android.constants;
 
 /**
  * @Author : Lee

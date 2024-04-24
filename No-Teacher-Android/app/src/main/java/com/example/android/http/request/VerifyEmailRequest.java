@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.http.request;
+package com.example.android.http.request;
 
 public class VerifyEmailRequest {
     /*

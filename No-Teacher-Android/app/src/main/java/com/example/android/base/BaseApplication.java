@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.base;
+package com.example.android.base;
 
 import android.app.Application;
 

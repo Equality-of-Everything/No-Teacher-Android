@@ -1,4 +1,4 @@
-package com.example.no_teacher_andorid.http.response;
+package com.example.android.http.response;
 
 
 /*
