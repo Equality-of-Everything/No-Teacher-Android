@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name="com.example.android.ui.activity.LoginEmailActivity"
+            android:name="com.example.android.ui.activity.UserRegisterActivity"
             android:exported="false" />
         <activity
             android:name="com.example.android.ui.activity.EmailVerifyActivity"

@@ -12,13 +12,19 @@ public class User {
     private String username;
     private String email;
     private String verifyCode;
-
-    public User() {}
-    public User(String userid, String username, String email, String verifyCode) {
+    private  String headImgUrl;
+    private String sex;
+    private String birthday;
+    public User() {
+    }
+    public User(String userid, String username, String email, String verifyCode, String headImgUrl, String sex, String birthday) {
         this.userid = userid;
         this.username = username;
         this.email = email;
         this.verifyCode = verifyCode;
+        this.headImgUrl = headImgUrl;
+        this.sex = sex;
+        this.birthday = birthday;
     }
 
     public String getUserid() {
@@ -51,6 +57,30 @@ public class User {
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+    }
+
+    public String getHeadImgUrl() {
+        return headImgUrl;
+    }
+
+    public void setHeadImgUrl(String headImgUrl) {
+        this.headImgUrl = headImgUrl;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }
 
