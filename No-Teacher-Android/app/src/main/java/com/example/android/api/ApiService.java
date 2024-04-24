@@ -1,6 +1,7 @@
 package com.example.android.api;
 
 import com.example.android.bean.EmailRequest;
+import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.http.request.VerifyEmailRequest;
@@ -25,13 +26,8 @@ public interface ApiService {
     //验证邮箱验证码
     @POST("users/verify")
     Call<BaseResponse<Void>> verifyEmail(@Body VerifyEmailRequest request);
-    //发验证码
-//    @POST("send-email-verification-code")
-//    Call<VerifyEmailResponse> sendEmailVerificationCode(@Body VerifyEmailRequest request);
-//
-//    //验证邮箱验证码
-//    @POST("verify-email")
-//    Call<Void> verifyEmail(@Body VerifyEmailRequest request);
+    @POST("users/register")
+    Call<BaseResponse<Void>> registerUser(@Body RegisterRequest registerRequest);
 }
 
 
