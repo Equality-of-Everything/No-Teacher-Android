@@ -103,11 +103,10 @@
                         android:layout_height="wrap_content"
                         android:text="出生日期"
                         android:textSize="20sp"/>
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <Button
                             style="?attr/materialIconButtonStyle"
                             android:id="@+id/pick_date_button"
@@ -115,11 +114,14 @@
                             android:layout_height="wrap_content"
                             app:icon="@drawable/date" />
                         <TextView
+                            android:layout_toEndOf="@+id/pick_date_button"
+                            android:layout_margin="10dp"
                             android:id="@+id/show_selected_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="aaaa"
                             android:textSize="18sp" />
-                    </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
 
