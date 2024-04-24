@@ -91,14 +91,9 @@ public class EmailVerifyViewModel extends ViewModel {
                             BaseResponse<User> body = response.body();
                             if (body.isSuccess()) {
 
-                                Gson gson = new Gson();
-                                Result<User> result = gson.fromJson(response.body().toString(), Result.class);
+                                User user = body.getData();
+                                Log.e("aaaaaaaa", user.toString());
 
-                                String userData = body.getData().toString();
-                                User user = gson.fromJson(userData, User.class);
-
-//                                Log.e("Request Success(userId) : ", userId);
-                                Log.e("Request Success(user) :" , user.toString());
                             } else {
                                 Log.e("Request Error", "Error from server: " + body.getMessage());
                             }

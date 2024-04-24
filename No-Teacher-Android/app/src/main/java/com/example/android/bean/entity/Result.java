@@ -16,7 +16,17 @@ public class Result<T> implements Serializable {
     private T data; //数据
     private int code; //状态码
 
-    public Result( boolean flag, String msg, T data){
+    @Override
+    public String toString() {
+        return "Result{" +
+                "flag=" + flag +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                ", code=" + code +
+                '}';
+    }
+
+    public Result(boolean flag, String msg, T data){
         this.flag = flag;
         this.msg = msg;
         this.data = data;
