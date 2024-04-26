@@ -16,6 +16,7 @@ import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.util.GsonUtils;
 import com.example.android.util.GsonWrapper;
+import com.example.android.util.TokenManager;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -93,6 +94,8 @@ public class EmailVerifyViewModel extends ViewModel {
 
                                 User user = body.getData();
                                 Log.e("aaaaaaaa", user.toString());
+                                String userId = user.getUserId();
+                                TokenManager.saveUserId(context.getApplicationContext(), userId);
 
                             } else {
                                 Log.e("Request Error", "Error from server: " + body.getMessage());
