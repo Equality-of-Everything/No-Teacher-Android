@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -61,6 +62,19 @@ public class EmailVerifyActivity extends AppCompatActivity {
             Toast.makeText(this, "请接收验证码", Toast.LENGTH_LONG).show();
             viewModel.setEmail(emailInput);
             viewModel.requestSendVerificationCode(this);
+
+            binding.TxtVerifyNumber.setEnabled(false);  // 禁用按钮
+
+            // 开始一个1分钟的倒计时
+            new CountDownTimer(60000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    binding.TxtVerifyNumber.setText(millisUntilFinished / 1000 + " 秒");
+                }
+                public void onFinish() {
+                    binding.TxtVerifyNumber.setEnabled(true);  // 启用按钮
+                    binding.TxtVerifyNumber.setText(R.string.Txt_verify_number);  // 重置文本
+                }
+            }.start();
         } else {
             Toast.makeText(this, "请输入邮箱", Toast.LENGTH_LONG).show();
         }
