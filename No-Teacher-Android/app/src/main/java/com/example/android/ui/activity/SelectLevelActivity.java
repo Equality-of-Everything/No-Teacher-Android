@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -19,6 +20,7 @@ public class SelectLevelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
+
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ListView listView = findViewById(R.id.list_level);
         ArrayList<String> data = new ArrayList<>();
         int sum = 0;
