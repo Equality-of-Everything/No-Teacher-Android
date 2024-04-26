@@ -24,8 +24,8 @@ public interface ApiService {
     Call<BaseResponse<User>> sendVerificationEmail(@QueryMap HashMap<String, String> params);
 
     //验证邮箱验证码
-    @POST("users/verify")
-    Call<BaseResponse<Void>> verifyEmail(@Body VerifyEmailRequest request);
+    @POST("user/checkLogin")
+    Call<BaseResponse<Void>> verifyEmail(@QueryMap HashMap<String,String> params);
     @POST("users/register")
     Call<BaseResponse<Void>> registerUser(@Body RegisterRequest registerRequest);
 }

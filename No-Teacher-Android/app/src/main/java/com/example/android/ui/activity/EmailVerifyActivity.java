@@ -43,16 +43,16 @@ public class EmailVerifyActivity extends AppCompatActivity {
             }
         });
 
-//        binding.btnVerify.setOnClickListener(view -> {
-//            String emailInput = binding.edTxtVerifyEmail.getText().toString();
-//            if(!TextUtils.isEmpty(emailInput)){
-//                Toast.makeText(this, "请接收验证码", Toast.LENGTH_LONG).show();
-//                viewModel.setEmail(emailInput);
-//                viewModel.requestSendVerificationCode();
-//            }else {
-//                Toast.makeText(this, "请输入验证码", Toast.LENGTH_LONG).show();
-//            }
-//        });
+        binding.btnVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String codeInput = binding.edtTxtVerifyNumber.getText().toString();
+                if (!TextUtils.isEmpty(codeInput)) {
+                    viewModel.setVerifyCode(codeInput);
+                }
+                viewModel.verifyVerificationCode();
+            }
+        });
     }
     public void emailOnclick(View view) {
         String emailInput = binding.edTxtVerifyEmail.getText().toString();

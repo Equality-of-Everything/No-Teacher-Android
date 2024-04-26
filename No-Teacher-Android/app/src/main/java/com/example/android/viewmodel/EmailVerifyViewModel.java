@@ -124,21 +124,25 @@ public class EmailVerifyViewModel extends ViewModel {
      * @date 2024/4/24 15:45
      */
     public void verifyVerificationCode() {
-        VerifyEmailRequest request = new VerifyEmailRequest(email.getValue(), verifyCode.getValue());
-        apiService.verifyEmail(request).enqueue(new Callback<BaseResponse<Void>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isFlag()) {
-                    statusMsg.postValue("验证码验证成功。");
-                } else {
-                    statusMsg.postValue("验证码验证失败：" + response.body().getMsg());
-                }
-            }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("email", email.getValue());
+        params.put("code", verifyCode.getValue());
+        RetrofitManager.getInstance(null).
+                getApi(ApiService.class)
+                .verifyEmail(params)
+                .enqueue(new Callback<BaseResponse<Void>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            boolean flag = response.body().isFlag();
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
-                statusMsg.postValue("网络请求失败：" + t.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+                        Log.e("LoginActivity-Error", "NetWOrk-Error");
+                        t.printStackTrace();
+                    }
+                });
     }
 }
