@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -53,6 +54,16 @@ public class EmailVerifyActivity extends AppCompatActivity {
                 }
                 viewModel.verifyVerificationCode();
             }
+        });
+
+        viewModel.getNavigateToMain().observe(this, shouldNavigate -> {
+           if(shouldNavigate) {
+               Intent intent = new Intent(this, MainActivity.class);
+               startActivity(intent);
+               finish();
+           } else {
+               Toast.makeText(this, "Verification failed.", Toast.LENGTH_SHORT).show();
+           }
         });
     }
     public void emailOnclick(View view) {

@@ -1,6 +1,7 @@
 package com.example.android.viewmodel;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -14,6 +15,7 @@ import com.example.android.bean.entity.User;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.ui.activity.MainActivity;
 import com.example.android.util.GsonUtils;
 import com.example.android.util.GsonWrapper;
 import com.example.android.util.TokenManager;
@@ -36,6 +38,7 @@ public class EmailVerifyViewModel extends ViewModel {
     private MutableLiveData<String> email = new MutableLiveData<>();
     private MutableLiveData<String> verifyCode = new MutableLiveData<>();
     private MutableLiveData<String> statusMsg = new MutableLiveData<>();
+    private MutableLiveData<Boolean> navigateToMain = new MutableLiveData<>();
 
     private ApiService apiService;
     public void setApiService(ApiService apiService) {
@@ -69,6 +72,9 @@ public class EmailVerifyViewModel extends ViewModel {
         statusMsg.setValue(message);
     }
 
+    public LiveData<Boolean> getNavigateToMain() {
+        return navigateToMain;
+    }
 
     /**
      * @param context:
@@ -135,6 +141,10 @@ public class EmailVerifyViewModel extends ViewModel {
                     public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             boolean flag = response.body().isFlag();
+
+                            navigateToMain.postValue(true);
+                        } else {
+                            navigateToMain.postValue(false);
                         }
                     }
 
@@ -142,7 +152,20 @@ public class EmailVerifyViewModel extends ViewModel {
                     public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
                         Log.e("LoginActivity-Error", "NetWOrk-Error");
                         t.printStackTrace();
+                        navigateToMain.postValue(false);
                     }
                 });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
