@@ -7,4 +7,9 @@
         android:fontWeight="400"
         android:font="@font/text1"
         tools:ignore="UnusedAttribute" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/text2"
+        tools:ignore="UnusedAttribute" />
 </font-family>

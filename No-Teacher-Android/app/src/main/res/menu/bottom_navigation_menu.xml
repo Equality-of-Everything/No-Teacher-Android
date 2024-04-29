@@ -24,7 +24,7 @@
     <item
         android:id="@+id/navigation_d"
         android:icon="@drawable/mine"
-        android:title="d"
+        android:title="我的"
         app:showAsAction="always" />
 
 

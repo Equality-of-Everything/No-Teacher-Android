@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.android.fragment.AFragment;
 import com.example.android.fragment.BFragment;
 import com.example.android.fragment.CFragment;
-import com.example.android.fragment.DFragment;
+import com.example.android.fragment.MineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         mFragments.add(new AFragment());
         mFragments.add(new BFragment());
         mFragments.add(new CFragment());
-        mFragments.add(new DFragment());
+        mFragments.add(new MineFragment());
     }
 
     @Override
