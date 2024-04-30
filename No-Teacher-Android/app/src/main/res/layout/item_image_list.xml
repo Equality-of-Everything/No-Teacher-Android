@@ -10,10 +10,38 @@
     android:layout_marginEnd="4sp"
     android:foreground="?attr/selectableItemBackground"
     app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
-    <ImageView
-        android:id="@+id/list_item_image"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:transitionName="image"
-        android:scaleType="centerCrop"/>
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/list_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="image"
+            android:scaleType="centerCrop" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/white_background2"></ImageView>
+        <TextView
+            android:text="这是一个文本"
+            android:layout_alignParentBottom="true"
+            android:textStyle="bold"
+            android:fontFamily="@font/text2"
+            android:gravity="bottom"
+            android:padding="20dp"
+            android:textColor="?attr/colorTertiary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:rippleColor="#00FFFFFF">
+        </Button>
+
+    </RelativeLayout>
+
 </com.google.android.material.carousel.MaskableFrameLayout>

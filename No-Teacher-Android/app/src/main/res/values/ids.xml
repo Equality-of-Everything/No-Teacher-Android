@@ -4,4 +4,7 @@
     <item name="email1" type="id" />
     <item name="pick_date_button" type="id" />
     <item name="show_selected_date" type="id" />
+    <item name="recycler" type="id" />
+    <item name="innerFragmentContainer" type="id" />
+    <item name="image_avatar" type="id" />
 </resources>
