@@ -53,7 +53,7 @@ public class RetrofitManager {
                 .build(); // 构建OkHttpClient对象
         retrofit = new Retrofit.Builder()
                 .client(client) //设置HTTP客户端
-                .baseUrl("http://10.7.88.107:8080/") //设置基础URL
+                .baseUrl("http://10.7.88.107:8082/") //设置基础URL
                 .addConverterFactory(GsonConverterFactory.create()) //添加Gson转换器
                 .build(); //构建Retrofit对象
     }

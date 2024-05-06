@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 
-import com.example.android.fragment.AFragment;
+import com.example.android.fragment.HomeFragment;
 import com.example.android.fragment.BFragment;
 import com.example.android.fragment.CFragment;
 import com.example.android.fragment.MineFragment;
@@ -20,7 +20,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     public FragmentAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
         // 加载初始化Fragment
-        mFragments.add(new AFragment());
+        mFragments.add(new HomeFragment());
         mFragments.add(new BFragment());
         mFragments.add(new CFragment());
         mFragments.add(new MineFragment());

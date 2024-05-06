@@ -4,6 +4,7 @@ import com.example.android.bean.EmailRequest;
 import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
+import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
 
@@ -16,6 +17,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface ApiService {
@@ -31,6 +33,13 @@ public interface ApiService {
     @POST("users/register")
     Call<BaseResponse<Void>> registerUser(@Body RegisterRequest registerRequest);
 
+    //发送请求测试单词
+    @GET("word/getWordNum")
+    Call<BaseResponse<WordDetail>> getWordNum();
+
+    //发送请求后续测试单词
+    @GET("word/getWords")
+    Call<BaseResponse<WordDetail>> getWords(@Query("currentPage") int currentPage);
 
 }
 
