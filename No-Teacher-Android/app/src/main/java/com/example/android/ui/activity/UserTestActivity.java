@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.EmailVerifyViewModel;
@@ -47,7 +48,7 @@ public class UserTestActivity extends AppCompatActivity {
      * @date 2024/5/7 10:08
      */
     private void setWords() {
-        List<String> words = TokenManager.loadWordsFromSharedPreferences(this);
+        List<String> words = TokenManager.loadServerWordsFromSharedPreferences(this);
 
         binding.firstBtn.setText(words.get(0));
         binding.secondBtn.setText(words.get(1));
@@ -78,10 +79,21 @@ public class UserTestActivity extends AppCompatActivity {
     }
 
     private void performCommonAction(View v) {
+        Button button = (Button) v;
+        String word = button.getText().toString();
         v.setSelected(!v.isSelected());  // 切换选中状态
 
-
+        if (v.isSelected()) {
+            // 如果按钮是选中的，将单词添加到已掌握列表
+            TokenManager.addWordToKnownList(word, this);
+            TokenManager.removeWordFromUnknownList(word, this); // 确保单词不在未掌握列表中
+        } else {
+            // 如果按钮未选中，将单词添加到未掌握列表
+            TokenManager.addWordToUnknownList(word, this);
+            TokenManager.removeWordFromKnownList(word, this); // 确保单词不在已掌握列表中
+        }
     }
+
 
 
 }
