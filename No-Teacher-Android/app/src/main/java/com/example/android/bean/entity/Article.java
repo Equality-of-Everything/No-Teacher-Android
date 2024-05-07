@@ -1,10 +1,11 @@
 package com.example.android.bean.entity;
 
 /**
- * @Auther : Tcy
- * @Date : Create in 2024/5/6 14:54
- * @Decription:
+ * @Author : Lee
+ * @Date : Created in 2024/5/7 8:19
+ * @Decription :
  */
+
 public class Article {
     private int imageResource;
     private String title;
@@ -40,6 +41,4 @@ public class Article {
     public String getBadge() {
         return badge;
     }
-
 }
-

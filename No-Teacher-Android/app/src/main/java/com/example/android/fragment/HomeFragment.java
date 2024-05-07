@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
+import com.example.android.ui.adapter.ArticleAdapter;
 import com.example.android.viewmodel.HomeViewModel;
 import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
@@ -38,6 +40,8 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private ListView listView;
+    private ArticleAdapter adapter;
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
     private int currentPage = 0;
@@ -53,6 +57,7 @@ public class HomeFragment extends Fragment {
 
         // 设置 RecyclerView 和适配器
         setupRecyclerView();
+        setupListView();
 
         ApiService apiService = RetrofitManager.getInstance(getActivity(),WORD_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
@@ -60,55 +65,17 @@ public class HomeFragment extends Fragment {
         binding.btnTest.setOnClickListener(v -> wordTestOnClick());
 
         return binding.getRoot();
+    }
 
-//        View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        recyclerView = view.findViewById(R.id.recycler_a);
-//
-//        // 获取 Fragment 的上下文对象
-//        Context context = getContext();
-//
-//        // 构造固定的图片资源列表
-//        ArrayList<Integer> imageResourceList = new ArrayList<>();
-//        imageResourceList.add(R.drawable.img_4); // 替换为你的图片资源 ID
-//        imageResourceList.add(R.drawable.img_2); // 替换为你的图片资源 ID
-//        imageResourceList.add(R.drawable.img_3); // 替换为你的图片资源 ID
-//        imageResourceList.add(R.drawable.img);
-//
-//        ImageAdapter adapter = new ImageAdapter(context, imageResourceList);
-//        adapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
-//            @Override
-//            public void onClick(ImageView imageView, int imageResId) {
-//                // 创建一个意图
-//                Intent intent = new Intent(requireContext(), ImageViewActivity.class);
-//                // 将图片资源 ID 作为额外数据放入意图中
-//                intent.putExtra("image", imageResId);
-//
-//                // 如果你使用了转场动画，需要在这里设置转场动画
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(requireActivity());
-//
-//                // 使用 Fragment 的方法 startActivityForResult() 来启动新的 Activity
-//                startActivity(intent, options.toBundle());
-//            }
-//        });
-//
-//        recyclerView.setAdapter(adapter);
-//
-//        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
-//        view = binding.getRoot();
-//
-//        viewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-//        binding.setViewModel(viewModel);
-//
-//        ApiService apiService = RetrofitManager.getInstance(getActivity()).getApi(ApiService.class);
-//        viewModel.setApiService(apiService);
-//
-//        binding.btnTest.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                wordTestOnClick(v);
-//            }
-//        });
-//        return view;
+    private void setupListView() {
+        listView = binding.getRoot().findViewById(R.id.list_article);
+        viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles -> {
+            if (articles != null) {
+                adapter = new ArticleAdapter(getActivity(), R.layout.item_list_article, articles);
+                listView.setAdapter(adapter);
+            }
+        });
+        viewModel.fetchArticles(); // ViewModel method to load articles data
     }
 
     private void setupRecyclerView() {
@@ -129,15 +96,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void wordTestOnClick() {
-//        viewModel.requestTestWordNum(requireContext());
         viewModel.requestTestWords(requireContext(), currentPage);
     }
-
-
-//    private void wordTestOnClick(View view) {
-//        viewModel.requestTestWord(getActivity());
-//
-//    }
 
 
 }
