@@ -13,27 +13,96 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient_background"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:scrollbars="none">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_a"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"
-                android:orientation="horizontal"/>
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_individual_avatar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/friend_item" />
 
-        <Button
-            android:id="@+id/btn_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="去测试词汇量"/>
+                <TextView
+                    android:id="@+id/tv_home_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/text2"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="齐物" />
+
+                <Button
+                    android:id="@+id/btn_test"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/tv_home_name"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="100dp"
+                    android:text="难度测试"
+                    app:icon="@drawable/update"
+                    app:rippleColor="@color/m3_text_button_ripple_color_selector"
+                    tools:ignore="MissingConstraints,NotSibling" />
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="精选阅读"
+                    android:layout_marginLeft="40dp"
+                    android:fontFamily="@font/text2"
+                    android:textSize="20sp"></TextView>
+
+                <Button
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="当前难度: 600去选择 >">
+                </Button>
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/list_article"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:divider="@null"
+                android:dividerHeight="8dp"></ListView>
+
+        </LinearLayout>
     </LinearLayout>
+
 </layout>

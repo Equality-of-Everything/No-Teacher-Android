@@ -5,14 +5,19 @@ import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.Article;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.no_teacher_andorid.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,7 +32,17 @@ import retrofit2.Response;
 
 public class HomeViewModel extends ViewModel {
 
+    private MutableLiveData<ArrayList<Article>> articlesLiveData;
     private ApiService apiService;
+
+    public HomeViewModel() {
+        articlesLiveData = new MutableLiveData<>();
+    }
+
+    // 提供LiveData的访问方法
+    public LiveData<ArrayList<Article>> getArticleLiveData() {
+        return articlesLiveData;
+    }
 
     public void setApiService(ApiService apiService)
     {
@@ -77,5 +92,17 @@ public class HomeViewModel extends ViewModel {
                         t.printStackTrace();
                     }
                 });
+    }
+
+    public void fetchArticles() {
+        // 模拟数据加载或从网络获取数据
+        // 这里以模拟数据为例
+        ArrayList<Article> articles = new ArrayList<>();
+        articles.add(new Article(R.drawable.friend_item, "标题1", "难度600","200字","人工智能"));
+        articles.add(new Article(R.drawable.friend_item, "标题2", "难度600","210字","人工智能"));
+        articles.add(new Article(R.drawable.friend_item, "标题3", "难度600","201字","人工智能"));
+
+        // 更新LiveData对象，这将通知观察者数据已改变
+        articlesLiveData.postValue(articles);
     }
 }
