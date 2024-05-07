@@ -46,7 +46,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.android.material:material:1.9.0'
 
-
     // ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
     // LiveData
@@ -65,5 +64,6 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+
 
 }
