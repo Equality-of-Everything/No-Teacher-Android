@@ -13,4 +13,5 @@
     <item name="level_a" type="id" />
     <item name="image_a" type="id" />
     <item name="recycler_a" type="id" />
+    <item name="btn_test" type="id" />
 </resources>

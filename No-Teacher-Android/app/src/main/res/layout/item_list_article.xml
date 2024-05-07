@@ -48,6 +48,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="12sp"
                     android:textColor="?attr/colorPrimary"
                     android:text="难度:600" />
 
@@ -57,6 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="393词"
+                    android:textSize="12sp"
                     android:layout_marginBottom="10dp"
                     ></TextView>
             </LinearLayout>

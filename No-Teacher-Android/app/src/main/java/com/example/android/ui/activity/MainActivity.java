@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void switchMenu(MenuItem item){
         switch (item.getItemId()) {
             case R.id.navigation_a:
-                item.setIcon(R.drawable.email);
+                item.setIcon(R.drawable.home);
                 mViewPager.setCurrentItem(0);
                 break;
             case R.id.navigation_b:

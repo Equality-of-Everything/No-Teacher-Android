@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -28,13 +28,13 @@
                     android:id="@+id/iv_individual_avatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:layout_marginLeft="20dp"
                     android:src="@drawable/friend_item" />
 
                 <TextView
                     android:id="@+id/tv_home_name"
+                    android:layout_toEndOf="@id/iv_individual_avatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/text2"
@@ -47,15 +47,14 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/tv_home_name"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="25dp"
-                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="20dp"
                     android:text="难度测试"
                     app:icon="@drawable/update"
                     app:rippleColor="@color/m3_text_button_ripple_color_selector"
                     tools:ignore="MissingConstraints,NotSibling" />
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <RelativeLayout

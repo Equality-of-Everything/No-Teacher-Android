@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/navigation_a"
-        android:icon="@drawable/email"
-        android:title="a"
+        android:icon="@drawable/home"
+        android:title="首页"
         app:showAsAction="always"
         />
 
