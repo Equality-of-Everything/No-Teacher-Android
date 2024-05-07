@@ -1,6 +1,11 @@
 package com.example.android.base;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.material.color.DynamicColors;
 
@@ -17,5 +22,6 @@ public class BaseApplication extends Application {
         super.onCreate();
         // 应用动态颜色
         DynamicColors.applyToActivitiesIfAvailable(this);
+
     }
 }

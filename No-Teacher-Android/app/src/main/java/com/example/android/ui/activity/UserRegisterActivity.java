@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.android.api.ApiService;
+import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.viewmodel.UserEditViewModel;
 import com.example.no_teacher_andorid.R;
@@ -28,7 +29,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         userEditViewModel = new ViewModelProvider(this).get(UserEditViewModel.class);
         binding.setViewModel(userEditViewModel);
         binding.setLifecycleOwner(this);
-        ApiService apiService = RetrofitManager.getInstance(this).getApi(ApiService.class);
+        ApiService apiService = RetrofitManager.getInstance(this, BuildConfig.USER_SERVICE).getApi(ApiService.class);
         userEditViewModel.setApiService(apiService);
 
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();

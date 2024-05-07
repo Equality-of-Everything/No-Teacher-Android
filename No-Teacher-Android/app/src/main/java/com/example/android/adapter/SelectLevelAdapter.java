@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.no_teacher_andorid.R;
 
@@ -36,22 +37,35 @@ public class SelectLevelAdapter extends ArrayAdapter<String> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.item_level_select, parent, false);
-        TextView textView = rowView.findViewById(R.id.level);
-        textView.setText(values.get(position));
-        ImageView icon = rowView.findViewById(R.id.icon); // 图标视图
+        ViewHolder viewHolder; // 用于持有视图组件的引用，避免每次getView时重复查找
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            convertView = inflater.inflate(R.layout.item_level_select, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.textView = convertView.findViewById(R.id.level);
+            viewHolder.imageView = convertView.findViewById(R.id.icon);
+            convertView.setTag(viewHolder); // 将ViewHolder存储在Tag中以便复用
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag(); // 复用ViewHolder
+        }
+        viewHolder.textView.setText(values.get(position)); // 设置文本内容
+
         // 如果当前项被选中，则修改文字颜色
         if (position == selectedItem) {
             int color = ContextCompat.getColor(context, R.color.color);
-            textView.setTextColor(color);
+            viewHolder.textView.setTextColor(color);
 //            textView.setTextColor(R.colors.);// 修改为红色，你可以根据需要设置其他颜色
-            icon.setVisibility(View.VISIBLE); // 显示图标
+            viewHolder.imageView.setVisibility(View.VISIBLE); // 显示图标
         } else {
-            textView.setTextColor(Color.GRAY); // 默认颜色灰色
-            icon.setVisibility(View.GONE); // 隐藏图标
+            viewHolder.textView.setTextColor(Color.GRAY); // 默认颜色灰色
+            viewHolder.imageView.setVisibility(View.GONE); // 隐藏图标
         }
-        return rowView;
+        return convertView;
+    }
+
+    static class ViewHolder {
+        TextView textView;
+        ImageView imageView;
     }
 
     // 设置被选中的项的位置

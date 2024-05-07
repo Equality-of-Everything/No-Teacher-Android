@@ -28,6 +28,7 @@ public class RetrofitManager {
     //retrofit：Retrofit的实例
     private Retrofit retrofit;
     private final OkHttpClient client;//client：OkHttpClient的实例，用于处理所有的HTTP请求
+    private static volatile String currentUrl = null; // 用于存储当前 URL
 
 
     /**
@@ -40,7 +41,7 @@ public class RetrofitManager {
      *      和主机名验证器（这里设置为始终返回 true，同样存在安全风险）。
      * 4.创建Retrofit实例：利用上面配置的OkHttpClient和基础URL构建Retrofit实例。
      */
-    private RetrofitManager(final Context context) {
+    private RetrofitManager(final Context context,String url) {
         File httpCacheDirectory = new File(context.getExternalCacheDir(), "responses");
         //设置缓存 10M
         Cache cache = new Cache(httpCacheDirectory, maxSizeCache);
@@ -53,7 +54,7 @@ public class RetrofitManager {
                 .build(); // 构建OkHttpClient对象
         retrofit = new Retrofit.Builder()
                 .client(client) //设置HTTP客户端
-                .baseUrl("http://10.7.88.107:8082/") //设置基础URL
+                .baseUrl(url) //设置基础URL
                 .addConverterFactory(GsonConverterFactory.create()) //添加Gson转换器
                 .build(); //构建Retrofit对象
     }
@@ -63,16 +64,20 @@ public class RetrofitManager {
      * getInstance(Context context)：这个方法用于获取RetrofitManager的单例实例。
      * 使用双重检查锁定模式，确保线程安全和单例的唯一性。
      */
-    public static RetrofitManager getInstance(Context context) {
-        if (instance == null) {
+    public static RetrofitManager getInstance(Context context, String url) {
+        // 检查 instance 是否为 null 或 url 是否发生变化
+        if (instance == null || !url.equals(currentUrl)) {
             synchronized (RetrofitManager.class) {
-                if (instance == null) {
-                    instance = new RetrofitManager(context);
+                // 再次检查以确保在锁等待期间状态没有变化
+                if (instance == null || !url.equals(currentUrl)) {
+                    instance = new RetrofitManager(context, url);
+                    currentUrl = url; // 更新当前的 URL
                 }
             }
         }
         return instance;
     }
+
 
     /**
      * 获取API服务接口

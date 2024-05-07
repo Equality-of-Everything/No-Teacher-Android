@@ -1,5 +1,7 @@
 package com.example.android.viewmodel;
 
+import static com.example.android.constants.BuildConfig.USER_SERVICE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -87,13 +89,12 @@ public class EmailVerifyViewModel extends ViewModel {
         EmailRequest request = new EmailRequest(email.getValue());
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email.getValue());
-        RetrofitManager.getInstance(context).
+        RetrofitManager.getInstance(context,USER_SERVICE).
                 getApi(ApiService.class)
                 .sendVerificationEmail(params)
                 .enqueue(new Callback<BaseResponse<User>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
-                        Log.e("Reuqest Success(RequestBody)", response.body().toString());
                         if (response.isSuccessful() && response.body() != null) {
                             BaseResponse<User> body = response.body();
                             if (body.isSuccess()) {
@@ -133,7 +134,7 @@ public class EmailVerifyViewModel extends ViewModel {
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email.getValue());
         params.put("code", verifyCode.getValue());
-        RetrofitManager.getInstance(null).
+        RetrofitManager.getInstance(null,USER_SERVICE).
                 getApi(ApiService.class)
                 .verifyEmail(params)
                 .enqueue(new Callback<BaseResponse<Void>>() {
