@@ -1,5 +1,8 @@
 package com.example.android.fragment;
 
+import static com.example.android.constants.BuildConfig.USER_SERVICE;
+import static com.example.android.constants.BuildConfig.WORD_SERVICE;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -37,6 +40,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
+    private int currentPage = 0;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,7 +54,7 @@ public class HomeFragment extends Fragment {
         // 设置 RecyclerView 和适配器
         setupRecyclerView();
 
-        ApiService apiService = RetrofitManager.getInstance(getActivity()).getApi(ApiService.class);
+        ApiService apiService = RetrofitManager.getInstance(getActivity(),WORD_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
 
         binding.btnTest.setOnClickListener(v -> wordTestOnClick());
@@ -125,7 +129,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void wordTestOnClick() {
-        viewModel.requestTestWord(requireContext());
+//        viewModel.requestTestWordNum(requireContext());
+        viewModel.requestTestWords(requireContext(), currentPage);
     }
 
 

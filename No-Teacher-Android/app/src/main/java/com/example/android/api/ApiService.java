@@ -10,6 +10,7 @@ import com.example.android.http.retrofit.BaseResponse;
 
 import java.lang.ref.Reference;
 import java.util.HashMap;
+import java.util.List;
 
 import kotlin.Metadata;
 import kotlin.ParameterName;
@@ -23,7 +24,7 @@ import retrofit2.http.QueryMap;
 public interface ApiService {
 
     //发送邮箱验证码
-    @POST("/user/login")
+    @POST("user/login")
     Call<BaseResponse<User>> sendVerificationEmail(@QueryMap HashMap<String, String> params);
 
     //验证邮箱验证码
@@ -35,11 +36,11 @@ public interface ApiService {
 
     //发送请求测试单词
     @GET("word/getWordNum")
-    Call<BaseResponse<WordDetail>> getWordNum();
+    Call<BaseResponse<Integer>> getWordNum();
 
     //发送请求后续测试单词
     @GET("word/getWords")
-    Call<BaseResponse<WordDetail>> getWords(@Query("currentPage") int currentPage);
+    Call<BaseResponse<List<WordDetail>>> getWords(@Query("currentPage") int currentPage);
 
 }
 

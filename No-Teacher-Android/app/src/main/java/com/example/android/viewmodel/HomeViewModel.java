@@ -1,14 +1,19 @@
 package com.example.android.viewmodel;
 
+import static com.example.android.constants.BuildConfig.WORD_SERVICE;
+
 import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,22 +34,16 @@ public class HomeViewModel extends ViewModel {
         this.apiService = apiService;
     }
 
-    public void requestTestWord(Context context) {
-        RetrofitManager.getInstance(context)
+    public void requestTestWordNum(Context context) {
+        RetrofitManager.getInstance(context,WORD_SERVICE)
                 .getApi(ApiService.class)
                 .getWordNum()
-                .enqueue(new Callback<BaseResponse<WordDetail>>() {
+                .enqueue(new Callback<BaseResponse<Integer>>() {
                     @Override
-                    public void onResponse(Call<BaseResponse<WordDetail>> call, Response<BaseResponse<WordDetail>> response) {
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
                         if(response.isSuccessful() && response.body() != null) {
-                            BaseResponse<WordDetail> body = response.body();
+                            Log.e("AAAAAAAAAA", response.body().getData().toString());
 
-                            if(body.isSuccess()) {
-                                WordDetail word = body.getData();
-                                Log.e("HomeFragment",  word.toString());
-                            } else {
-                                Log.e("Request Error", "Error from server: " + body.getMessage());
-                            }
                         } else {
                             // HTTP错误处理
                             Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
@@ -52,8 +51,29 @@ public class HomeViewModel extends ViewModel {
                     }
 
                     @Override
-                    public void onFailure(Call<BaseResponse<WordDetail>> call, Throwable t) {
-                        Log.e("HomeFragment-Error", "NetWOrd-Error");
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("HomeFragment-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    public void requestTestWords(Context context,int currentPage) {
+        RetrofitManager.getInstance(context,WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getWords(currentPage)
+                .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<WordDetail> data = response.body().getData();
+                            Log.e("NNNNNNNNNNNNNN", data.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
+                        Log.e("HomeViewModel-requestTestWords:", "Network-Error");
                         t.printStackTrace();
                     }
                 });

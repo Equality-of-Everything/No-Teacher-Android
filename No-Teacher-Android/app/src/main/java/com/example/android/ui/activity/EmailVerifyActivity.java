@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.api.ApiService;
+import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.viewmodel.EmailVerifyViewModel;
 import com.example.no_teacher_andorid.R;
@@ -33,7 +34,7 @@ public class EmailVerifyActivity extends AppCompatActivity {
         binding.setViewModel(viewModel);
         binding.setLifecycleOwner(this);
 
-        ApiService apiService = RetrofitManager.getInstance(this).getApi(ApiService.class);
+        ApiService apiService = RetrofitManager.getInstance(this, BuildConfig.USER_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
 
 

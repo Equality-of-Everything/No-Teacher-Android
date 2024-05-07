@@ -16,4 +16,6 @@ public final class BuildConfig {
     public static final String VERSION_NAME = "3.1.0";
     // Field from default config.
     public static final String BUILD_ENV = "RELEASE";
+    public static final String USER_SERVICE = "http://10.7.88.107:8080";
+    public static final String WORD_SERVICE = "http://10.7.88.107:8082";
 }
