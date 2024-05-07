@@ -15,6 +15,7 @@ import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.TokenManager;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import retrofit2.Response;
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<Article>> articlesLiveData;
+    private MutableLiveData<Boolean> navigateToWordTest = new MutableLiveData<>();
     private ApiService apiService;
 
     public HomeViewModel() {
@@ -47,6 +49,10 @@ public class HomeViewModel extends ViewModel {
     public void setApiService(ApiService apiService)
     {
         this.apiService = apiService;
+    }
+
+    public LiveData<Boolean> getNavigateToWordTest() {
+        return navigateToWordTest;
     }
 
     public void requestTestWordNum(Context context) {
@@ -83,6 +89,18 @@ public class HomeViewModel extends ViewModel {
                         if (response.isSuccessful() && response.body() != null) {
                             List<WordDetail> data = response.body().getData();
                             Log.e("NNNNNNNNNNNNNN", data.toString());
+
+                            List<String> words = new ArrayList<>();
+                            for (WordDetail wordDetail : data) {
+                                words.add(wordDetail.getWord());
+                                Log.e("AAAAAAAAAA", wordDetail.getWord());
+                            }
+
+                            TokenManager.saveWordsToSharedPreferences(words, context.getApplicationContext());
+                            List<String> word = TokenManager.loadWordsFromSharedPreferences(context.getApplicationContext());
+                            Log.e("AAAAAAAAAA", word.toString());
+
+                            navigateToWordTest.postValue(true);
                         }
                     }
 
@@ -90,6 +108,7 @@ public class HomeViewModel extends ViewModel {
                     public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
                         Log.e("HomeViewModel-requestTestWords:", "Network-Error");
                         t.printStackTrace();
+                        navigateToWordTest.postValue(false);
                     }
                 });
     }

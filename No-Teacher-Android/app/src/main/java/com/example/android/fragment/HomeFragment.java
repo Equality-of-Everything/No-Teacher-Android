@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,8 @@ import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
+import com.example.android.ui.activity.MainActivity;
+import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.ui.adapter.ArticleAdapter;
 import com.example.android.viewmodel.HomeViewModel;
 import com.example.android.viewmodel.UserTestViewModel;
@@ -63,6 +66,16 @@ public class HomeFragment extends Fragment {
         viewModel.setApiService(apiService);
 
         binding.btnTest.setOnClickListener(v -> wordTestOnClick());
+
+        viewModel.getNavigateToWordTest().observe(getViewLifecycleOwner(), shouldNavigate -> {
+            if(shouldNavigate) {
+                Intent intent = new Intent(getActivity(), UserTestActivity.class);
+                startActivity(intent);
+                getActivity().finish();  // 如果需要结束当前Activity，正确地调用
+            } else {
+                Toast.makeText(getActivity(), "Verification failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return binding.getRoot();
     }
