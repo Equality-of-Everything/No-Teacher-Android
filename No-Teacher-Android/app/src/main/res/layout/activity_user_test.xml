@@ -247,11 +247,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clickable="true"
+            android:layout_marginBottom="30dp"
             app:layout_constraintBottom_toTopOf="@id/ReTest"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <TextView
+        <Button
+            style="@style/Widget.Material3.Button.TextButton"
             android:id="@+id/ReTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -262,6 +264,7 @@
             android:layout_gravity="center"
             android:text="重新测试"
             android:textSize="16dp"
+            android:layout_marginBottom="70dp"
             app:layout_constraintBottom_toBottomOf="parent" />
 
 

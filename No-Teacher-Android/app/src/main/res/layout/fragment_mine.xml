@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?attr/materialCardViewElevatedStyle"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="65dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         app:cardBackgroundColor="?attr/colorTertiaryContainer"
