@@ -109,9 +109,10 @@ public class SelectLevelActivity extends AppCompatActivity {
      * @date 2024/5/8 14:22
      */
     private void showAlertDialog(int position) {
+        int num = 5 + position*5;
         new AlertDialog.Builder(this)
                 .setTitle("阅读难度选择")  // 设置对话框标题
-                .setMessage("选择阅读难度为" + position)  // 设置对话框显示的文本
+                .setMessage("选择阅读难度为" + num)  // 设置对话框显示的文本
                 .setPositiveButton("确定", (dialog, which) -> {
                     // 用户点击确定按钮的处理逻辑
                     finish();
