@@ -55,6 +55,13 @@ public class HomeViewModel extends ViewModel {
         return navigateToWordTest;
     }
 
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 获取单词总数
+     * @date 2024/5/8 9:17
+     */
     public void requestTestWordNum(Context context) {
         RetrofitManager.getInstance(context,WORD_SERVICE)
                 .getApi(ApiService.class)
@@ -79,6 +86,14 @@ public class HomeViewModel extends ViewModel {
                 });
     }
 
+    /**
+     * @param context:
+     * @param currentPage:
+     * @return void
+     * @author Lee
+     * @description 获取测试单词
+     * @date 2024/5/8 9:17
+     */
     public void requestTestWords(Context context,int currentPage) {
         RetrofitManager.getInstance(context,WORD_SERVICE)
                 .getApi(ApiService.class)
@@ -96,7 +111,6 @@ public class HomeViewModel extends ViewModel {
                                 Log.e("AAAAAAAAAA", wordDetail.getWord());
                             }
 
-                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
                             List<String> word = TokenManager.loadServerWordsFromSharedPreferences(context.getApplicationContext());
                             Log.e("AAAAAAAAAA", word.toString());
 

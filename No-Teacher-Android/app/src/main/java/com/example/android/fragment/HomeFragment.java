@@ -109,7 +109,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void wordTestOnClick() {
-        viewModel.requestTestWords(requireContext(), currentPage);
+//        viewModel.requestTestWords(requireContext(), currentPage);
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), UserTestActivity.class);
+        startActivity(intent);
     }
 
 

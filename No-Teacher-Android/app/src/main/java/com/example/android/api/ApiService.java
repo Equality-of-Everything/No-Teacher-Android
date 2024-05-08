@@ -34,11 +34,11 @@ public interface ApiService {
     @POST("users/register")
     Call<BaseResponse<Void>> registerUser(@Body RegisterRequest registerRequest);
 
-    //发送请求测试单词
+    //发送请求获取单词总数
     @GET("word/getWordNum")
     Call<BaseResponse<Integer>> getWordNum();
 
-    //发送请求后续测试单词
+    //发送请求测试单词
     @GET("word/getWords")
     Call<BaseResponse<List<WordDetail>>> getWords(@Query("currentPage") int currentPage);
 
