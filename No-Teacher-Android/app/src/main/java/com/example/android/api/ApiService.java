@@ -29,10 +29,8 @@ public interface ApiService {
 
     //验证邮箱验证码
     @POST("user/checkLogin")
-    Call<BaseResponse<Void>> verifyEmail(@QueryMap HashMap<String,String> params);
-    //注册
-    @POST("users/register")
-    Call<BaseResponse<Void>> registerUser(@Body RegisterRequest registerRequest);
+    Call<BaseResponse<Void>> verifyEmail(@QueryMap HashMap<String, String> params);
+
 
     //发送请求获取单词总数
     @GET("word/getWordNum")
@@ -42,6 +40,9 @@ public interface ApiService {
     @GET("word/getWords")
     Call<BaseResponse<List<WordDetail>>> getWords(@Query("currentPage") int currentPage);
 
+    // 将测试结果发送给我服务端
+    @POST("userLevel/insertData")
+    Call<BaseResponse<Void>> sendTestResultToServer(@QueryMap HashMap<String, String> params);
 }
 
 

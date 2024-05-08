@@ -14,11 +14,14 @@ import com.example.android.api.ApiService;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.GsonUtils;
 import com.example.android.util.TokenManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,9 +31,14 @@ public class UserTestViewModel extends ViewModel {
 
     private MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> testCompleteLiveData = new MutableLiveData<>();
+    private MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
 
     private int curPage = 0;
     private int totalPages = 1;//初始设置为-1，表示还未获取到总页数
+
+    public MutableLiveData<Integer> getCurrentPageLiveData() {
+        return currentPageLiveData;
+    }
 
     public MutableLiveData<List<String>> getWordsLiveData() {
         return wordsLiveData;
@@ -64,7 +72,7 @@ public class UserTestViewModel extends ViewModel {
             words = loadServerWordsFromSharedPreferences(context);
 //          words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
 //                   "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
-            
+            currentPageLiveData.postValue(curPage);
             wordsLiveData.postValue(words);
             curPage++;  // 确保在获取数据后递增页面
         }
@@ -136,6 +144,39 @@ public class UserTestViewModel extends ViewModel {
                     @Override
                     public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
                         Log.e("ViewModel", "Network-Error", t);
+                    }
+                });
+    }
+
+    /**
+     * @param context:
+     * @param unknowWordId:
+     * @param knowWordId:
+     * @return void
+     * @author zhang
+     * @description 将测试结果发给后端
+     * @date 2024/5/8 14:13
+     */
+    public void sendTestResultToServer(Context context, List<Integer> unknowWordId, List<Integer> knowWordId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userId", TokenManager.getUserId(context));
+        params.put("unKnowWordId", GsonUtils.getGsonInstance().toJson(unknowWordId));
+        params.put("knowWordId", GsonUtils.getGsonInstance().toJson(knowWordId));
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .sendTestResultToServer(params)
+                .enqueue(new Callback<BaseResponse<Void>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("AAAAAAAAAAAAAA", response.body().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+                        t.printStackTrace();
+                        Log.e("UserTestViewModel-sendTestResultToServer", "Network-Error");
                     }
                 });
     }
