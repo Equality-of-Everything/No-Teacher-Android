@@ -123,6 +123,7 @@ public class UserTestViewModel extends ViewModel {
                             List<String> words = new ArrayList<>();
                             for (WordDetail wordDetail : data) {
                                 words.add(wordDetail.getWord());
+                                Log.e("AAAAAAAAAA", wordDetail.getWord());
                             }
 
                             // 保存数据到 SharedPreferences 并在保存完成后加载数据
@@ -139,36 +140,7 @@ public class UserTestViewModel extends ViewModel {
                     }
                 });
     }
-//    public void requestTestWords(Context context,int currentPage) {
-//        RetrofitManager.getInstance(context,WORD_SERVICE)
-//                .getApi(ApiService.class)
-//                .getWords(currentPage)
-//                .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
-//                    @Override
-//                    public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
-//                        if (response.isSuccessful() && response.body() != null) {
-//                            List<WordDetail> data = response.body().getData();
-//                            Log.e("NNNNNNNNNNNNNN", data.toString());
-//
-//                            List<String> words = new ArrayList<>();
-//                            for (WordDetail wordDetail : data) {
-//                                words.add(wordDetail.getWord());
-//                                Log.e("AAAAAAAAAA", wordDetail.getWord());
-//                            }
-//
-//                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
-//                            List<String> word = loadServerWordsFromSharedPreferences(context.getApplicationContext());
-//                            Log.e("AAAAAAAAAA", word.toString());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
-//                        Log.e("HomeViewModel-requestTestWords:", "Network-Error");
-//                        t.printStackTrace();
-//                    }
-//                });
-//    }
+
 
     public void resetTest(Context context) {
         curPage = 0;

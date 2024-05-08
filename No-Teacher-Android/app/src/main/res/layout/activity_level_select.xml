@@ -31,6 +31,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <Button
+        android:id="@+id/btn_to_test"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
