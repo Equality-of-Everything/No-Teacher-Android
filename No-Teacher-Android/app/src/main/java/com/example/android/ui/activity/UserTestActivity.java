@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -17,12 +18,17 @@ import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserTestActivity extends AppCompatActivity {
 
     private UserTestViewModel viewModel;
     private ActivityUserTestBinding binding;
+
+    private ArrayList<Integer> knowWordsList = new ArrayList<Integer>();
+    private ArrayList<Integer> unknowWordsList = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,9 @@ public class UserTestActivity extends AppCompatActivity {
         binding.setViewModel(viewModel);
         viewModel.requestTestWordNum(this);  // 请求总页数
         binding.setLifecycleOwner(this);
+
+        unknowWordsList.clear();
+        knowWordsList.clear();
 
         viewModel.getWordsLiveData().observe(this, this::setWords);
         viewModel.getTestCompleteLiveData().observe(this, complete -> {
@@ -51,8 +60,25 @@ public class UserTestActivity extends AppCompatActivity {
             Button btn = (Button) v;
             btn.setSelected(!btn.isSelected());
             //根据按钮状态处理单词的掌握情况
+
+            try {
+                int wordId = Arrays.asList(binding.firstBtn, binding.secondBtn, binding.threeBtn, binding.fourBtn,
+                        binding.fiveBtn, binding.sixBtn, binding.sevenBtn, binding.eightBtn).indexOf(btn) + 1;
+                wordId += (viewModel.getCurrentPage() - 1)*8;
+
+                Log.e("UserTestActivity", "wordId: " + wordId);
+
+                if (btn.isSelected()) {
+                    knowWordsList.add(wordId);
+                } else {
+                    unknowWordsList.add(wordId);
+                }
+            } catch (NumberFormatException e) {
+                Log.e("UserTestActivity", "Failed to parse word ID from button text", e);
+            }
         };
 
+        binding.nextTest.setOnClickListener(v -> viewModel.fetchWords(this));
         binding.firstBtn.setOnClickListener(listener);
         binding.secondBtn.setOnClickListener(listener);
         binding.threeBtn.setOnClickListener(listener);
@@ -61,8 +87,6 @@ public class UserTestActivity extends AppCompatActivity {
         binding.sixBtn.setOnClickListener(listener);
         binding.sevenBtn.setOnClickListener(listener);
         binding.eightBtn.setOnClickListener(listener);
-
-        binding.nextTest.setOnClickListener(v -> viewModel.fetchWords(this));
     }
 
     /**
@@ -90,9 +114,10 @@ public class UserTestActivity extends AppCompatActivity {
      * @date 2024/5/8 9:05
      */
     private void showCompletionDialog() {
+        int cnt = knowWordsList.size();
         new AlertDialog.Builder(this)
                 .setTitle("测试完成")  // 设置对话框标题
-                .setMessage("你已完成所有测试。已经掌握88个单词")  // 设置对话框显示的文本
+                .setMessage("你已完成所有测试。已经掌握" + cnt + "个单词")  // 设置对话框显示的文本
                 .setPositiveButton("确定", (dialog, which) -> {
                     // 用户点击确定按钮的处理逻辑
                     returnToMainActivity();

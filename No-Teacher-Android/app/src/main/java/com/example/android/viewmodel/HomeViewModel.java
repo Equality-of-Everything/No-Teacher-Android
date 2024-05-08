@@ -111,7 +111,6 @@ public class HomeViewModel extends ViewModel {
                                 Log.e("AAAAAAAAAA", wordDetail.getWord());
                             }
 
-                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
                             List<String> word = TokenManager.loadServerWordsFromSharedPreferences(context.getApplicationContext());
                             Log.e("AAAAAAAAAA", word.toString());
 

@@ -52,26 +52,49 @@ public class TokenManager {
      * @description 每次调用该方法存入8个单词，再次调用覆盖前面存的(从网络获取)
      * @date 2024/5/7 9:16
      */
-    public static void saveServerWordsToSharedPreferences(List<String> words, Context context) {
-        // 获取SharedPreferences编辑器
+    public static void saveServerWordsToSharedPreferences(List<String> words, Context context, Runnable onComplete) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // 将列表转换为一个字符串，这里使用逗号分隔每个单词
+        // 限制保存的单词数量不超过8个
+        int wordsCount = Math.min(words.size(), 8);  // 确保不超过8个单词
         StringBuilder stringBuilder = new StringBuilder();
-        // 存储至多8个单词
-        int count = Math.min(words.size(), 8);
-        for (int i = 0; i < count; i++) {
-            stringBuilder.append(words.get(i));
-            if (i < count - 1) { // 避免在最后一个单词后添加逗号
+        for (int i = 0; i < wordsCount; i++) {
+            if (stringBuilder.length() > 0) {
                 stringBuilder.append(",");
             }
+            stringBuilder.append(words.get(i));
         }
 
         // 保存字符串到SharedPreferences
         editor.putString("words", stringBuilder.toString());
-        editor.apply();
+        editor.apply();  // 异步写入
+
+        if (onComplete != null) {
+            onComplete.run();  // 在数据保存后执行回调
+        }
     }
+
+//    public static void saveServerWordsToSharedPreferences(List<String> words, Context context) {
+//        // 获取SharedPreferences编辑器
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        // 将列表转换为一个字符串，这里使用逗号分隔每个单词
+//        StringBuilder stringBuilder = new StringBuilder();
+//        // 存储至多8个单词
+//        int count = Math.min(words.size(), 8);
+//        for (int i = 0; i < count; i++) {
+//            stringBuilder.append(words.get(i));
+//            if (i < count - 1) { // 避免在最后一个单词后添加逗号
+//                stringBuilder.append(",");
+//            }
+//        }
+//
+//        // 保存字符串到SharedPreferences
+//        editor.putString("words", stringBuilder.toString());
+//        editor.apply();
+//    }
 
 
     /**

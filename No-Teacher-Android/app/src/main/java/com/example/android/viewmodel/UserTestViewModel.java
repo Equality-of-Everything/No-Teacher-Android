@@ -2,6 +2,8 @@ package com.example.android.viewmodel;
 
 
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
+import static com.example.android.util.TokenManager.loadServerWordsFromSharedPreferences;
+import static com.example.android.util.TokenManager.saveServerWordsToSharedPreferences;
 
 import android.content.Context;
 import android.util.Log;
@@ -28,7 +30,7 @@ public class UserTestViewModel extends ViewModel {
     private MutableLiveData<Boolean> testCompleteLiveData = new MutableLiveData<>();
 
     private int curPage = 0;
-    private int totalPages = 1;//初始设置为，表示还未获取到总页数
+    private int totalPages = 1;//初始设置为-1，表示还未获取到总页数
 
     public MutableLiveData<List<String>> getWordsLiveData() {
         return wordsLiveData;
@@ -56,16 +58,13 @@ public class UserTestViewModel extends ViewModel {
             testCompleteLiveData.setValue(true);  // 发送测试完成的信号
         } else {
             // 模拟或从SharedPreferences加载数据
-            List<String> words;
-            if (curPage == 0) {
-                words = TokenManager.loadServerWordsFromSharedPreferences(context);
-            } else {
-                // 从网络获取新的单词数据
-                requestTestWords(context, curPage);
-                words = TokenManager.loadServerWordsFromSharedPreferences(context);
-//                words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
-//                        "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
-            }
+            List<String> words = null;
+
+            requestTestWords(context, curPage);
+            words = loadServerWordsFromSharedPreferences(context);
+//          words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
+//                   "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
+            
             wordsLiveData.postValue(words);
             curPage++;  // 确保在获取数据后递增页面
         }
@@ -112,8 +111,8 @@ public class UserTestViewModel extends ViewModel {
      * @description 获取测试单词
      * @date 2024/5/8 9:17
      */
-    public void requestTestWords(Context context,int currentPage) {
-        RetrofitManager.getInstance(context,WORD_SERVICE)
+    public void requestTestWords(Context context, int currentPage) {
+        RetrofitManager.getInstance(context, WORD_SERVICE)
                 .getApi(ApiService.class)
                 .getWords(currentPage)
                 .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
@@ -121,27 +120,55 @@ public class UserTestViewModel extends ViewModel {
                     public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             List<WordDetail> data = response.body().getData();
-                            Log.e("NNNNNNNNNNNNNN", data.toString());
-
                             List<String> words = new ArrayList<>();
                             for (WordDetail wordDetail : data) {
                                 words.add(wordDetail.getWord());
-                                Log.e("AAAAAAAAAA", wordDetail.getWord());
                             }
 
-                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
-                            List<String> word = TokenManager.loadServerWordsFromSharedPreferences(context.getApplicationContext());
-                            Log.e("AAAAAAAAAA", word.toString());
+                            // 保存数据到 SharedPreferences 并在保存完成后加载数据
+                            saveServerWordsToSharedPreferences(words, context, () -> {
+                                List<String> loadedWords = loadServerWordsFromSharedPreferences(context);
+                                wordsLiveData.postValue(loadedWords);
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
-                        Log.e("HomeViewModel-requestTestWords:", "Network-Error");
-                        t.printStackTrace();
+                        Log.e("ViewModel", "Network-Error", t);
                     }
                 });
     }
+//    public void requestTestWords(Context context,int currentPage) {
+//        RetrofitManager.getInstance(context,WORD_SERVICE)
+//                .getApi(ApiService.class)
+//                .getWords(currentPage)
+//                .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
+//                    @Override
+//                    public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
+//                        if (response.isSuccessful() && response.body() != null) {
+//                            List<WordDetail> data = response.body().getData();
+//                            Log.e("NNNNNNNNNNNNNN", data.toString());
+//
+//                            List<String> words = new ArrayList<>();
+//                            for (WordDetail wordDetail : data) {
+//                                words.add(wordDetail.getWord());
+//                                Log.e("AAAAAAAAAA", wordDetail.getWord());
+//                            }
+//
+//                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
+//                            List<String> word = loadServerWordsFromSharedPreferences(context.getApplicationContext());
+//                            Log.e("AAAAAAAAAA", word.toString());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
+//                        Log.e("HomeViewModel-requestTestWords:", "Network-Error");
+//                        t.printStackTrace();
+//                    }
+//                });
+//    }
 
     public void resetTest(Context context) {
         curPage = 0;
