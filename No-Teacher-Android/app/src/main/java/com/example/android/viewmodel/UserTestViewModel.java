@@ -1,41 +1,102 @@
 package com.example.android.viewmodel;
 
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android.api.ApiService;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.util.TokenManager;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class UserTestViewModel extends ViewModel {
+
+    private MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> testCompleteLiveData = new MutableLiveData<>();
+
+    private int curPage = 0;
+    private final int totalPages = 11; //11页单词
+
+    public MutableLiveData<List<String>> getWordsLiveData() {
+        return wordsLiveData;
+    }
+
+    public MutableLiveData<Boolean> getTestCompleteLiveData() {
+        return testCompleteLiveData;
+    }
+
+    //获取当前页码
+    public int getCurrentPage() {
+        return curPage;
+    }
+
+    /**
+     * @param
+     * @return void
+     * @author Lee
+     * @description 调用网络API或从SharedPreferences获取单词
+     * @date 2024/5/8 8:27
+     */
+    public void fetchWords(Context context) {
+        if (curPage >= totalPages) {
+            testCompleteLiveData.setValue(true);  // 发送测试完成的信号
+        } else {
+            // 模拟或从SharedPreferences加载数据
+            List<String> words;
+            if (curPage == 0) {
+                words = TokenManager.loadServerWordsFromSharedPreferences(context);
+            } else {
+                // 模拟获取新的单词数据
+                words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
+                        "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
+            }
+            wordsLiveData.postValue(words);
+            curPage++;  // 确保在获取数据后递增页面
+        }
+    }
+
+    public void resetTest(Context context) {
+        curPage = 0;
+        fetchWords(context);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
-    private ApiService apiService;
-    //当前页码
-    private MutableLiveData<Integer> currentPage = new MutableLiveData<>(0);
-    //所有单词列表
-    private MutableLiveData<List<WordDetail>>allWords = new MutableLiveData<>();
-    //每页单词数量
-    private static final int WORDS_PER_PAGE = 8;
-    //用户认识的单词列表
-    private MutableLiveData<List<WordDetail>> knownWords = new MutableLiveData<>();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//    private ApiService apiService;
+//    //当前页码
+//    private MutableLiveData<Integer> currentPage = new MutableLiveData<>(0);
+//    //所有单词列表
+//    private MutableLiveData<List<WordDetail>>allWords = new MutableLiveData<>();
+//    //每页单词数量
+//    private static final int WORDS_PER_PAGE = 8;
+//    //用户认识的单词列表
+//    private MutableLiveData<List<WordDetail>> knownWords = new MutableLiveData<>();
 
 
 //    public UserTestViewModel(ApiService apiService){
