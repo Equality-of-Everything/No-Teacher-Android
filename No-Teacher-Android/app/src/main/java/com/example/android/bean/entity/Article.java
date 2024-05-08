@@ -11,7 +11,6 @@ public class Article {
     private String title;
     private String level;
     private String wordCount;
-
     private String badge;
 
     public Article(int imageResource, String title, String level,String wordCount,String badge) {

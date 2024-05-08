@@ -4,15 +4,17 @@
     >
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.android.viewmodel.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="12dp"
+        android:id="@+id/container_for_citem_fragment"
         >
-
         <TextView
             android:id="@+id/tvDifficulty"
             android:layout_width="wrap_content"
