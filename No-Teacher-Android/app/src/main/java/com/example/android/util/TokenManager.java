@@ -49,10 +49,10 @@ public class TokenManager {
      * @param context:
      * @return void
      * @author Lee
-     * @description 每次调用该方法存入8个单词，再次调用覆盖前面存的
+     * @description 每次调用该方法存入8个单词，再次调用覆盖前面存的(从网络获取)
      * @date 2024/5/7 9:16
      */
-    public static void saveWordsToSharedPreferences(List<String> words, Context context) {
+    public static void saveServerWordsToSharedPreferences(List<String> words, Context context) {
         // 获取SharedPreferences编辑器
         SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -78,10 +78,10 @@ public class TokenManager {
      * @param context:
      * @return List<String>
      * @author Lee
-     * @description 取出存的8个单词，如果为空返回空列表
+     * @description 取出存的8个单词，如果为空返回空列表(从网络获取)
      * @date 2024/5/7 9:20
      */
-    public static List<String> loadWordsFromSharedPreferences(Context context) {
+    public static List<String> loadServerWordsFromSharedPreferences(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
         String wordsString = sharedPreferences.getString("words", "");
 
@@ -92,5 +92,128 @@ public class TokenManager {
             return new ArrayList<>(); // 如果没有数据，返回空列表
         }
     }
+
+    /**
+     * @param context:
+     * @return List<String>
+     * @author Lee
+     * @description 获取已掌握的单词列表
+     * @date 2024/5/7 10:42
+     */
+    public static List<String> getKnownWords(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
+        String wordsString = sharedPreferences.getString("known_words", "");
+        return wordsString.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(wordsString.split(",")));
+    }
+
+    /**
+     * @param context:
+     * @return List<String>
+     * @author Lee
+     * @description 获取未掌握的单词列表
+     * @date 2024/5/7 10:42
+     */
+    public static List<String> getUnknownWords(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
+        String wordsString = sharedPreferences.getString("unknown_words", "");
+        return wordsString.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(wordsString.split(",")));
+    }
+
+    /**
+     * @param words:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 存储已掌握的单词列表
+     * @date 2024/5/7 10:43
+     */
+    public static void saveKnownWords(List<String> words, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("known_words", String.join(",", words));
+        editor.apply();
+    }
+
+    /**
+     * @param words:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 存储未掌握的单词列表
+     * @date 2024/5/7 10:43
+     */
+    public static void saveUnknownWords(List<String> words, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("unknown_words", String.join(",", words));
+        editor.apply();
+    }
+
+
+    /**
+     * @param word:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 将单词添加到已掌握列表中
+     * @date 2024/5/7 10:45
+     */
+    public static void addWordToKnownList(String word, Context context) {
+        List<String> knownWords = getKnownWords(context);
+        List<String> unknownWords = getUnknownWords(context);
+        if (!knownWords.contains(word) && !unknownWords.contains(word)) {
+            knownWords.add(word);
+            saveKnownWords(knownWords, context);
+        }
+    }
+
+    /**
+     * @param word:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 将单词添加到未掌握列表中
+     * @date 2024/5/7 10:45
+     */
+    public static void addWordToUnknownList(String word, Context context) {
+        List<String> knownWords = getKnownWords(context);
+        List<String> unknownWords = getUnknownWords(context);
+        if (!unknownWords.contains(word) && !knownWords.contains(word)) {
+            unknownWords.add(word);
+            saveUnknownWords(unknownWords, context);
+        }
+    }
+
+    /**
+     * @param word:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 将单词从已掌握列表中移除
+     * @date 2024/5/7 10:45
+     */
+    public static void removeWordFromKnownList(String word, Context context) {
+        List<String> words = getKnownWords(context);
+        if (words.remove(word)) {
+            saveKnownWords(words, context);
+        }
+    }
+
+    /**
+     * @param word:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 将单词从未掌握列表中移除
+     * @date 2024/5/7 10:46
+     */
+    public static void removeWordFromUnknownList(String word, Context context) {
+        List<String> words = getUnknownWords(context);
+        if (words.remove(word)) {
+            saveUnknownWords(words, context);
+        }
+    }
+
+
 
 }
