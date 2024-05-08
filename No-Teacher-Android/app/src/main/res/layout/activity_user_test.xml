@@ -91,10 +91,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/selector_btn"
                 android:clickable="true"
                 android:maxLines="2"
                 android:text="apple"
+                android:background="@drawable/selector_btn"
                 android:textColor="#666666"
                 android:textSize="18sp" />
 

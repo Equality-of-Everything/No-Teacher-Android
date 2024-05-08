@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 选中状态 -->
-    <item android:state_selected="true">
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/colorPrimary" /> <!-- 选中时使用主题的主颜色 -->
-            <corners android:radius="30dp" /> <!-- 圆角半径 -->
-        </shape>
-    </item>
-    <!-- 默认状态 -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" /> <!-- 默认透明背景 -->
-            <corners android:radius="30dp" />
-        </shape>
-    </item>
+    <item android:state_selected="true" android:drawable="@drawable/article_background"></item>
+    <item android:state_selected="false" android:drawable="@android:color/transparent"></item>
 </selector>

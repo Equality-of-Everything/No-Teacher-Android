@@ -77,6 +77,8 @@ public class UserTestActivity extends AppCompatActivity {
         binding.eightBtn.setOnClickListener(toggleButtonSelectionListener);
     }
 
+
+
     private void performCommonAction(View v) {
         v.setSelected(!v.isSelected());  // 切换选中状态
 
