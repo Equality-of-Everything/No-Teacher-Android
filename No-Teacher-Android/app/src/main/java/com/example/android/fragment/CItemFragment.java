@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 import com.example.no_teacher_andorid.R;
 
 public class CItemFragment extends Fragment{
-    public static CItemFragment newInstance(String content) {
+    public static CItemFragment newInstance(String category) {
         CItemFragment fragment = new CItemFragment();
         Bundle args = new Bundle();
-        args.putString("content", content);
+        args.putString("category", category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -22,7 +22,7 @@ public class CItemFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            String content = getArguments().getString("category");
+            String category = getArguments().getString("category");
             // 可以在这里保存数据，或在onCreateView中直接使用
         }
     }
