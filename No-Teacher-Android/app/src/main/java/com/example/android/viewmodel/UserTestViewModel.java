@@ -1,16 +1,26 @@
 package com.example.android.viewmodel;
 
 
+import static com.example.android.constants.BuildConfig.WORD_SERVICE;
+
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android.api.ApiService;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.http.retrofit.BaseResponse;
+import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.util.TokenManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserTestViewModel extends ViewModel {
 
@@ -18,7 +28,7 @@ public class UserTestViewModel extends ViewModel {
     private MutableLiveData<Boolean> testCompleteLiveData = new MutableLiveData<>();
 
     private int curPage = 0;
-    private final int totalPages = 11; //11页单词
+    private int totalPages = 1;//初始设置为，表示还未获取到总页数
 
     public MutableLiveData<List<String>> getWordsLiveData() {
         return wordsLiveData;
@@ -32,6 +42,7 @@ public class UserTestViewModel extends ViewModel {
     public int getCurrentPage() {
         return curPage;
     }
+
 
     /**
      * @param
@@ -49,42 +60,93 @@ public class UserTestViewModel extends ViewModel {
             if (curPage == 0) {
                 words = TokenManager.loadServerWordsFromSharedPreferences(context);
             } else {
-                // 模拟获取新的单词数据
-                words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
-                        "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
+                // 从网络获取新的单词数据
+                requestTestWords(context, curPage);
+                words = TokenManager.loadServerWordsFromSharedPreferences(context);
+//                words = Arrays.asList("Word" + curPage + "1", "Word" + curPage + "2", "Word" + curPage + "3", "Word" + curPage + "4",
+//                        "Word" + curPage + "5", "Word" + curPage + "6", "Word" + curPage + "7", "Word" + curPage + "8");
             }
             wordsLiveData.postValue(words);
             curPage++;  // 确保在获取数据后递增页面
         }
     }
 
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 获取单词总数
+     * @date 2024/5/8 9:17
+     */
+    public void requestTestWordNum(Context context) {
+        RetrofitManager.getInstance(context,WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getWordNum()
+                .enqueue(new Callback<BaseResponse<Integer>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                        if(response.isSuccessful() && response.body() != null) {
+                            Log.e("AAAAAAAAAA", response.body().getData().toString());
+
+                            Integer num = response.body().getData();
+                            totalPages = (int) Math.ceil(num / 8.0);  // 计算总页数
+                        } else {
+                            // HTTP错误处理
+                            Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("HomeFragment-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    /**
+     * @param context:
+     * @param currentPage:
+     * @return void
+     * @author Lee
+     * @description 获取测试单词
+     * @date 2024/5/8 9:17
+     */
+    public void requestTestWords(Context context,int currentPage) {
+        RetrofitManager.getInstance(context,WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getWords(currentPage)
+                .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<WordDetail> data = response.body().getData();
+                            Log.e("NNNNNNNNNNNNNN", data.toString());
+
+                            List<String> words = new ArrayList<>();
+                            for (WordDetail wordDetail : data) {
+                                words.add(wordDetail.getWord());
+                                Log.e("AAAAAAAAAA", wordDetail.getWord());
+                            }
+
+                            TokenManager.saveServerWordsToSharedPreferences(words, context.getApplicationContext());
+                            List<String> word = TokenManager.loadServerWordsFromSharedPreferences(context.getApplicationContext());
+                            Log.e("AAAAAAAAAA", word.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<WordDetail>>> call, Throwable t) {
+                        Log.e("HomeViewModel-requestTestWords:", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
     public void resetTest(Context context) {
         curPage = 0;
         fetchWords(context);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     

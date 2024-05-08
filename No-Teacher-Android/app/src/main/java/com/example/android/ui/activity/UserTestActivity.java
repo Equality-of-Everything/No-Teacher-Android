@@ -32,6 +32,7 @@ public class UserTestActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(UserTestViewModel.class);
         binding.setViewModel(viewModel);
+        viewModel.requestTestWordNum(this);  // 请求总页数
         binding.setLifecycleOwner(this);
 
         viewModel.getWordsLiveData().observe(this, this::setWords);
