@@ -18,19 +18,9 @@ public class CItemFragment extends Fragment{
         fragment.setArguments(args);
         return fragment;
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String category = getArguments().getString("category");
-            // 可以在这里保存数据，或在onCreateView中直接使用
-        }
-    }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_c_item, container, false);
         String category = getArguments().getString("category");
-        TextView categoryTextView = view.findViewById(R.id.tvDifficulty);
-        categoryTextView.setText(category);
         return view;
     }
 

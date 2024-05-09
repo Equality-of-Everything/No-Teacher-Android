@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_for_citem_fragment"
     >
-
-    <data>
-        <variable
-            name="viewModel"
-            type="com.example.android.viewmodel.HomeViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="12dp"
-        android:id="@+id/container_for_citem_fragment"
         >
         <TextView
             android:id="@+id/tvDifficulty"

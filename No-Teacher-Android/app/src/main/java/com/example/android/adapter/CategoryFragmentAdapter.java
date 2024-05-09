@@ -12,7 +12,6 @@ import java.util.List;
 
 public class CategoryFragmentAdapter extends FragmentStateAdapter {
     private List<String> category; // 数据列表，对应每个Fragment的内容
-
     public CategoryFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<String> category) {
         super(fragmentManager, lifecycle);
         this.category = category;

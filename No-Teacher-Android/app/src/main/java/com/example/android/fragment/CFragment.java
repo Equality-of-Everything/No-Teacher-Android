@@ -1,6 +1,7 @@
 package com.example.android.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,23 +26,6 @@ import java.util.List;
 
 
 public class CFragment extends Fragment {
-    private static final String ARG_PARAM_ARTICLE_ID = "article_id";
-
-    // 是否第一次可见
-    private boolean isFirstTimeVisible = true;
-
-    public static CFragment newInstance(int articleId) {
-//          创建一个Fragment实例，并传递参数
-        CFragment fragment = new CFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_PARAM_ARTICLE_ID, articleId);
-        fragment.setArguments(args);
-        // 返回带有参数的实例
-        return fragment;
-    }
-    // Fragment的构造方法
-    public CFragment() {
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_c, container, false);
@@ -51,23 +35,24 @@ public class CFragment extends Fragment {
                 "精选阅读","人工智能","前沿技术","太空宇宙","生物医疗","自然科学",
                 "环境生态","历史文化","艺术文学","休闲生活","社会现象","成长教育",
                 "心理感情"));
+        //连接子fragment的adapter
         viewPager2.setAdapter(new CategoryFragmentAdapter(getChildFragmentManager(),getViewLifecycleOwner().getLifecycle(),categoryList));
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryList);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         categoryAdapter.setOnItemClickListener(category -> {
+            Log.d("CFragment", "onItemClick: " + category);
             replaceChildFragment(category);
         });
         recyclerView.setAdapter(categoryAdapter);
         return view;
     }
-
-    private void showToast(String message) {
-
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
+    //切换子fragment
     private void replaceChildFragment(String category) {
-        showToast("即将切换到: " + category);
+//        Fragment existingFragment = getChildFragmentManager().findFragmentById(R.id.container_for_citem_fragment);
+//        if (existingFragment != null) {
+//            getChildFragmentManager().beginTransaction().remove(existingFragment).commitNow();
+//        }
         CItemFragment cItemFragment = new CItemFragment();
         Bundle bundle = new Bundle();
         bundle.putString("category", category);
@@ -77,7 +62,6 @@ public class CFragment extends Fragment {
                 .replace(R.id.container_for_citem_fragment, cItemFragment)
                 .commit();
     }
-
 
 
 }
