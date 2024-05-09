@@ -1,17 +1,14 @@
 package com.example.android.fragment;
 
-import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,14 +21,11 @@ import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
-import com.example.android.ui.activity.MainActivity;
 import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
-import com.example.android.ui.adapter.ArticleAdapter;
+import com.example.android.adapter.ArticleAdapter;
 import com.example.android.viewmodel.HomeViewModel;
-import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
-import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 import com.example.no_teacher_andorid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;

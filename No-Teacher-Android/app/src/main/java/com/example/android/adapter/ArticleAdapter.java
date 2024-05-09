@@ -11,19 +11,20 @@ import android.widget.TextView;
 import com.example.android.bean.entity.Article;
 import com.example.no_teacher_andorid.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @Auther : Tcy
- * @Date : Create in 2024/5/6 10:59
- * @Decription:
+ * @Author : Lee
+ * @Date : Created in 2024/5/7 8:11
+ * @Decription :
  */
-public class ArticleAdapter extends ArrayAdapter<Article>{
+
+public class ArticleAdapter extends ArrayAdapter<Article> {
     private Context mContext;
     private int mResource;
 
-    public ArticleAdapter(Context context, int resource,ArrayList<Article> objects) {
-        super(context, resource, objects);
+    public ArticleAdapter(Context context, int resource, List<Article> articles) {
+        super(context, resource, articles);
         mContext = context;
         mResource = resource;
     }
