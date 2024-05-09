@@ -17,7 +17,7 @@ public class CategoryFragmentAdapter extends FragmentStateAdapter {
         this.category = category;
     }
 
-    @NonNull
+
     @Override
     public Fragment createFragment(int position) {
         // 根据位置动态创建CItemFragment并传递数据

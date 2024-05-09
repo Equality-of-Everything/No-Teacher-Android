@@ -20,7 +20,12 @@ public class CItemFragment extends Fragment{
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_c_item, container, false);
+        //获取到当前点击的类别
         String category = getArguments().getString("category");
+        TextView categoryTextView = view.findViewById(R.id.tvDifficulty);
+        if (categoryTextView != null) { // 防止空指针异常
+            categoryTextView.setText(category); // 设置文本内容
+        }
         return view;
     }
 

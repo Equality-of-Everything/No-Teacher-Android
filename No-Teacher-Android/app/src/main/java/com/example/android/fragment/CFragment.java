@@ -49,18 +49,38 @@ public class CFragment extends Fragment {
     }
     //切换子fragment
     private void replaceChildFragment(String category) {
-//        Fragment existingFragment = getChildFragmentManager().findFragmentById(R.id.container_for_citem_fragment);
-//        if (existingFragment != null) {
-//            getChildFragmentManager().beginTransaction().remove(existingFragment).commitNow();
-//        }
-        CItemFragment cItemFragment = new CItemFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("category", category);
-        cItemFragment.setArguments(bundle);
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container_for_citem_fragment, cItemFragment)
-                .commit();
+        // 使用类别名称作为Fragment的tag，便于查找和复用
+        String tag = "CItemFragment_" + category;
+
+        // 尝试从FragmentManager中查找已存在的同Tag的Fragment
+        CItemFragment existingFragment = (CItemFragment) getChildFragmentManager().findFragmentByTag(tag);
+
+        if (existingFragment != null) {
+            // 如果找到了，则更新其参数并显示（如果需要更新参数的话）
+            // 注意：此处假设CItemFragment内部有处理传入参数的方法或逻辑
+            Bundle args = new Bundle();
+            args.putString("category", category);
+            existingFragment.setArguments(args);
+
+            // 如果Fragment尚未添加到UI中，需要执行添加操作
+            if (!existingFragment.isAdded()) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container_for_citem_fragment, existingFragment, tag) // 使用tag
+                        .commit();
+            }
+        } else {
+            // 如果没有找到，则创建新的Fragment实例并设置tag
+            CItemFragment cItemFragment = new CItemFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("category", category);
+            cItemFragment.setArguments(bundle);
+
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_for_citem_fragment, cItemFragment, tag) // 使用tag
+                    .commit();
+        }
     }
 
 
