@@ -42,38 +42,42 @@
         android:layout_below="@+id/TopBar"
         android:layout_above="@+id/buttons_layout" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/back_button"
+            android:layout_marginLeft="20dp"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            app:icon="@drawable/back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
             android:visibility="invisible" />
+        <TextView
+            android:id="@+id/page_number_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="16dp"
+            android:text="Page "
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
 
         <Button
             android:id="@+id/next_button"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/page_number_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttons_layout"
-        android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:text="Page 1"
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
-
+            app:icon="@drawable/next_btn" />
+    </RelativeLayout>
 
 </RelativeLayout>

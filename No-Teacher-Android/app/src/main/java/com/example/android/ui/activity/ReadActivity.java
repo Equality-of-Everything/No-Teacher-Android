@@ -41,9 +41,9 @@ public class ReadActivity extends AppCompatActivity {
 
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_1, "Text 1"));
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_2, "Text 2"));
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_4, "Text 3"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_1, "Angry!","100"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_2, "Sleep!","90"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_4, "I don not want to work!","80"));
 
         pagerAdapter = new ReadTestPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
@@ -82,7 +82,7 @@ public class ReadActivity extends AppCompatActivity {
     }
 
     private void updatePageNumber(int position) {
-        pageNumberTextView.setText("Page " + (position + 1));
+        pageNumberTextView.setText( (position + 1) + "/3");
     }
 
     private void updateButtonVisibility(int position) {
