@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author : Lee
@@ -75,28 +78,6 @@ public class TokenManager {
         }
     }
 
-//    public static void saveServerWordsToSharedPreferences(List<String> words, Context context) {
-//        // 获取SharedPreferences编辑器
-//        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//
-//        // 将列表转换为一个字符串，这里使用逗号分隔每个单词
-//        StringBuilder stringBuilder = new StringBuilder();
-//        // 存储至多8个单词
-//        int count = Math.min(words.size(), 8);
-//        for (int i = 0; i < count; i++) {
-//            stringBuilder.append(words.get(i));
-//            if (i < count - 1) { // 避免在最后一个单词后添加逗号
-//                stringBuilder.append(",");
-//            }
-//        }
-//
-//        // 保存字符串到SharedPreferences
-//        editor.putString("words", stringBuilder.toString());
-//        editor.apply();
-//    }
-
-
     /**
      * @param context:
      * @return List<String>
@@ -117,126 +98,75 @@ public class TokenManager {
     }
 
     /**
+     * @param wordMap:
      * @param context:
-     * @return List<String>
-     * @author Lee
-     * @description 获取已掌握的单词列表
-     * @date 2024/5/7 10:42
-     */
-    public static List<String> getKnownWords(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
-        String wordsString = sharedPreferences.getString("known_words", "");
-        return wordsString.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(wordsString.split(",")));
-    }
-
-    /**
-     * @param context:
-     * @return List<String>
-     * @author Lee
-     * @description 获取未掌握的单词列表
-     * @date 2024/5/7 10:42
-     */
-    public static List<String> getUnknownWords(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
-        String wordsString = sharedPreferences.getString("unknown_words", "");
-        return wordsString.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(wordsString.split(",")));
-    }
-
-    /**
-     * @param words:
-     * @param context:
+     * @param onComplete:
      * @return void
      * @author Lee
-     * @description 存储已掌握的单词列表
-     * @date 2024/5/7 10:43
+     * @description 存一下单词和对应id
+     * @date 2024/5/9 8:33
      */
-    public static void saveKnownWords(List<String> words, Context context) {
+    public static void saveServerWordsAndIds(Map<String, Integer> wordMap, Context context, Runnable onComplete) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("known_words", String.join(",", words));
-        editor.apply();
+
+        // 只取前8个键值对
+        Set<Map.Entry<String, Integer>> entrySet = wordMap.entrySet();
+        int count = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : entrySet) {
+            if (count >= 8) break;  // 确保不超过8个键值对
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(",");
+            }
+            stringBuilder.append(entry.getKey()).append(":").append(entry.getValue());
+            count++;
+        }
+
+        // 保存字符串到 SharedPreferences
+        editor.putString("words", stringBuilder.toString());
+        editor.apply();  // 异步写入
+
+        if (onComplete != null) {
+            onComplete.run();  // 在数据保存后执行回调
+        }
     }
 
     /**
-     * @param words:
      * @param context:
-     * @return void
+     * @return Map<String,Integer>
      * @author Lee
-     * @description 存储未掌握的单词列表
-     * @date 2024/5/7 10:43
+     * @description 取单词和对应的id
+     * @date 2024/5/9 8:34
      */
-    public static void saveUnknownWords(List<String> words, Context context) {
+    public static Map<String, Integer> loadServerWordsIds(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("WordPreferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("unknown_words", String.join(",", words));
-        editor.apply();
-    }
+        String wordsString = sharedPreferences.getString("words", "");
 
-
-    /**
-     * @param word:
-     * @param context:
-     * @return void
-     * @author Lee
-     * @description 将单词添加到已掌握列表中
-     * @date 2024/5/7 10:45
-     */
-    public static void addWordToKnownList(String word, Context context) {
-        List<String> knownWords = getKnownWords(context);
-        List<String> unknownWords = getUnknownWords(context);
-        if (!knownWords.contains(word) && !unknownWords.contains(word)) {
-            knownWords.add(word);
-            saveKnownWords(knownWords, context);
+        Map<String, Integer> wordMap = new HashMap<>();
+        if (!wordsString.isEmpty()) {
+            String[] entries = wordsString.split(",");
+            for (String entry : entries) {
+                String[] parts = entry.split(":");
+                if (parts.length == 2) {
+                    wordMap.put(parts[0], Integer.parseInt(parts[1]));
+                }
+            }
         }
+        return wordMap;
     }
-
-    /**
-     * @param word:
-     * @param context:
-     * @return void
-     * @author Lee
-     * @description 将单词添加到未掌握列表中
-     * @date 2024/5/7 10:45
-     */
-    public static void addWordToUnknownList(String word, Context context) {
-        List<String> knownWords = getKnownWords(context);
-        List<String> unknownWords = getUnknownWords(context);
-        if (!unknownWords.contains(word) && !knownWords.contains(word)) {
-            unknownWords.add(word);
-            saveUnknownWords(unknownWords, context);
-        }
-    }
-
-    /**
-     * @param word:
-     * @param context:
-     * @return void
-     * @author Lee
-     * @description 将单词从已掌握列表中移除
-     * @date 2024/5/7 10:45
-     */
-    public static void removeWordFromKnownList(String word, Context context) {
-        List<String> words = getKnownWords(context);
-        if (words.remove(word)) {
-            saveKnownWords(words, context);
-        }
-    }
-
-    /**
-     * @param word:
-     * @param context:
-     * @return void
-     * @author Lee
-     * @description 将单词从未掌握列表中移除
-     * @date 2024/5/7 10:46
-     */
-    public static void removeWordFromUnknownList(String word, Context context) {
-        List<String> words = getUnknownWords(context);
-        if (words.remove(word)) {
-            saveUnknownWords(words, context);
-        }
-    }
-
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+

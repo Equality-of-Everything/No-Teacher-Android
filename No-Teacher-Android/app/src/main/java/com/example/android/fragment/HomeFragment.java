@@ -1,17 +1,14 @@
 package com.example.android.fragment;
 
-import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,13 +21,11 @@ import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
-import com.example.android.ui.activity.MainActivity;
+import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
-import com.example.android.ui.adapter.ArticleAdapter;
+import com.example.android.adapter.ArticleAdapter;
 import com.example.android.viewmodel.HomeViewModel;
-import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
-import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 import com.example.no_teacher_andorid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
@@ -77,9 +72,23 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnSetDifficult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SelectLevelActivity.class);
+                startActivity(intent);
+            }
+        });
         return binding.getRoot();
     }
 
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 显示推荐文章列表
+     * @date 2024/5/8 14:13
+     */
     private void setupListView() {
         listView = binding.getRoot().findViewById(R.id.list_article);
         viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles -> {

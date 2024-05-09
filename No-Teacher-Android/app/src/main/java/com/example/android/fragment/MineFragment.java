@@ -5,9 +5,11 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.MainActivity;
+import com.example.android.ui.activity.UserRegisterActivity;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
@@ -27,7 +30,6 @@ import java.util.ArrayList;
  * @Decription:
  */
 public class MineFragment extends Fragment {
-
     private RecyclerView recyclerView;
 
     @SuppressLint("MissingInflatedId")
@@ -64,6 +66,17 @@ public class MineFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+        Button btnEdit = view.findViewById(R.id.button_edit);
+        if (btnEdit != null) {
+            btnEdit.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), UserRegisterActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            Log.e("MineFragment", "Button not found");
+        }
+
         return view;
     }
+
 }

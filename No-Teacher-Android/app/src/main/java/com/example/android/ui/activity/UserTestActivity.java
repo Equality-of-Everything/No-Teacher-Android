@@ -21,6 +21,7 @@ import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class UserTestActivity extends AppCompatActivity {
 
@@ -53,6 +54,9 @@ public class UserTestActivity extends AppCompatActivity {
 
         setupButtonListeners();
         viewModel.fetchWords(this); // 获取第一页单词
+        viewModel.getCurrentPageLiveData().observe(this, page -> {
+            binding.wordPageText.setText("第"+(page*8+1)+"~"+(page+1)*8+"单词");
+        });
     }
 
     private void setupButtonListeners() {
@@ -61,20 +65,14 @@ public class UserTestActivity extends AppCompatActivity {
             btn.setSelected(!btn.isSelected());
             //根据按钮状态处理单词的掌握情况
 
-            try {
-                int wordId = Arrays.asList(binding.firstBtn, binding.secondBtn, binding.threeBtn, binding.fourBtn,
-                        binding.fiveBtn, binding.sixBtn, binding.sevenBtn, binding.eightBtn).indexOf(btn) + 1;
-                wordId += (viewModel.getCurrentPage() - 1)*8;
+            String word = btn.getText().toString();
+            Log.e("UserTestActivity", "word: " + word);
 
-                Log.e("UserTestActivity", "wordId: " + wordId);
-
-                if (btn.isSelected()) {
-                    knowWordsList.add(wordId);
-                } else {
-                    unknowWordsList.add(wordId);
-                }
-            } catch (NumberFormatException e) {
-                Log.e("UserTestActivity", "Failed to parse word ID from button text", e);
+            Map<String, Integer> wordAndId = TokenManager.loadServerWordsIds(this);
+            if(btn.isSelected()) {
+                knowWordsList.add(wordAndId.get(word));
+            } else {
+                unknowWordsList.add(wordAndId.get(word));
             }
         };
 
@@ -115,6 +113,7 @@ public class UserTestActivity extends AppCompatActivity {
      */
     private void showCompletionDialog() {
         int cnt = knowWordsList.size();
+        sendWordTestResultToServer(unknowWordsList, knowWordsList);
         new AlertDialog.Builder(this)
                 .setTitle("测试完成")  // 设置对话框标题
                 .setMessage("你已完成所有测试。已经掌握" + cnt + "个单词")  // 设置对话框显示的文本
@@ -124,6 +123,10 @@ public class UserTestActivity extends AppCompatActivity {
                 })
                 .setCancelable(false)  // 设置对话框不可取消，防止用户点击外部取消对话框
                 .show();  // 显示对话框
+    }
+
+    private void sendWordTestResultToServer(List<Integer> unknowWordsList, List<Integer> knowWordsList) {
+        viewModel.sendTestResultToServer(this, unknowWordsList, knowWordsList);
     }
 
     /**

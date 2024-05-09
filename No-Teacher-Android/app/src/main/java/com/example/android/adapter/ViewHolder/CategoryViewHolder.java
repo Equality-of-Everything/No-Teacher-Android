@@ -1,6 +1,7 @@
 package com.example.android.adapter.ViewHolder;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,5 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder{
     public CategoryViewHolder(@NonNull View itemView) {
         super(itemView);
         categoryNameTextView = itemView.findViewById(R.id.cbLibraryLeft);
-
     }
 }
