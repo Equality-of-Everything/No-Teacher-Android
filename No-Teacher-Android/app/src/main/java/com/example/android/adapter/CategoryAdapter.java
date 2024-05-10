@@ -13,12 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.adapter.ViewHolder.CategoryViewHolder;
 import com.example.no_teacher_andorid.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{
     private Context context;
     private List<String> categories;
     private OnItemClickListener mListener;
+    //是否选择
+    private int selectedPosition = -1;
 
     // 定义一个接口用于处理item点击事件
     public interface OnItemClickListener {
@@ -31,6 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{
     public CategoryAdapter(Context context, List<String> categories) {
         this.context = context;
         this.categories = categories;
+
     }
 
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,11 +46,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         String category = categories.get(position);
         holder.categoryNameTextView.setText(category);
+        holder.itemView.setSelected( position == selectedPosition);
         holder.itemView.setOnClickListener(v ->{
+            int currentPosition = holder.getAdapterPosition();
+            if (selectedPosition == currentPosition) {
+                // 如果点击的是已选中的项，则取消选中并重置selectedPosition
+                selectedPosition = -1;
+            } else {
+                selectedPosition = currentPosition;
+            }
+            // 通知数据集变更，重新绑定所有ViewHolder
+            notifyDataSetChanged();
             if(mListener != null){
-                mListener.onItemClick(categories.get(position));
+                mListener.onItemClick(categories.get(currentPosition));
             }else {
-                Log.d("CategoryAdapter", "mListener is null"+ position);
+                Log.d("CategoryAdapter", "mListener is null"+ currentPosition);
             }
         });
     }

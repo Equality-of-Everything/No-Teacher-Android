@@ -33,15 +33,17 @@ public class CFragment extends Fragment {
                 "精选阅读","人工智能","前沿技术","太空宇宙","生物医疗","自然科学",
                 "环境生态","历史文化","艺术文学","休闲生活","社会现象","成长教育",
                 "心理感情"));
-        //连接子fragment的adapter
+        //连接子fragment的adapter,
         viewPager2.setAdapter(new CategoryFragmentAdapter(getChildFragmentManager(),getViewLifecycleOwner().getLifecycle(),categoryList));
         viewPager2.setUserInputEnabled(false);
+        //左列表adapter
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         categoryAdapter.setOnItemClickListener(category -> {
             Log.d("CFragment", "onItemClick: " + category);
             int position = categoryList.indexOf(category);
             replaceChildFragment(position);
+            //
         });
         recyclerView.setAdapter(categoryAdapter);
         return view;
