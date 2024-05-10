@@ -44,12 +44,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{
         holder.categoryNameTextView.setText(category);
         holder.itemView.setOnClickListener(v ->{
             if(mListener != null){
-                mListener.onItemClick(category);
+                mListener.onItemClick(categories.get(position));
             }else {
                 Log.d("CategoryAdapter", "mListener is null"+ position);
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return categories.size();
