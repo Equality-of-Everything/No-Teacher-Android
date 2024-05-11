@@ -1,5 +1,7 @@
 package com.example.android.ui.activity;
 
+import static com.example.android.util.TokenManager.printAllSharedPreferences;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -65,10 +67,12 @@ public class UserTestActivity extends AppCompatActivity {
             btn.setSelected(!btn.isSelected());
             //根据按钮状态处理单词的掌握情况
 
+            printAllSharedPreferences(this);
             String word = btn.getText().toString();
             Log.e("UserTestActivity", "word: " + word);
 
-            Map<String, Integer> wordAndId = TokenManager.loadServerWordsIds(this);
+            Map<String, Integer> wordAndId = TokenManager.loadWordsAndIds(this);
+            Log.e("UserTestActivity", "wordId: " + wordAndId.get(word));
             if(btn.isSelected()) {
                 knowWordsList.add(wordAndId.get(word));
             } else {

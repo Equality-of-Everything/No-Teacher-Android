@@ -14,12 +14,10 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.ui.activity.ImageViewActivity;
-import com.example.android.ui.activity.MainActivity;
-import com.example.android.ui.activity.UserRegisterActivity;
+import com.example.android.ui.activity.UserEditActivity;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
@@ -69,7 +67,7 @@ public class MineFragment extends Fragment {
         Button btnEdit = view.findViewById(R.id.button_edit);
         if (btnEdit != null) {
             btnEdit.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), UserRegisterActivity.class);
+                Intent intent = new Intent(getActivity(), UserEditActivity.class);
                 startActivity(intent);
             });
         } else {

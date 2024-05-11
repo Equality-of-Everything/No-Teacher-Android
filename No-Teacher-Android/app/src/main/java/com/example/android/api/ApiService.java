@@ -40,9 +40,18 @@ public interface ApiService {
     @GET("word/getWords")
     Call<BaseResponse<List<WordDetail>>> getWords(@Query("currentPage") int currentPage);
 
-    // 将测试结果发送给我服务端
+    // 将测试结果发送给服务端
     @POST("userLevel/insertData")
     Call<BaseResponse<Void>> sendTestResultToServer(@QueryMap HashMap<String, String> params);
+
+    //上传头像
+    @POST("userInfo/updateAvatar")
+    Call<BaseResponse<Void>> uploadAvatar(@QueryMap HashMap<String, String> params);
+
+    //更新个人资料
+    @POST("userInfo/addUser")
+    Call<BaseResponse<Void>> sendNewUserInfo(@QueryMap HashMap<String, String> params);
+
 }
 
 

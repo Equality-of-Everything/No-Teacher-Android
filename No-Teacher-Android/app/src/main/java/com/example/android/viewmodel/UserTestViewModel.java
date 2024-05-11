@@ -3,8 +3,8 @@ package com.example.android.viewmodel;
 
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 import static com.example.android.util.TokenManager.loadServerWordsFromSharedPreferences;
-import static com.example.android.util.TokenManager.saveServerWordsAndIds;
 import static com.example.android.util.TokenManager.saveServerWordsToSharedPreferences;
+import static com.example.android.util.TokenManager.saveWordsAndIds;
 
 import android.content.Context;
 import android.util.Log;
@@ -138,7 +138,8 @@ public class UserTestViewModel extends ViewModel {
                             for(WordDetail wordDetail : data) {
                                 wordMap.put(wordDetail.getWord(), wordDetail.getId());
                             }
-                            saveServerWordsAndIds(wordMap, context, null);
+                            saveWordsAndIds(wordMap, context);
+
 
                             // 保存数据到 SharedPreferences 并在保存完成后加载数据
                             saveServerWordsToSharedPreferences(words, context, () -> {
