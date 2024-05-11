@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +18,7 @@ import java.util.List;
 public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder>{
     private Context context;
     private List<String> difficultyItems;
-    private CategoryAdapter.OnItemClickListener mListener;
+    private OnDifficultyItemClickListener mListener;
     //是否选择
     private int selectedPosition = -1;
 
@@ -26,6 +27,12 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
         this.difficultyItems = difficultyItems;
     }
 
+    public interface OnDifficultyItemClickListener {
+        void onDifficultyItemClick(int position, String difficulty);
+    }
+    public void setOnItemClickListener(OnDifficultyItemClickListener listener) {
+        mListener = listener;
+    }
     @NonNull
     @Override
     public DifficultyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,6 +45,11 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
         String difficulty = difficultyItems.get(position);
         holder.cbLibraryDifficulty.setText(difficulty);
         //点击事件
+        holder.itemView.setOnClickListener(view -> {
+            if (mListener != null) {
+                mListener.onDifficultyItemClick(position, difficulty);
+            }
+        });
     }
 
     @Override

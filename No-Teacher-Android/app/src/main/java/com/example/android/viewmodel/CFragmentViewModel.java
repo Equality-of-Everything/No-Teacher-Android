@@ -36,7 +36,6 @@ public class CFragmentViewModel extends ViewModel {
         articles.add(new Article(R.drawable.friend_item, "标题1", "难度600","200字","人工智能"));
         articles.add(new Article(R.drawable.friend_item, "标题2", "难度600","210字","人工智能"));
         articles.add(new Article(R.drawable.friend_item, "标题3", "难度600","201字","人工智能"));
-
         // 更新LiveData对象，这将通知观察者数据已改变
         articlesLiveData.postValue(articles);
     }
