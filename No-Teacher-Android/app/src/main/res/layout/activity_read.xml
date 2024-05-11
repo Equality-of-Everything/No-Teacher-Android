@@ -1,83 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:context="com.example.android.ui.activity.ReadActivity">
 
-    <Toolbar
-        android:id="@+id/TopBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
-        <ImageView
-            android:id="@+id/test_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:background="@drawable/back"
-            />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:text="Angry"/>
-
-    </Toolbar>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/TopBar"
-        android:layout_above="@+id/buttons_layout" />
-
-    <RelativeLayout
-        android:id="@+id/buttons_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/back_button"
-            android:layout_marginLeft="20dp"
-            style="?attr/materialIconButtonFilledTonalStyle"
-            app:icon="@drawable/back_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/page_number_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:padding="16dp"
-            android:text="Page "
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-
-        <Button
-            android:id="@+id/next_button"
-            android:layout_alignParentRight="true"
+            android:layout_width="match_parent"
+            android:text="Title"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            style="?attr/materialIconButtonFilledTonalStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/next_btn" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"></TextView>
 
-</RelativeLayout>
+        <ImageView
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:src="@drawable/img"
+            android:layout_height="200dp"></ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="正文"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"></TextView>
+
+<!--        问题-->
+
+
+    </LinearLayout>
+</ScrollView>

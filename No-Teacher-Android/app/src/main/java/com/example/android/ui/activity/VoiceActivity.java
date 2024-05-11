@@ -1,51 +1,51 @@
-package com.example.android.fragment;
+package com.example.android.ui.activity;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.example.android.adapter.ReadTestPagerAdapter;
+import com.example.android.fragment.ReadTestPagerFragment;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Auther : Tcy
- * @Date : Create in 2024/4/24 15:19
- * @Decription:
- */
-public class BFragment extends Fragment {
+public class VoiceActivity extends AppCompatActivity {
+
     private ViewPager viewPager;
     private Button nextButton;
     private Button backButton;
     private TextView pageNumberTextView;
     private ReadTestPagerAdapter pagerAdapter;
 
+    @SuppressLint("MissingInflatedId")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_b, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_voice);
 
-        viewPager = view.findViewById(R.id.view_pager);
-        nextButton = view.findViewById(R.id.next_button);
-        backButton = view.findViewById(R.id.back_button);
-        pageNumberTextView = view.findViewById(R.id.page_number_text_view);
+
+
+        viewPager = findViewById(R.id.view_pager);
+        nextButton = findViewById(R.id.next_button);
+        backButton = findViewById(R.id.back_button);
+        pageNumberTextView = findViewById(R.id.page_number_text_view);
+
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_1, "Angry!", "100"));
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_2, "Sleep!", "90"));
-        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_4, "I don't want to work!", "80"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_1, "Angry!","100"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_2, "Sleep!","90"));
+        fragments.add(ReadTestPagerFragment.newInstance(R.drawable.img_4, "I don not want to work!","80"));
 
-        pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), fragments);
+        pagerAdapter = new ReadTestPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
 
         nextButton.setOnClickListener(v -> nextPage());
@@ -54,9 +54,8 @@ public class BFragment extends Fragment {
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return false;
+                return true;
             }
-
         });
 
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -66,8 +65,6 @@ public class BFragment extends Fragment {
                 updateButtonVisibility(position);
             }
         });
-
-        return view;
     }
 
     private void nextPage() {
@@ -85,11 +82,12 @@ public class BFragment extends Fragment {
     }
 
     private void updatePageNumber(int position) {
-        pageNumberTextView.setText((position + 1) + "/3");
+        pageNumberTextView.setText( (position + 1) + "/3");
     }
 
     private void updateButtonVisibility(int position) {
         backButton.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
         nextButton.setVisibility(position == pagerAdapter.getCount() - 1 ? View.INVISIBLE : View.VISIBLE);
     }
+
 }

@@ -61,7 +61,7 @@ public class ReadTestPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_read_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
 
         ImageView imageView = view.findViewById(R.id.imageView);
         TextView textView1 = view.findViewById(R.id.textView);
@@ -118,4 +118,6 @@ public class ReadTestPagerFragment extends Fragment {
             mTTS.shutdown();
         }
     }
+
+
 }
