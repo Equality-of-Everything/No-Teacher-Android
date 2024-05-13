@@ -7,9 +7,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @Author : Lee
@@ -20,6 +22,8 @@ import java.util.Set;
 public class TokenManager {
     private static final String TOKEN_PREFS = "TokenPrefs";
     private static final String USER_ID = "userId";
+    private static final String PREFS_NAME = "WordIdPreferences";
+    private static final String KEY_WORD_IDS = "wordIds";
 
     /**
      * @param context:
@@ -97,6 +101,63 @@ public class TokenManager {
             return new ArrayList<>(); // 如果没有数据，返回空列表
         }
     }
+
+    /**
+     * @param newWordIds:
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 存储单词id
+     * @date 2024/5/13 17:26
+     */
+    public static void SaveALLWordIds(List<Integer> newWordIds, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // 加载现有的单词ID
+        List<Integer> existingWordIds = loadALLWordIds(context);
+        HashSet<Integer> allWordIds = new HashSet<>(existingWordIds); // 使用HashSet避免重复
+
+        // 添加新的单词ID
+        for (Integer wordId : newWordIds) {
+            allWordIds.add(wordId);
+            if (allWordIds.size() == 100) {
+                break; // 达到最大容量，不再添加
+            }
+        }
+
+        // 将更新后的单词ID列表转回字符串格式
+        String wordIdsString = allWordIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        // 保存更新后的单词ID列表到SharedPreferences
+        editor.putString(KEY_WORD_IDS, wordIdsString);
+        editor.apply();  // 异步写入
+    }
+
+    /**
+     * @param context:
+     * @return List<Integer>
+     * @author Lee
+     * @description 加载所有单词id
+     * @date 2024/5/13 17:30
+     */
+
+    public static List<Integer> loadALLWordIds(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String wordIdsString = sharedPreferences.getString(KEY_WORD_IDS, "");
+
+        // 将字符串分割成单词ID列表
+        if (!wordIdsString.isEmpty()) {
+            return Arrays.stream(wordIdsString.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>(); // 如果没有数据，返回空列表
+        }
+    }
+
 
     /**
      * @param wordMap:

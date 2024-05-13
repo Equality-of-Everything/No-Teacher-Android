@@ -19,7 +19,6 @@ import com.example.android.util.GsonUtils;
 import com.example.android.util.TokenManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,17 +128,21 @@ public class UserTestViewModel extends ViewModel {
                     public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             List<WordDetail> data = response.body().getData();
+                            Log.e("WordResponse", "data :" + response.body().getData());
                             List<String> words = new ArrayList<>();
+                            List<Integer> ids = new ArrayList<>();
                             for (WordDetail wordDetail : data) {
                                 words.add(wordDetail.getWord());
+                                ids.add(wordDetail.getId());
                             }
+
 
                             Map<String, Integer> wordMap = new HashMap<>();
                             for(WordDetail wordDetail : data) {
                                 wordMap.put(wordDetail.getWord(), wordDetail.getId());
                             }
                             saveWordsAndIds(wordMap, context);
-
+                            TokenManager.SaveALLWordIds(ids, context);
 
                             // 保存数据到 SharedPreferences 并在保存完成后加载数据
                             saveServerWordsToSharedPreferences(words, context, () -> {
