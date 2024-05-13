@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.adapter.ViewHolder.CategoryViewHolder;
 import com.example.no_teacher_andorid.R;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{

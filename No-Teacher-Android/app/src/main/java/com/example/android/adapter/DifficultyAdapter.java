@@ -1,15 +1,13 @@
 package com.example.android.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.android.adapter.ViewHolder.CategoryViewHolder;
 import com.example.android.adapter.ViewHolder.DifficultyViewHolder;
 import com.example.no_teacher_andorid.R;
 
@@ -19,6 +17,7 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
     private Context context;
     private List<String> difficultyItems;
     private OnDifficultyItemClickListener mListener;
+
     //是否选择
     private int selectedPosition = -1;
 
@@ -28,7 +27,7 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
     }
 
     public interface OnDifficultyItemClickListener {
-        void onDifficultyItemClick(int position, String difficulty);
+        void onDifficultyItemClick(String difficulty);
     }
     public void setOnItemClickListener(OnDifficultyItemClickListener listener) {
         mListener = listener;
@@ -45,9 +44,21 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
         String difficulty = difficultyItems.get(position);
         holder.cbLibraryDifficulty.setText(difficulty);
         //点击事件
-        holder.itemView.setOnClickListener(view -> {
-            if (mListener != null) {
-                mListener.onDifficultyItemClick(position, difficulty);
+        holder.itemView.setSelected( position == selectedPosition);
+        holder.itemView.setOnClickListener(v ->{
+            int currentPosition = holder.getAdapterPosition();
+            if (selectedPosition == currentPosition) {
+                // 如果点击的是已选中的项，则取消选中并重置selectedPosition
+                selectedPosition = -1;
+            } else {
+                selectedPosition = currentPosition;
+            }
+            // 通知数据集变更，重新绑定所有ViewHolder
+            notifyDataSetChanged();
+            if(mListener != null){
+                mListener.onDifficultyItemClick(difficultyItems.get(currentPosition));
+            }else {
+                Log.d("CategoryAdapter", "mListener is null"+ currentPosition);
             }
         });
     }

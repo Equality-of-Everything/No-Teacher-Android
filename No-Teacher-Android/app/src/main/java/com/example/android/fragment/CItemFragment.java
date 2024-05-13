@@ -1,14 +1,12 @@
 package com.example.android.fragment;
 
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,13 +17,10 @@ import com.example.android.adapter.ArticleAdapter;
 import com.example.android.adapter.DifficultyAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
-import com.example.android.ui.activity.UserTestActivity;
-import com.example.android.viewmodel.CFragmentViewModel;
 
+import com.example.android.viewmodel.HomeViewModel;
 import com.example.no_teacher_andorid.R;
-import com.example.no_teacher_andorid.databinding.FragmentCBinding;
 import com.example.no_teacher_andorid.databinding.FragmentCItemBinding;
-import com.example.no_teacher_andorid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +30,7 @@ public class CItemFragment extends Fragment{
     private ListView articleRV;
     private ArticleAdapter adapter;
     private FragmentCItemBinding binding;
-    private CFragmentViewModel viewModel;
+    private HomeViewModel viewModel;
     public static CItemFragment newInstance(String category) {
         CItemFragment fragment = new CItemFragment();
         Bundle args = new Bundle();
@@ -45,7 +40,7 @@ public class CItemFragment extends Fragment{
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_c_item, container, false);
-        viewModel = new ViewModelProvider(this).get(CFragmentViewModel.class);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         //设置文章列表
         setupArticle();
         ApiService apiService = RetrofitManager.getInstance(getActivity(),WORD_SERVICE).getApi(ApiService.class);
@@ -70,7 +65,9 @@ public class CItemFragment extends Fragment{
         //设置水平布局
         difficultyRV.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         //设置点击事件
-        difficultyadapter.setOnItemClickListener((position, difficulty) -> Log.d("DifficultyAdapter", "onDifficultyItemClick: " + difficulty));
+        difficultyadapter.setOnItemClickListener((difficulty) ->
+                Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " + category + ", 难度 - " +difficulty)
+        );
         //设置适配器
         difficultyRV.setAdapter(difficultyadapter);
         return binding.getRoot();

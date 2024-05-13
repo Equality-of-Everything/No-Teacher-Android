@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import androidx.databinding.BindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +38,7 @@ public class CFragment extends Fragment {
         CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(), categoryList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         categoryAdapter.setOnItemClickListener(category -> {
+            //替换子fragment
             Log.d("CFragment", "onItemClick: " + category);
             int position = categoryList.indexOf(category);
             replaceChildFragment(position);
