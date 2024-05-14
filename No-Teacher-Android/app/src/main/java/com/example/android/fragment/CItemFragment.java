@@ -80,7 +80,7 @@ public class CItemFragment extends Fragment{
         articleRV = binding.getRoot().findViewById(R.id.contentRV);
         viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles -> {
             if (articles != null) {
-                adapter = new ArticleAdapter(getActivity(), R.layout.item_list_article, articles);
+                adapter = new ArticleAdapter(getActivity(), R.layout.citem_list_article, articles);
                 //设置适配器
                 articleRV.setAdapter(adapter);
             }

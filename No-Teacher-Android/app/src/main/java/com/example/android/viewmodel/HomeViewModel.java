@@ -83,7 +83,6 @@ public class HomeViewModel extends ViewModel {
                             Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
                         Log.e("HomeFragment-Error", "Network-Error");
@@ -184,14 +183,42 @@ public class HomeViewModel extends ViewModel {
                             articlesLiveData.postValue(articles);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
                         Log.e("HomeViewModel-fetchArticles", "Network-Error");
                     }
                 });
-
     }
 
+
+//    /**
+//     *
+//     * @param context
+//     * @param category
+//     * @param difficulty
+//     * @param currentPage
+//     */
+//    public void fetchArticlesByCategoryAndDifficulty(Context context, String category, String difficulty, int currentPage) {
+//        RetrofitManager.getInstance(context, WORD_SERVICE)
+//                .getApi(ApiService.class)
+//                .getArticlesByCategoryAndDifficulty(category, difficulty, currentPage) // 确保此方法在ApiService中已定义
+//                .enqueue(new Callback<BaseResponse<List<Article>>>() {
+//                    @Override
+//                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
+//                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+//                            List<Article> articles = response.body().getData();
+//                            // 更新LiveData对象，通知观察者数据已更新
+//                            articlesLiveData.postValue(articles);
+//                        } else {
+//                            Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Request failed with status code: " + response.code());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
+//                        Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Network or unexpected error: " + t.getMessage());
+//                    }
+//                });
+//    }
 
 }
