@@ -4,6 +4,7 @@ plugins {
 
 android {
     namespace 'com.example.no_teacher_andorid'
+    sourceSets.main.jniLibs.srcDirs = ['libs']
     compileSdk 33
 
     defaultConfig {
@@ -23,8 +24,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     //启用数据绑定
@@ -64,6 +65,15 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+
+    implementation files('libs/YoudaoBase_v20230803.jar')
+    implementation files('libs/online_auth.jar')
+    implementation files('libs/zhiyun_offline_common.jar')
+    implementation files('libs/YoudaoTranslateOnline_v2.0.1.jar')
+    implementation files('libs/YoudaoCnDictOffline.jar')
+    implementation files('libs/YoudaoTranslateOffline.jar')
 
 
 
