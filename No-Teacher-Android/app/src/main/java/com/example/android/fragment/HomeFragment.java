@@ -8,9 +8,11 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,9 +21,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.Article;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.MainActivity;
@@ -36,6 +40,7 @@ import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 import com.example.no_teacher_andorid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Auther : Tcy
@@ -49,6 +54,11 @@ public class HomeFragment extends Fragment {
     private ArticleAdapter adapter;
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
+
+    private SwipeRefreshLayout swipeRefreshLayout;//用于下拉刷新的控件
+    private List<Article> articles = new ArrayList<>();
+    private View footerView;
+
     private int currentPage = 0;
     private int lexile = 110;
 
@@ -70,8 +80,10 @@ public class HomeFragment extends Fragment {
         });;
 
         // 设置 RecyclerView 和适配器
+        //设置ListView和SwipeRefreshLayout以实现下拉上拉刷新数据
         setupRecyclerView();
         setupListView();
+        setupSwipeRefreshLayout();
 
         ApiService apiService = RetrofitManager.getInstance(getActivity(),WORD_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
@@ -102,6 +114,41 @@ public class HomeFragment extends Fragment {
      * @param :
      * @return void
      * @author Lee
+     * @description 设置刷新监听器
+     * @date 2024/5/14 9:43
+     */
+    private void setupSwipeRefreshLayout() {
+        swipeRefreshLayout = binding.swipeRefresh;
+        swipeRefreshLayout.setOnRefreshListener(() -> loadData(true));
+    }
+
+    /**
+     * @param isRefresh:
+     * @return void
+     * @author Lee
+     * @description 向后端请求更多数据
+     * @date 2024/5/14 9:31
+     */
+    private void loadData(boolean isRefresh) {
+        int targetPage = isRefresh ? currentPage : currentPage + 1;
+
+        viewModel.fetchArticles(getActivity(), lexile, currentPage);
+        viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles1 -> {
+            if(isRefresh) {
+                adapter.addMoreArticle(articles);
+            } else {
+                adapter.addMoreArticle(articles);
+                currentPage = targetPage; //更新当前页码
+            }
+            swipeRefreshLayout.setRefreshing(false);
+        });
+    }
+
+
+    /**
+     * @param :
+     * @return void
+     * @author Lee
      * @description 显示推荐文章列表
      * @date 2024/5/8 14:13
      */
@@ -111,6 +158,21 @@ public class HomeFragment extends Fragment {
             if (articles != null) {
                 adapter = new ArticleAdapter(getActivity(), R.layout.item_list_article, articles);
                 listView.setAdapter(adapter);
+            }
+        });
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                //检查是否到达了底部
+                if(scrollState == SCROLL_STATE_IDLE && listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1) {
+                    loadData(false);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
             }
         });
         viewModel.fetchArticles(getActivity(),lexile,currentPage); // ViewModel method to load articles data

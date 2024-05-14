@@ -15,12 +15,13 @@ import com.example.no_teacher_andorid.R;
 import java.util.List;
 
 /**
- * @Author : Lee
+ * @Author : Tcy
  * @Date : Created in 2024/5/7 8:11
  * @Decription :
  */
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
+    private List<Article> articles;
     private Context mContext;
     private int  mResource;
 
@@ -28,6 +29,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         super(context, resource, articles);
         mContext = context;
         mResource = resource;
+        this.articles = articles;
     }
 
     @Override
@@ -67,5 +69,23 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         TextView textView3;
 
         TextView textView4;
+    }
+
+    /**
+     * @param item:
+     * @return void
+     * @author Lee
+     * @description 添加新的文章数据
+     * @date 2024/5/14 9:12
+     */
+    public void addMoreArticle(List<Article> item) {
+        this.articles.addAll(item);
+        notifyDataSetChanged();
+    }
+
+    public void refreshItems(List<Article> item) {
+        this.articles.clear();
+        this.articles.addAll(item);
+        notifyDataSetChanged();
     }
 }

@@ -1,7 +1,7 @@
 package com.example.android.bean.entity;
 
 /**
- * @Author : Lee
+ * @Author : Zhang
  * @Date : Created in 2024/5/7 8:19
  * @Decription :
  */

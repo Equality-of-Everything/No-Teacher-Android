@@ -137,6 +137,7 @@ public class UserTestViewModel extends ViewModel {
                             for (WordDetail wordDetail : data) {
                                 words.add(wordDetail.getWord());
                                 ids.add(wordDetail.getId());
+                                Log.e("vm", "word :" + wordDetail.getId() + " " + wordDetail.getWord());
                             }
 
 
