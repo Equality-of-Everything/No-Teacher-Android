@@ -1,14 +1,17 @@
 package com.example.android.fragment;
 
+import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,11 +24,15 @@ import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
+import com.example.android.ui.activity.MainActivity;
 import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.adapter.ArticleAdapter;
+import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.HomeViewModel;
+import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
+import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 import com.example.no_teacher_andorid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
@@ -43,6 +50,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
     private int currentPage = 0;
+    private int lexile = 110;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,8 +58,16 @@ public class HomeFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
+
         // 正确范围的 ViewModel
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        viewModel.isTest(getContext(), TokenManager.getUserId(getContext()));
+        viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
+            if (isTest) {
+                binding.btnTest.setEnabled(false);
+            }
+        });;
 
         // 设置 RecyclerView 和适配器
         setupRecyclerView();
@@ -97,7 +113,7 @@ public class HomeFragment extends Fragment {
                 listView.setAdapter(adapter);
             }
         });
-        viewModel.fetchArticles(); // ViewModel method to load articles data
+        viewModel.fetchArticles(getActivity(),lexile,currentPage); // ViewModel method to load articles data
     }
 
     private void setupRecyclerView() {

@@ -31,6 +31,8 @@ public class CItemFragment extends Fragment{
     private ArticleAdapter adapter;
     private FragmentCItemBinding binding;
     private HomeViewModel viewModel;
+    private int lexile = 110;
+    private int currentPage = 0;
     public static CItemFragment newInstance(String category) {
         CItemFragment fragment = new CItemFragment();
         Bundle args = new Bundle();
@@ -83,6 +85,6 @@ public class CItemFragment extends Fragment{
                 articleRV.setAdapter(adapter);
             }
         });
-        viewModel.fetchArticles();
+        viewModel.fetchArticles(getActivity(),lexile,currentPage);
     }
 }

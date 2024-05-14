@@ -2,8 +2,10 @@ package com.example.android.api;
 
 import com.example.android.bean.EmailRequest;
 import com.example.android.bean.RegisterRequest;
+import com.example.android.bean.entity.Article;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
+import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
@@ -18,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
@@ -40,7 +43,7 @@ public interface ApiService {
     @GET("word/getWords")
     Call<BaseResponse<List<WordDetail>>> getWords(@Query("currentPage") int currentPage);
 
-    // 将测试结果发送给服务端
+    // 将测试结果发送给我服务端
     @POST("userLevel/insertData")
     Call<BaseResponse<Void>> sendTestResultToServer(@QueryMap HashMap<String, String> params);
 
@@ -52,6 +55,11 @@ public interface ApiService {
     @POST("userInfo/addUser")
     Call<BaseResponse<Void>> sendNewUserInfo(@QueryMap HashMap<String, String> params);
 
+    @GET("userLevel/{userId}")
+    Call<BaseResponse<UserLevel>> isTest(@Path("userId") String userId);
+
+    @GET("article/{lexile}/{currentPage}")
+    Call<BaseResponse<List<Article>>> getArticles(@Path("lexile") int lexile, @Path("currentPage") int currentPage);
 }
 
 

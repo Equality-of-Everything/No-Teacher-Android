@@ -33,9 +33,11 @@ public class CFragmentViewModel extends ViewModel {
         // 模拟数据加载或从网络获取数据
         // 这里以模拟数据为例
         ArrayList<Article> articles = new ArrayList<>();
-        articles.add(new Article(R.drawable.friend_item, "标题1", "难度600","200字","人工智能"));
-        articles.add(new Article(R.drawable.friend_item, "标题2", "难度600","210字","人工智能"));
-        articles.add(new Article(R.drawable.friend_item, "标题3", "难度600","201字","人工智能"));
+        String cover = "http://shiqu-img.qn.zhilehuo.com/advEnglish/img/formal/z863633071_The_Food_Chain_--ar_43_--niji_5_7fed0c63-53a0-4435-832c-1e36d1cc417f_3.png";
+        articles.add(new Article(cover, "标题1", 600,200,"人工智能"));
+        articles.add(new Article(cover, "标题1", 600,200,"人工智能"));
+        articles.add(new Article(cover, "标题1", 600,200,"人工智能"));
+        articles.add(new Article(cover, "标题1", 600,200,"人工智能"));
         // 更新LiveData对象，这将通知观察者数据已改变
         articlesLiveData.postValue(articles);
     }

@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.android.util.TokenManager;
+import com.example.android.viewmodel.EmailVerifyViewModel;
 import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
@@ -133,6 +135,7 @@ public class UserTestActivity extends AppCompatActivity {
                 .setTitle("测试完成")
                 .setMessage("你已完成所有测试。已经掌握" + cnt + "个单词")
                 .setPositiveButton("确定", (dialog, which) -> {
+                    // 用户点击确定按钮的处理逻辑
                     returnToMainActivity();
                 })
                 .setCancelable(false)

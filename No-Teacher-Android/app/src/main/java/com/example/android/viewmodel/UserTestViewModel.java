@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
@@ -47,6 +48,8 @@ public class UserTestViewModel extends ViewModel {
     public MutableLiveData<Boolean> getTestCompleteLiveData() {
         return testCompleteLiveData;
     }
+
+
 
     //获取当前页码
     public int getCurrentPage() {
@@ -143,6 +146,7 @@ public class UserTestViewModel extends ViewModel {
                             }
                             saveWordsAndIds(wordMap, context);
                             TokenManager.SaveALLWordIds(ids, context);
+
 
                             // 保存数据到 SharedPreferences 并在保存完成后加载数据
                             saveServerWordsToSharedPreferences(words, context, () -> {

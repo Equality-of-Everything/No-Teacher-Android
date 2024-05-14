@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.bean.entity.Article;
 import com.example.no_teacher_andorid.R;
 
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
     private Context mContext;
-    private int mResource;
+    private int  mResource;
 
     public ArticleAdapter(Context context, int resource, List<Article> articles) {
         super(context, resource, articles);
@@ -48,11 +49,11 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         Article item = getItem(position);
 
         if (item != null) {
-            viewHolder.imageView.setImageResource(item.getImageResource());
+            Glide.with(mContext).load(item.getCover()).into(viewHolder.imageView);
             viewHolder.textView1.setText(item.getTitle());
-            viewHolder.textView2.setText(item.getLevel());
-            viewHolder.textView3.setText(item.getWordCount());
-            viewHolder.textView4.setText(item.getBadge());
+            viewHolder.textView2.setText("难度："+item.getLexile());
+            viewHolder.textView3.setText(item.getWordNum()+"词");
+            viewHolder.textView4.setText(item.getType());
         }
 
         return convertView;
