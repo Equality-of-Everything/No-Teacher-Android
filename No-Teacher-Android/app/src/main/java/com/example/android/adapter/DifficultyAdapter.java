@@ -15,19 +15,19 @@ import java.util.List;
 
 public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder>{
     private Context context;
-    private List<String> difficultyItems;
+    private List<Integer> difficultyItems;
     private OnDifficultyItemClickListener mListener;
 
     //是否选择
     private int selectedPosition = -1;
 
-    public DifficultyAdapter(Context context, List<String> difficultyItems) {
+    public DifficultyAdapter(Context context, List<Integer> difficultyItems) {
         this.context = context;
         this.difficultyItems = difficultyItems;
     }
 
     public interface OnDifficultyItemClickListener {
-        void onDifficultyItemClick(String difficulty);
+        void onDifficultyItemClick(int difficulty);
     }
     public void setOnItemClickListener(OnDifficultyItemClickListener listener) {
         mListener = listener;
@@ -41,8 +41,8 @@ public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull DifficultyViewHolder holder, int position) {
-        String difficulty = difficultyItems.get(position);
-        holder.cbLibraryDifficulty.setText(difficulty);
+        Integer difficulty = difficultyItems.get(position);
+        holder.cbLibraryDifficulty.setText(String.valueOf(difficulty));
         //点击事件
         holder.itemView.setSelected( position == selectedPosition);
         holder.itemView.setOnClickListener(v ->{

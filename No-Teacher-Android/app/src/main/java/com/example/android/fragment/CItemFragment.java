@@ -57,19 +57,21 @@ public class CItemFragment extends Fragment{
 
         //设置难度列表
         difficultyRV = binding.getRoot().findViewById(R.id.difficultyRV);
-        List<String> difficultyItemList = new ArrayList<>();
+        List<Integer> difficultyItemList = new ArrayList<>();
         for (int i = 5; i <= 1200; i += 5) {
             //难度值
-            difficultyItemList.add(String.valueOf(i));
+            difficultyItemList.add(i);
         }
         //创建难度列表适配器
         DifficultyAdapter difficultyadapter = new DifficultyAdapter(getContext(),difficultyItemList);
         //设置水平布局
         difficultyRV.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         //设置点击事件
-        difficultyadapter.setOnItemClickListener((difficulty) ->
-                Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " + category + ", 难度 - " +difficulty)
-        );
+        difficultyadapter.setOnItemClickListener((difficulty) ->{
+            Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " + category + ", 难度 - " +lexile);
+        });
+
+
         //设置适配器
         difficultyRV.setAdapter(difficultyadapter);
         return binding.getRoot();
