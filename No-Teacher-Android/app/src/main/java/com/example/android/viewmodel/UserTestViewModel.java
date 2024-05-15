@@ -3,8 +3,8 @@ package com.example.android.viewmodel;
 
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 import static com.example.android.util.TokenManager.loadServerWordsFromSharedPreferences;
-import static com.example.android.util.TokenManager.saveServerWordsAndIds;
 import static com.example.android.util.TokenManager.saveServerWordsToSharedPreferences;
+import static com.example.android.util.TokenManager.saveWordsAndIds;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
@@ -19,7 +20,6 @@ import com.example.android.util.GsonUtils;
 import com.example.android.util.TokenManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +48,8 @@ public class UserTestViewModel extends ViewModel {
     public MutableLiveData<Boolean> getTestCompleteLiveData() {
         return testCompleteLiveData;
     }
+
+
 
     //获取当前页码
     public int getCurrentPage() {
@@ -129,16 +131,23 @@ public class UserTestViewModel extends ViewModel {
                     public void onResponse(Call<BaseResponse<List<WordDetail>>> call, Response<BaseResponse<List<WordDetail>>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             List<WordDetail> data = response.body().getData();
+                            Log.e("WordResponse", "data :" + response.body().getData());
                             List<String> words = new ArrayList<>();
+                            List<Integer> ids = new ArrayList<>();
                             for (WordDetail wordDetail : data) {
                                 words.add(wordDetail.getWord());
+                                ids.add(wordDetail.getId());
+                                Log.e("vm", "word :" + wordDetail.getId() + " " + wordDetail.getWord());
                             }
+
 
                             Map<String, Integer> wordMap = new HashMap<>();
                             for(WordDetail wordDetail : data) {
                                 wordMap.put(wordDetail.getWord(), wordDetail.getId());
                             }
-                            saveServerWordsAndIds(wordMap, context, null);
+                            saveWordsAndIds(wordMap, context);
+                            TokenManager.SaveALLWordIds(ids, context);
+
 
                             // 保存数据到 SharedPreferences 并在保存完成后加载数据
                             saveServerWordsToSharedPreferences(words, context, () -> {

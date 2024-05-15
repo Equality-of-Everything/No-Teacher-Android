@@ -30,7 +30,6 @@ public class RetrofitManager {
     private final OkHttpClient client;//client：OkHttpClient的实例，用于处理所有的HTTP请求
     private static volatile String currentUrl = null; // 用于存储当前 URL
 
-
     /**
      * 这是一个私有构造函数，不允许外部直接实例化，确保单例模式的实施。构造函数的主要任务如下：
      * 1.设置缓存：创建一个指定大小的缓存目录和缓存实例，用于存储响应数据。
@@ -41,6 +40,7 @@ public class RetrofitManager {
      *      和主机名验证器（这里设置为始终返回 true，同样存在安全风险）。
      * 4.创建Retrofit实例：利用上面配置的OkHttpClient和基础URL构建Retrofit实例。
      */
+
     private RetrofitManager(final Context context,String url) {
         File httpCacheDirectory = new File(context.getExternalCacheDir(), "responses");
         //设置缓存 10M

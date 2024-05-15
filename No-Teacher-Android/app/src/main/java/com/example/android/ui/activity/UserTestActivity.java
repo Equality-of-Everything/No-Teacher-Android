@@ -1,5 +1,8 @@
 package com.example.android.ui.activity;
 
+import static com.example.android.util.TokenManager.loadALLWordIds;
+import static com.example.android.util.TokenManager.printAllSharedPreferences;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +22,7 @@ import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +32,11 @@ public class UserTestActivity extends AppCompatActivity {
     private ActivityUserTestBinding binding;
 
     private ArrayList<Integer> knowWordsList = new ArrayList<Integer>();
-    private ArrayList<Integer> unknowWordsList = new ArrayList<Integer>();
+    private ArrayList<Integer> unknowWordsList = new ArrayList<>();
+    private Map<Button, String> buttonWordMap = new HashMap<>(); // 类级变量
+    private Map<String, Integer> wordAndId = new HashMap<>(); // 全局变量
+
+    private AlertDialog completionDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,17 +69,26 @@ public class UserTestActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         View.OnClickListener listener = v -> {
             Button btn = (Button) v;
-            btn.setSelected(!btn.isSelected());
+            boolean wasSelected = btn.isSelected(); // 获取当前按钮的选中状态
             //根据按钮状态处理单词的掌握情况
+            Log.e("Button Status Before", "Button was selected: " + wasSelected);
+            btn.setSelected(!wasSelected);
+            Log.e("Button Status After", "Button is now selected: " + btn.isSelected());
 
+            printAllSharedPreferences(this);
             String word = btn.getText().toString();
             Log.e("UserTestActivity", "word: " + word);
 
-            Map<String, Integer> wordAndId = TokenManager.loadServerWordsIds(this);
-            if(btn.isSelected()) {
-                knowWordsList.add(wordAndId.get(word));
+            Map<String, Integer> wordAndId = TokenManager.loadWordsAndIds(this);
+            Log.e("Button Status", "Button was selected: " + wasSelected);
+            if (btn.isSelected()) {
+                if (!knowWordsList.contains(word)) {
+                    knowWordsList.add(wordAndId.get(word));
+                    Log.e("knowWordList", "Added wordId: " + word);
+                }
             } else {
-                unknowWordsList.add(wordAndId.get(word));
+                knowWordsList.remove(wordAndId.get(word));
+                Log.e("knowWordList", "Removed wordId: " + word);
             }
         };
 
@@ -114,18 +130,46 @@ public class UserTestActivity extends AppCompatActivity {
     private void showCompletionDialog() {
         int cnt = knowWordsList.size();
         sendWordTestResultToServer(unknowWordsList, knowWordsList);
-        new AlertDialog.Builder(this)
-                .setTitle("测试完成")  // 设置对话框标题
-                .setMessage("你已完成所有测试。已经掌握" + cnt + "个单词")  // 设置对话框显示的文本
+
+        completionDialog = new AlertDialog.Builder(this)
+                .setTitle("测试完成")
+                .setMessage("你已完成所有测试。已经掌握" + cnt + "个单词")
                 .setPositiveButton("确定", (dialog, which) -> {
                     // 用户点击确定按钮的处理逻辑
                     returnToMainActivity();
                 })
-                .setCancelable(false)  // 设置对话框不可取消，防止用户点击外部取消对话框
-                .show();  // 显示对话框
+                .setCancelable(false)
+                .create();
+
+        if (!isFinishing()) {
+            completionDialog.show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(completionDialog != null && completionDialog.isShowing()){
+            completionDialog.dismiss();
+        }
+        super.onDestroy();
     }
 
     private void sendWordTestResultToServer(List<Integer> unknowWordsList, List<Integer> knowWordsList) {
+
+        for(Integer wordId : knowWordsList) {
+            Log.e("print", "knowWord : " + wordId);
+        }
+
+        List<Integer> allIds = loadALLWordIds(this);
+        for(Integer wordId : knowWordsList) {
+            allIds.remove(wordId);
+        }
+
+        unknowWordsList = allIds;
+        Log.e("print", "unknowWordSize : " + unknowWordsList.size());
+        for(Integer wordId : unknowWordsList) {
+            Log.e("print", "unknowWord : " + wordId);
+        }
         viewModel.sendTestResultToServer(this, unknowWordsList, knowWordsList);
     }
 

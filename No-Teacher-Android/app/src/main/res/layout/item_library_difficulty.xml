@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="6dp">
 
-    <CheckBox
+    <TextView
+        android:background="@drawable/selector_btn"
         android:id="@+id/cbLibraryDifficulty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

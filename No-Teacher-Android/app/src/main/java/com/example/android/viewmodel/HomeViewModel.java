@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.android.api.ApiService;
 import com.example.android.bean.entity.Article;
 import com.example.android.bean.entity.Result;
+import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
@@ -33,21 +34,26 @@ import retrofit2.Response;
 
 public class HomeViewModel extends ViewModel {
 
-    private MutableLiveData<ArrayList<Article>> articlesLiveData;
+    private MutableLiveData<List<Article>> articlesLiveData;
     private MutableLiveData<Boolean> navigateToWordTest = new MutableLiveData<>();
     private ApiService apiService;
+    private MutableLiveData<Boolean> isTestLiveData = new MutableLiveData<>();
+
 
     public HomeViewModel() {
         articlesLiveData = new MutableLiveData<>();
     }
 
     // 提供LiveData的访问方法
-    public LiveData<ArrayList<Article>> getArticleLiveData() {
+    public LiveData<List<Article>> getArticleLiveData() {
         return articlesLiveData;
     }
 
-    public void setApiService(ApiService apiService)
-    {
+    public MutableLiveData<Boolean> getIsTestLiveData() {
+        return isTestLiveData;
+    }
+
+    public void setApiService(ApiService apiService) {
         this.apiService = apiService;
     }
 
@@ -63,13 +69,13 @@ public class HomeViewModel extends ViewModel {
      * @date 2024/5/8 9:17
      */
     public void requestTestWordNum(Context context) {
-        RetrofitManager.getInstance(context,WORD_SERVICE)
+        RetrofitManager.getInstance(context, WORD_SERVICE)
                 .getApi(ApiService.class)
                 .getWordNum()
                 .enqueue(new Callback<BaseResponse<Integer>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
-                        if(response.isSuccessful() && response.body() != null) {
+                        if (response.isSuccessful() && response.body() != null) {
                             Log.e("AAAAAAAAAA", response.body().getData().toString());
 
                         } else {
@@ -77,7 +83,6 @@ public class HomeViewModel extends ViewModel {
                             Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
                         Log.e("HomeFragment-Error", "Network-Error");
@@ -94,8 +99,8 @@ public class HomeViewModel extends ViewModel {
      * @description 获取测试单词
      * @date 2024/5/8 9:17
      */
-    public void requestTestWords(Context context,int currentPage) {
-        RetrofitManager.getInstance(context,WORD_SERVICE)
+    public void requestTestWords(Context context, int currentPage) {
+        RetrofitManager.getInstance(context, WORD_SERVICE)
                 .getApi(ApiService.class)
                 .getWords(currentPage)
                 .enqueue(new Callback<BaseResponse<List<WordDetail>>>() {
@@ -127,15 +132,93 @@ public class HomeViewModel extends ViewModel {
                 });
     }
 
-    public void fetchArticles() {
-        // 模拟数据加载或从网络获取数据
-        // 这里以模拟数据为例
-        ArrayList<Article> articles = new ArrayList<>();
-        articles.add(new Article(R.drawable.friend_item, "标题1", "难度600","200字","人工智能"));
-        articles.add(new Article(R.drawable.friend_item, "标题2", "难度600","210字","人工智能"));
-        articles.add(new Article(R.drawable.friend_item, "标题3", "难度600","201字","人工智能"));
+    /**
+     * @param context:
+     * @param userId:
+     * @return void
+     * @author zhang
+     * @description 是否已经进行过单词测试
+     * @date 2024/5/11 14:40
+     */
+    public void isTest(Context context, String userId) {
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .isTest(userId)
+                .enqueue(new Callback<BaseResponse<UserLevel>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<UserLevel>> call, Response<BaseResponse<UserLevel>> response) {
+                        if (response.isSuccessful() && response.body().getData() != null) {
+                            isTestLiveData.setValue(true);
+                            return;
+                        }
+                        isTestLiveData.postValue(false);
+                    }
 
-        // 更新LiveData对象，这将通知观察者数据已改变
-        articlesLiveData.postValue(articles);
+                    @Override
+                    public void onFailure(Call<BaseResponse<UserLevel>> call, Throwable t) {
+                        t.printStackTrace();
+                        Log.e("UserTestViewModel-isTest", "Network-Error");
+                    }
+                });
     }
+
+    /**
+     * @param lexile:
+     * @param currentPage:
+     * @return void
+     * @author zhang
+     * @description 通过英文水平和难度去获取文章
+     * @date 2024/5/13 16:20
+     */
+    public void fetchArticles(Context context, int lexile, int currentPage) {
+        RetrofitManager.getInstance(context, WORD_SERVICE).
+                getApi(ApiService.class)
+                .getArticles(lexile, currentPage)
+                .enqueue(new Callback<BaseResponse<List<Article>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
+                        if (response.isSuccessful() && response.body().getData() != null) {
+                            List<Article> articles = response.body().getData();
+                            // 更新LiveData对象，这将通知观察者数据已改变
+                            articlesLiveData.postValue(articles);
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
+                        Log.e("HomeViewModel-fetchArticles", "Network-Error");
+                    }
+                });
+    }
+
+
+//    /**
+//     *
+//     * @param context
+//     * @param category
+//     * @param difficulty
+//     * @param currentPage
+//     */
+//    public void fetchArticlesByCategoryAndDifficulty(Context context, String category, String difficulty, int currentPage) {
+//        RetrofitManager.getInstance(context, WORD_SERVICE)
+//                .getApi(ApiService.class)
+//                .getArticlesByCategoryAndDifficulty(category, difficulty, currentPage) // 确保此方法在ApiService中已定义
+//                .enqueue(new Callback<BaseResponse<List<Article>>>() {
+//                    @Override
+//                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
+//                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+//                            List<Article> articles = response.body().getData();
+//                            // 更新LiveData对象，通知观察者数据已更新
+//                            articlesLiveData.postValue(articles);
+//                        } else {
+//                            Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Request failed with status code: " + response.code());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
+//                        Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Network or unexpected error: " + t.getMessage());
+//                    }
+//                });
+//    }
+
 }

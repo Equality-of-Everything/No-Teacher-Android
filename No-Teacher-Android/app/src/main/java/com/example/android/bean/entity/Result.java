@@ -16,6 +16,9 @@ public class Result<T> implements Serializable {
     private T data; //数据
     private int code; //状态码
 
+    public Result() {
+    }
+
     @Override
     public String toString() {
         return "Result{" +

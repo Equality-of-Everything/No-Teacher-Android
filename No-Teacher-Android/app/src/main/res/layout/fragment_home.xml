@@ -94,14 +94,21 @@
                 </Button>
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/list_article"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:divider="@null"
-                android:dividerHeight="8dp"></ListView>
+                android:layout_height="match_parent">
+                <ListView
+                    android:id="@+id/list_article"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:divider="@null"
+                    android:dividerHeight="8dp">
+                </ListView>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
         </LinearLayout>
     </LinearLayout>

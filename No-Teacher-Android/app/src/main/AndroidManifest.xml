@@ -9,6 +9,8 @@
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.example.android.base.BaseApplication"
@@ -37,7 +39,7 @@
             android:name="com.example.android.ui.activity.MainActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.android.ui.activity.UserRegisterActivity"
+            android:name="com.example.android.ui.activity.UserEditActivity"
             android:exported="true" />
         <activity
             android:name="com.example.android.ui.activity.EmailVerifyActivity"

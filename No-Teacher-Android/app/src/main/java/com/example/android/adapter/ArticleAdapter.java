@@ -8,25 +8,30 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android.bean.entity.Article;
 import com.example.no_teacher_andorid.R;
 
 import java.util.List;
 
 /**
- * @Author : Lee
+ * @Author : Tcy
  * @Date : Created in 2024/5/7 8:11
  * @Decription :
  */
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
+    private List<Article> articles;
     private Context mContext;
-    private int mResource;
+    private int  mResource;
 
     public ArticleAdapter(Context context, int resource, List<Article> articles) {
         super(context, resource, articles);
         mContext = context;
         mResource = resource;
+        this.articles = articles;
     }
 
     @Override
@@ -48,11 +53,17 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         Article item = getItem(position);
 
         if (item != null) {
-            viewHolder.imageView.setImageResource(item.getImageResource());
+            // 圆角角度
+            RequestOptions requestOptions = new RequestOptions()
+                    .transform(new RoundedCorners(20));
+            Glide.with(mContext).
+                    load(item.getCover()).
+                    apply(requestOptions).
+                    into(viewHolder.imageView);
             viewHolder.textView1.setText(item.getTitle());
-            viewHolder.textView2.setText(item.getLevel());
-            viewHolder.textView3.setText(item.getWordCount());
-            viewHolder.textView4.setText(item.getBadge());
+            viewHolder.textView2.setText("难度："+item.getLexile());
+            viewHolder.textView3.setText(item.getWordNum()+"词");
+            viewHolder.textView4.setText(item.getType());
         }
 
         return convertView;
@@ -66,5 +77,23 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         TextView textView3;
 
         TextView textView4;
+    }
+
+    /**
+     * @param item:
+     * @return void
+     * @author Lee
+     * @description 添加新的文章数据
+     * @date 2024/5/14 9:12
+     */
+    public void addMoreArticle(List<Article> item) {
+        this.articles.addAll(item);
+        notifyDataSetChanged();
+    }
+
+    public void refreshItems(List<Article> item) {
+        this.articles.clear();
+        this.articles.addAll(item);
+        notifyDataSetChanged();
     }
 }
