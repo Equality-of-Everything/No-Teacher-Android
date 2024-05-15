@@ -26,8 +26,8 @@ public class TextTranslator {
         this.q = s;
     }
 
-    static String APP_KEY = "4f5ddb5467c2046b", signType = "v3";
-    static final String APP_SECRET = "elDrp6YBjgec4ZckHUUkeLtaEMT1ynaT";
+    static String APP_KEY = "6a5cb82879d4fcc3", signType = "v2";
+    static final String APP_SECRET = "7MJs9nIBVfge38rSI7RtBLSadtCTVQsI";
     static String BASE_URL = "https://openapi.youdao.com/";
 
     public Call<TextRes> getCall(String from, String to) {

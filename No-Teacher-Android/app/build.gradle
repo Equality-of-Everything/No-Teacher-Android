@@ -68,13 +68,5 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 
-    implementation files('libs/YoudaoBase_v20230803.jar')
-    implementation files('libs/online_auth.jar')
-    implementation files('libs/zhiyun_offline_common.jar')
-    implementation files('libs/YoudaoTranslateOnline_v2.0.1.jar')
-    implementation files('libs/YoudaoCnDictOffline.jar')
-    implementation files('libs/YoudaoTranslateOffline.jar')
-
-
 
 }

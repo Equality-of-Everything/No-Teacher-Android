@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">No_Teacher_Android</string>
+    <string name="app_name">No_Teacher</string>
     <string name="Txt_username">用户名</string>
     <string name="edtTxt_enter_name">请输入你的用户名</string>
     <string name="Txt_email">邮箱</string>

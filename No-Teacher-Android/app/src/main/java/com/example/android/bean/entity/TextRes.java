@@ -10,7 +10,6 @@ import java.util.List;
  * @Decription:
  */
 public class TextRes {
-
     @SerializedName("errorCode")
     private String errorCode;
     @SerializedName("query")
