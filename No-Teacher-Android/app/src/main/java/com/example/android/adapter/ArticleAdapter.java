@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.android.bean.entity.Article;
 import com.example.no_teacher_andorid.R;
 
@@ -51,7 +53,13 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         Article item = getItem(position);
 
         if (item != null) {
-            Glide.with(mContext).load(item.getCover()).into(viewHolder.imageView);
+            // 圆角角度
+            RequestOptions requestOptions = new RequestOptions()
+                    .transform(new RoundedCorners(20));
+            Glide.with(mContext).
+                    load(item.getCover()).
+                    apply(requestOptions).
+                    into(viewHolder.imageView);
             viewHolder.textView1.setText(item.getTitle());
             viewHolder.textView2.setText("难度："+item.getLexile());
             viewHolder.textView3.setText(item.getWordNum()+"词");
