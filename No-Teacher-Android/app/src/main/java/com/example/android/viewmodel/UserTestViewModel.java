@@ -108,7 +108,7 @@ public class UserTestViewModel extends ViewModel {
 
                     @Override
                     public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
-                        Log.e("HomeFragment-Error", "Network-Error");
+                        Log.e("UserTest-Error", "Network-Error");
                         t.printStackTrace();
                     }
                 });
