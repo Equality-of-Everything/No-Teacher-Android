@@ -52,7 +52,7 @@ public class ReaderPage extends AppCompatTextView {
     }
 
     private List<String> splitWord(@NonNull String text) {
-        if (TextUtils.isEmpty(text)) {
+        if (text.isEmpty()) {
             return new ArrayList<>();
         }
         List<String> words = new ArrayList<>();
@@ -68,8 +68,7 @@ public class ReaderPage extends AppCompatTextView {
         List<String> words = splitWord(text);
         List<WordInfo> wordInfos = new ArrayList<>(words.size());
         int startIndex = 0;
-        for (int i = 0; i < words.size(); i++) {
-            String word = words.get(i);
+        for (String word : words) {
             int start = text.indexOf(word, startIndex);
             int end = start + word.length();
             startIndex = end;
@@ -83,9 +82,8 @@ public class ReaderPage extends AppCompatTextView {
     }
 
     private void setClickableSpans() {
-        for (int i = 0; i < mWordInfos.size(); i++) {
-            WordInfo info = mWordInfos.get(i);
-            mSpannableString.setSpan(new WordClickableSpan(info),
+        for (WordInfo info : mWordInfos) {
+            mSpannableString.setSpan(new WordClickableSpan(info, getContext()),
                     info.getStart(), info.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }

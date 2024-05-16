@@ -38,20 +38,20 @@
                 android:textSize="20sp"
                 android:textStyle="bold"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_a"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp">
+                android:layout_marginLeft="10dp">
 
                 <TextView
                     android:id="@+id/level_a"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:text="难度:600"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentBottom="true"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="12sp" />
 
@@ -59,11 +59,13 @@
                     android:id="@+id/words_a"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/level_a"
                     android:layout_marginLeft="40dp"
                     android:layout_marginBottom="10dp"
                     android:text="393词"
+                    android:layout_alignParentBottom="true"
                     android:textSize="12sp"></TextView>
-            </LinearLayout>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/badge_a"

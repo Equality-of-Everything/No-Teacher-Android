@@ -13,22 +13,36 @@ import android.widget.ImageButton;
  * @Decription:
  */
 public class TtsUtil {
-    public static void getTts(String word, Button ukButton, Button enButton) {
+    public static void getTts1(String word, Button ukButton) {
         String uk = "http://dict.youdao.com/dictvoice?audio=" + word + "&type=1";
-        String en = "http://dict.youdao.com/dictvoice?audio=" + word + "&type=2";
+//        String en = "http://dict.youdao.com/dictvoice?audio=" + word + "&type=2";
         ukButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playTts(v.getContext(), uk);
             }
         });
-        enButton.setOnClickListener(new View.OnClickListener() {
+//        enButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playTts(v.getContext(), en);
+//            }
+//        });
+    }
+
+    public static void getTts2(String word,Button enButton) {
+
+        String en = "http://dict.youdao.com/dictvoice?audio=" + word + "&type=2";
+                enButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playTts(v.getContext(), en);
             }
         });
+
     }
+
+
 
     private static void playTts(Context context, String url) {
         MediaPlayer.create(context, Uri.parse(url)).start();

@@ -169,7 +169,7 @@ public class Words {
         @SerializedName("synonyms")
         private List<?> synonyms;
         @SerializedName("antonyms")
-        private List<?> antonyms;
+        private List<String> antonyms;
 
         public String getPartOfSpeech() {
             return partOfSpeech;
@@ -195,11 +195,11 @@ public class Words {
             this.synonyms = synonyms;
         }
 
-        public List<?> getAntonyms() {
+        public List<String> getAntonyms() {
             return antonyms;
         }
 
-        public void setAntonyms(List<?> antonyms) {
+        public void setAntonyms(List<String> antonyms) {
             this.antonyms = antonyms;
         }
 

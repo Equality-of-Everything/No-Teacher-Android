@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
 
 import java.util.Locale;
@@ -32,7 +33,7 @@ public class ReadTestPagerFragment extends Fragment {
     private String countText;
 
     private Button btnSpeak;
-    private TextToSpeech mTTS;
+//    private TextToSpeech mTTS;
 
     public ReadTestPagerFragment() {
         // Required empty public constructor
@@ -73,51 +74,10 @@ public class ReadTestPagerFragment extends Fragment {
         textView1.setText(text);
         textView2.setText(countText);
 
-        // 初始化TextToSpeech对象
-        mTTS = new TextToSpeech(requireContext(), new TextToSpeech.OnInitListener(){
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    // 设置语言为英文
-                    int result = mTTS.setLanguage(Locale.ENGLISH);
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "Language not supported");
-                    }
-                } else {
-                    Log.e("TTS", "Initialization failed");
-                }
-            }
-        });
-
-        btnSpeak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String content = textView1.getText().toString();
-                if (content != null && !content.isEmpty()) {
-                    // 检查 TextToSpeech 对象是否已经成功初始化
-                    if (mTTS != null && mTTS.getEngines().size() > 0) {
-                        // 延迟调用 speak 方法
-                        mTTS.speak(content, TextToSpeech.QUEUE_FLUSH, null, null);
-                    } else {
-                        Log.e("TTS", "TextToSpeech engine is not initialized");
-                    }
-                }
-            }
-        });
+        // Use TtsUtil to set up the TTS buttons
+        TtsUtil.getTts1(text, btnSpeak);
 
         return view;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 释放 TextToSpeech 对象
-        if (mTTS != null) {
-            mTTS.stop();
-            mTTS.shutdown();
-        }
-    }
-
 
 }
