@@ -60,6 +60,14 @@ public interface ApiService {
 
     @GET("article/{lexile}/{currentPage}")
     Call<BaseResponse<List<Article>>> getArticles(@Path("lexile") int lexile, @Path("currentPage") int currentPage);
+
+    //获取该难度对应的文章总数
+    @GET("article/getArticleByLexileNum/{lexile}")
+    Call<BaseResponse<Integer>> getArticleNum(@Path("lexile") int lexile);
+
+    //获取文库所有文章
+    @GET("article/getAllArticles")
+    Call<BaseResponse<List<Article>>> getAllArticle();
 }
 
 

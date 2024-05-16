@@ -36,12 +36,20 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<List<Article>> articlesLiveData;
     private MutableLiveData<Boolean> navigateToWordTest = new MutableLiveData<>();
-    private ApiService apiService;
     private MutableLiveData<Boolean> isTestLiveData = new MutableLiveData<>();
+    private MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
+    private ApiService apiService;
+    private int lexile = 110;
 
+    private int curPage = 0;
+    private int totalPages = 1;//初始设置为-1，表示还未获取到总页数
 
     public HomeViewModel() {
         articlesLiveData = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Integer> getCurrentPageLiveData() {
+        return currentPageLiveData;
     }
 
     // 提供LiveData的访问方法
@@ -61,6 +69,15 @@ public class HomeViewModel extends ViewModel {
         return navigateToWordTest;
     }
 
+    //获取当前页码
+    public int getCurrentPage() {
+        return curPage;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
     /**
      * @param context:
      * @return void
@@ -75,9 +92,11 @@ public class HomeViewModel extends ViewModel {
                 .enqueue(new Callback<BaseResponse<Integer>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            Log.e("AAAAAAAAAA", response.body().getData().toString());
+                        if(response.isSuccessful() && response.body() != null) {
+                            Log.e("AllArticleNum", response.body().getData().toString());
 
+                            Integer num = response.body().getData();
+                            totalPages = (int) Math.ceil(num / 5.0);  // 计算总页数
                         } else {
                             // HTTP错误处理
                             Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
@@ -163,6 +182,37 @@ public class HomeViewModel extends ViewModel {
     }
 
     /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 获取文章总数
+     * @date 2024/5/15 14:52
+     */
+    public void getArticleNum(Context context){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getArticleNum(lexile)
+                .enqueue(new Callback<BaseResponse<Integer>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("AAAAAAAAAA", response.body().getData().toString());
+
+                        } else {
+                            // HTTP错误处理
+                            Log.e("getArticleNum Error", "Response Code: " + response.code() + " Message: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("HomeFragment-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    /**
      * @param lexile:
      * @param currentPage:
      * @return void
@@ -190,35 +240,42 @@ public class HomeViewModel extends ViewModel {
                 });
     }
 
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 获取所有文章（文库）
+     * @date 2024/5/16 8:12
+     */
+    public void fetchAllArticle(Context context){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getAllArticle()
+                .enqueue(new Callback<BaseResponse<List<Article>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
+                        if(response.isSuccessful() && response.body() != null) {
+                            Log.e("getAllArticle", response.body().getData().toString());
 
-//    /**
-//     *
-//     * @param context
-//     * @param category
-//     * @param difficulty
-//     * @param currentPage
-//     */
-//    public void fetchArticlesByCategoryAndDifficulty(Context context, String category, String difficulty, int currentPage) {
-//        RetrofitManager.getInstance(context, WORD_SERVICE)
-//                .getApi(ApiService.class)
-//                .getArticlesByCategoryAndDifficulty(category, difficulty, currentPage) // 确保此方法在ApiService中已定义
-//                .enqueue(new Callback<BaseResponse<List<Article>>>() {
-//                    @Override
-//                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
-//                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-//                            List<Article> articles = response.body().getData();
-//                            // 更新LiveData对象，通知观察者数据已更新
-//                            articlesLiveData.postValue(articles);
-//                        } else {
-//                            Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Request failed with status code: " + response.code());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
-//                        Log.e("HomeViewModel-fetchArticlesByCategoryAndDifficulty", "Network or unexpected error: " + t.getMessage());
-//                    }
-//                });
-//    }
+                            List<Article> list = response.body().getData();
+                            for(Article article : list) {
+                                Log.e("ArticleType", article.getTypeId()+"");
+                            }
+
+                        } else {
+                            // HTTP错误处理
+                            Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
+                        Log.e("UserTest-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+
 
 }

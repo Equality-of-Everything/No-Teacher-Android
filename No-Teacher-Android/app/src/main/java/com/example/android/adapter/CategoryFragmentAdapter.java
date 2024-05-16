@@ -1,5 +1,7 @@
 package com.example.android.adapter;
 
+import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,8 +23,9 @@ public class CategoryFragmentAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         // 根据位置动态创建CItemFragment并传递数据
-        return CItemFragment.newInstance(category.get(position));
+        return CItemFragment.newInstance(category.get(position),position+1);
     }
+    
 
     @Override
     public int getItemCount() {

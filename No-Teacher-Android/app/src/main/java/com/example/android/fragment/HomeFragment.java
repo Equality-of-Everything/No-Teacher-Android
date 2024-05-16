@@ -60,6 +60,7 @@ public class HomeFragment extends Fragment {
     private View footerView;
 
     private int currentPage = 0;
+    private int totalPages = 0;
     private int lexile = 110;
 
     @SuppressLint("MissingInflatedId")
@@ -79,6 +80,8 @@ public class HomeFragment extends Fragment {
             }
         });;
 
+        viewModel.getArticleNum(getContext());
+        totalPages = viewModel.getTotalPages();
         // 设置 RecyclerView 和适配器
         //设置ListView和SwipeRefreshLayout以实现下拉上拉刷新数据
         setupRecyclerView();
@@ -119,7 +122,16 @@ public class HomeFragment extends Fragment {
      */
     private void setupSwipeRefreshLayout() {
         swipeRefreshLayout = binding.swipeRefresh;
-        swipeRefreshLayout.setOnRefreshListener(() -> loadData(true));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (currentPage < totalPages) {
+                loadData(false); // 加载下一页数据
+            } else {
+                swipeRefreshLayout.setRefreshing(false); // 如果已经是最后一页，停止刷新动画
+                Toast.makeText(getActivity(), "No more articles to load", Toast.LENGTH_SHORT).show();
+            }
+        });
+//        swipeRefreshLayout = binding.swipeRefresh;
+//        swipeRefreshLayout.setOnRefreshListener(() -> loadData(true));
     }
 
     /**
@@ -130,18 +142,41 @@ public class HomeFragment extends Fragment {
      * @date 2024/5/14 9:31
      */
     private void loadData(boolean isRefresh) {
-        int targetPage = isRefresh ? currentPage : currentPage + 1;
+        if (isRefresh) {
+            currentPage = 0; // 如果是从头刷新，重置为第一页
+        } else {
+            currentPage++; // 否则递增页码以加载下一页
+        }
 
-        viewModel.fetchArticles(getActivity(), lexile, currentPage);
-        viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles1 -> {
-            if(isRefresh) {
-                adapter.addMoreArticle(articles);
-            } else {
-                adapter.addMoreArticle(articles);
-                currentPage = targetPage; //更新当前页码
-            }
+        if (currentPage <= totalPages) {
+            viewModel.fetchArticles(getActivity(), lexile, currentPage);
+            viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), newArticles -> {
+                if (isRefresh) {
+                    articles.clear(); // 如果是从头刷新，则清除旧数据
+                }
+                articles.addAll(newArticles); // 添加新加载的数据
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            });
+        } else {
+            currentPage--; // 如果超过总页数，回退一页保持原样
             swipeRefreshLayout.setRefreshing(false);
-        });
+        }
+//        int targetPage = isRefresh ? currentPage : currentPage + 1;
+//
+//        viewModel.fetchArticles(getActivity(), lexile, currentPage);
+//        if(targetPage <= totalPages) {
+//            viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles1 -> {
+//                if(isRefresh) {
+//                    adapter.addMoreArticle(articles);
+//                } else {
+//                    adapter.addMoreArticle(articles);
+//                    currentPage = targetPage; //更新当前页码
+//                }
+//                swipeRefreshLayout.setRefreshing(false);
+//            });
+//        }
+
     }
 
 
@@ -165,9 +200,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 //检查是否到达了底部
-                if(scrollState == SCROLL_STATE_IDLE && listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1) {
-                    loadData(false);
-                }
+//                if(scrollState == SCROLL_STATE_IDLE && listView.getLastVisiblePosition() == listView.getAdapter().getCount() - 1) {
+//                    loadData(false);
+//                }
             }
 
             @Override
