@@ -33,6 +33,7 @@ public class CItemFragment extends Fragment{
     private HomeViewModel viewModel;
     private int lexile = 110;
     private int currentPage = 0;
+    private static int typeId;
     public static CItemFragment newInstance(String category) {
         CItemFragment fragment = new CItemFragment();
         Bundle args = new Bundle();
@@ -54,6 +55,7 @@ public class CItemFragment extends Fragment{
 //        if (categoryTextView != null) { // 防止空指针异常
 //            categoryTextView.setText(category); // 设置文本内容
 //        }
+
 
         //设置难度列表
         difficultyRV = binding.getRoot().findViewById(R.id.difficultyRV);
@@ -87,6 +89,8 @@ public class CItemFragment extends Fragment{
                 articleRV.setAdapter(adapter);
             }
         });
-        viewModel.fetchArticles(getActivity(),lexile,currentPage);
+//        viewModel.fetchArticles(getActivity(),lexile,currentPage);
+        Log.e("typeIdAAAAAAA", typeId+"");
+//        viewModel.fetchAllArticle(getActivity());
     }
 }

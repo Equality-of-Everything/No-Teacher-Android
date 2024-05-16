@@ -240,4 +240,42 @@ public class HomeViewModel extends ViewModel {
                 });
     }
 
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 获取所有文章（文库）
+     * @date 2024/5/16 8:12
+     */
+    public void fetchAllArticle(Context context){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getAllArticle()
+                .enqueue(new Callback<BaseResponse<List<Article>>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
+                        if(response.isSuccessful() && response.body() != null) {
+                            Log.e("getAllArticle", response.body().getData().toString());
+
+                            List<Article> list = response.body().getData();
+                            for(Article article : list) {
+                                Log.e("ArticleType", article.getTypeId()+"");
+                            }
+
+                        } else {
+                            // HTTP错误处理
+                            Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<List<Article>>> call, Throwable t) {
+                        Log.e("UserTest-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+
+
 }
