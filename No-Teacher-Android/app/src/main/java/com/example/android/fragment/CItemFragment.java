@@ -22,6 +22,7 @@ import com.example.android.viewmodel.HomeViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.FragmentCItemBinding;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +35,12 @@ public class CItemFragment extends Fragment{
     private int lexile = 110;
     private int currentPage = 0;
     private static int typeId;
-    public static CItemFragment newInstance(String category) {
+    private String category;
+    public static CItemFragment newInstance(String category,int typeId) {
         CItemFragment fragment = new CItemFragment();
         Bundle args = new Bundle();
         args.putString("category", category);
+        args.putInt("typeId",typeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,11 +48,11 @@ public class CItemFragment extends Fragment{
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_c_item, container, false);
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         //设置文章列表
-        setupArticle();
         ApiService apiService = RetrofitManager.getInstance(getActivity(),WORD_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
         //获取到当前点击的类别
-        String category = getArguments().getString("category");
+        category = getArguments().getString("category");
+        typeId =getArguments().getInt("typeId");
 //        //测试是否连接上
 //        TextView categoryTextView = view.findViewById(R.id.tvDifficulty);
 //        if (categoryTextView != null) { // 防止空指针异常
@@ -70,12 +73,13 @@ public class CItemFragment extends Fragment{
         difficultyRV.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         //设置点击事件
         difficultyadapter.setOnItemClickListener((difficulty) ->{
-            Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " + category + ", 难度 - " +lexile);
+            Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " +category+ "Id-" + typeId + ", 难度 - " +difficulty);
         });
 
 
         //设置适配器
         difficultyRV.setAdapter(difficultyadapter);
+        setupArticle();
         return binding.getRoot();
     }
 
@@ -90,7 +94,7 @@ public class CItemFragment extends Fragment{
             }
         });
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
-        Log.e("typeIdAAAAAAA", typeId+"");
+        Log.e("typeIdAAAAAAA", typeId +"");
 //        viewModel.fetchAllArticle(getActivity());
     }
 }

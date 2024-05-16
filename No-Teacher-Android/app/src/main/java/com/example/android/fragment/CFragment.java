@@ -51,7 +51,7 @@ public class CFragment extends Fragment {
     private void replaceChildFragment(int position) {
         // 设置ViewPager2到指定位置
         if (viewPager2 != null) { // 防止空指针异常
-            viewPager2.setCurrentItem(position, true); // 设置ViewPager2到指定位置
+            viewPager2.setCurrentItem(position, false); // 设置ViewPager2到指定位置
         } else {
             Log.e("CFragment", "viewPager2 is null when trying to replace fragment");
         }

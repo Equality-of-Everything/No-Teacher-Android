@@ -23,7 +23,7 @@ public class CategoryFragmentAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         // 根据位置动态创建CItemFragment并传递数据
-        return CItemFragment.newInstance(category.get(position));
+        return CItemFragment.newInstance(category.get(position),position+1);
     }
     
 
