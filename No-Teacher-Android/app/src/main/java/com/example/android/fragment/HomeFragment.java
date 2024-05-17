@@ -29,11 +29,14 @@ import com.example.android.bean.entity.Article;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.MainActivity;
+import com.example.android.ui.activity.ReadActivity;
 import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.adapter.ArticleAdapter;
+import com.example.android.util.DataManager;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.HomeViewModel;
+import com.example.android.viewmodel.SelectLevelViewModel;
 import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
@@ -77,8 +80,17 @@ public class HomeFragment extends Fragment {
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
             if (isTest) {
                 binding.btnTest.setEnabled(false);
+                binding.btnSetDifficult.setEnabled(false);
             }
-        });;
+        });
+
+        DataManager.getInstance().getIsSelectLiveData().observe(getActivity(), isSelect -> {
+            if(isSelect) {
+                binding.btnTest.setEnabled(false);
+                binding.btnSetDifficult.setEnabled(false);
+            }
+        });
+
 
         viewModel.getArticleNum(getContext());
         totalPages = viewModel.getTotalPages();
@@ -162,20 +174,6 @@ public class HomeFragment extends Fragment {
             currentPage--; // 如果超过总页数，回退一页保持原样
             swipeRefreshLayout.setRefreshing(false);
         }
-//        int targetPage = isRefresh ? currentPage : currentPage + 1;
-//
-//        viewModel.fetchArticles(getActivity(), lexile, currentPage);
-//        if(targetPage <= totalPages) {
-//            viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles1 -> {
-//                if(isRefresh) {
-//                    adapter.addMoreArticle(articles);
-//                } else {
-//                    adapter.addMoreArticle(articles);
-//                    currentPage = targetPage; //更新当前页码
-//                }
-//                swipeRefreshLayout.setRefreshing(false);
-//            });
-//        }
 
     }
 
@@ -193,6 +191,15 @@ public class HomeFragment extends Fragment {
             if (articles != null) {
                 adapter = new ArticleAdapter(getActivity(), R.layout.item_list_article, articles);
                 listView.setAdapter(adapter);
+                listView.setOnItemClickListener((parent, view, position, id) -> {
+                    Article clickedArticle = articles.get(position);
+                    Intent intent = new Intent(getActivity(), ReadActivity.class);
+                    // 传递文章数据
+                    intent.putExtra("title", clickedArticle.getTitle());
+                    intent.putExtra("imageUrl", clickedArticle.getCover()); // 假设是图片的URL
+                    intent.putExtra("content", clickedArticle.getContent());
+                    startActivity(intent);
+                });
             }
         });
 

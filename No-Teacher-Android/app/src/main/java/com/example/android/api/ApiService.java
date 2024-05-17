@@ -1,6 +1,7 @@
 package com.example.android.api;
 
 import com.example.android.bean.EmailRequest;
+import com.example.android.bean.LexileRequest;
 import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Article;
 import com.example.android.bean.entity.Result;
@@ -68,6 +69,11 @@ public interface ApiService {
     //获取文库所有文章
     @GET("article/getAllArticles")
     Call<BaseResponse<List<Article>>> getAllArticle();
+
+    //将用户自行选择的难度值传给后端
+    @POST("userInfo/updateLexile")
+//    Call<BaseResponse<Void>> updateLexile(@Body LexileRequest params);
+    Call<BaseResponse<Void>> updateLexile(@QueryMap HashMap<String, String> params);
 }
 
 

@@ -12,17 +12,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:ignore="MissingClass">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_background2"
+            tools:ignore="MissingConstraints">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_marginTop="25dp"
+                android:id="@+id/back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:navigationIcon="@drawable/back"
+                app:title="文章详情"
+                app:titleCentered="true" />
+        </com.google.android.material.appbar.AppBarLayout>
         <TextView
+            android:id="@+id/article_title"
             android:layout_width="match_parent"
             android:text="Title"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:gravity="center"
             android:layout_height="wrap_content"></TextView>
 
         <ImageView
+            android:id="@+id/articleCover"
             android:layout_margin="20dp"
             android:layout_width="match_parent"
             android:src="@drawable/img"
@@ -32,8 +52,9 @@
             android:id="@+id/readerPage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:padding="16dp" />
+            android:textSize="20sp"
+            android:padding="16dp"
+            android:lineSpacingExtra="8dp"/>
 
 
     </LinearLayout>

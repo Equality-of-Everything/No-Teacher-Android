@@ -1,6 +1,8 @@
 package com.example.android.fragment;
 
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.adapter.ArticleAdapter;
 import com.example.android.adapter.DifficultyAdapter;
 import com.example.android.api.ApiService;
+import com.example.android.bean.entity.Article;
 import com.example.android.http.retrofit.RetrofitManager;
 
+import com.example.android.ui.activity.ReadActivity;
 import com.example.android.viewmodel.HomeViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.FragmentCItemBinding;
@@ -91,6 +95,15 @@ public class CItemFragment extends Fragment{
                 adapter = new ArticleAdapter(getActivity(), R.layout.citem_list_article, articles);
                 //设置适配器
                 articleRV.setAdapter(adapter);
+                articleRV.setOnItemClickListener((parent, view, position, id) -> {
+                    Article clickedArticle = articles.get(position);
+                    Intent intent = new Intent(getActivity(), ReadActivity.class);
+                    // 传递文章数据
+                    intent.putExtra("title", clickedArticle.getTitle());
+                    intent.putExtra("imageUrl", clickedArticle.getCover()); // 假设是图片的URL
+                    intent.putExtra("content", clickedArticle.getContent());
+                    startActivity(intent);
+                });
             }
         });
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
