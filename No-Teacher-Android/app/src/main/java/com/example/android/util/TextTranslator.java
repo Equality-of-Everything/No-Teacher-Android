@@ -26,7 +26,7 @@ public class TextTranslator {
         this.q = s;
     }
 
-    static String APP_KEY = "6a5cb82879d4fcc3", signType = "v2";
+    static String APP_KEY = "6a5cb82879d4fcc3", signType = "v3";
     static final String APP_SECRET = "7MJs9nIBVfge38rSI7RtBLSadtCTVQsI";
     static String BASE_URL = "https://openapi.youdao.com/";
 
