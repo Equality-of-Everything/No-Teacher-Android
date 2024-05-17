@@ -5,13 +5,13 @@ import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
 import com.example.android.bean.LexileRequest;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
-import com.example.android.util.TokenManager;
 
 import java.util.HashMap;
 

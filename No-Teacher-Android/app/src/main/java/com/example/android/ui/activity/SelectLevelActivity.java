@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.android.util.DataManager;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.SelectLevelViewModel;
 import com.example.no_teacher_andorid.R;
@@ -37,6 +38,8 @@ public class SelectLevelActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_level_select);
         viewModel = new ViewModelProvider(this).get(SelectLevelViewModel.class);
         binding.setViewModel(viewModel);
+
+//        viewModel.setIsSelectLiveData(false);
 
         // 初始化 Toolbar
         topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
@@ -99,6 +102,7 @@ public class SelectLevelActivity extends AppCompatActivity {
                 .setPositiveButton("确定", (dialog, which) -> {
                     // 用户点击确定按钮的处理逻辑
                     viewModel.updateLexile(this, userId, num);
+                    DataManager.getInstance().setIsSelectLiveData(true);
 
                     Log.e("userId", userId);
                     Intent intent = new Intent();

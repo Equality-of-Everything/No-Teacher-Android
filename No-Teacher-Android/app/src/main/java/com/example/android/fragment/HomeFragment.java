@@ -33,8 +33,10 @@ import com.example.android.ui.activity.ReadActivity;
 import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.adapter.ArticleAdapter;
+import com.example.android.util.DataManager;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.HomeViewModel;
+import com.example.android.viewmodel.SelectLevelViewModel;
 import com.example.android.viewmodel.UserTestViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserTestBinding;
@@ -81,6 +83,14 @@ public class HomeFragment extends Fragment {
                 binding.btnSetDifficult.setEnabled(false);
             }
         });
+
+        DataManager.getInstance().getIsSelectLiveData().observe(getActivity(), isSelect -> {
+            if(isSelect) {
+                binding.btnTest.setEnabled(false);
+                binding.btnSetDifficult.setEnabled(false);
+            }
+        });
+
 
         viewModel.getArticleNum(getContext());
         totalPages = viewModel.getTotalPages();
