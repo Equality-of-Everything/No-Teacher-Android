@@ -29,6 +29,7 @@ import com.example.android.bean.entity.Article;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.MainActivity;
+import com.example.android.ui.activity.ReadActivity;
 import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.adapter.ArticleAdapter;
@@ -180,6 +181,15 @@ public class HomeFragment extends Fragment {
             if (articles != null) {
                 adapter = new ArticleAdapter(getActivity(), R.layout.item_list_article, articles);
                 listView.setAdapter(adapter);
+                listView.setOnItemClickListener((parent, view, position, id) -> {
+                    Article clickedArticle = articles.get(position);
+                    Intent intent = new Intent(getActivity(), ReadActivity.class);
+                    // 传递文章数据
+                    intent.putExtra("title", clickedArticle.getTitle());
+                    intent.putExtra("imageUrl", clickedArticle.getCover()); // 假设是图片的URL
+                    intent.putExtra("content", clickedArticle.getContent());
+                    startActivity(intent);
+                });
             }
         });
 
