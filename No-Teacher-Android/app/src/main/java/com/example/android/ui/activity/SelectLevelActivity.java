@@ -42,37 +42,39 @@ public class SelectLevelActivity extends AppCompatActivity {
         int sum = 0;
         for (int i = 0;i <240;i++){
             sum += 5;
-            if (sum == 5){
+            if (sum == 110){
                 data.add(sum + " (相当于一年级及以下水平)");
-            }else if (sum == 10){
+            }else if (sum == 150){
                 data.add(sum + " (相当于一年级水平)");
-            }else if (sum == 30){
-                data.add(sum + " (相当于二年级水平)");
-            }else if (sum == 60){
-                data.add(sum + " (相当于三年级水平)");
-            }else if (sum == 110){
-                data.add(sum + " (相当于四年级水平)");
-            }else if (sum == 160){
-                data.add(sum + " (相当于五年级水平)");
             }else if (sum == 200){
-                data.add(sum + " (相当于六年级水平)");
-            }else if (sum == 240){
-                data.add(sum + " (相当于七年级水平)");
-            }else if (sum == 320){
-                data.add(sum + " (相当于八年级水平)");
-            }else if (sum == 400){
-                data.add(sum + " (相当于九年级水平)");
-            }else if (sum == 450){
-                data.add(sum + " (相当于高中一年级水平)");
-            }else if (sum == 500){
-                data.add(sum + " (相当于高中二年级水平)");
-            }else if (sum == 550){
-                data.add(sum + " (相当于高中三年级水平)");
-            }else if (sum == 600) {
-                data.add(sum + " (相当于大学及以上水平)");
-            }else{
-                data.add(sum + " ");
+                data.add(sum + " (相当于二年级水平)");
             }
+//            }else if (sum == 60){
+//                data.add(sum + " (相当于三年级水平)");
+//            }
+//            }else if (sum == 110){
+//                data.add(sum + " (相当于四年级水平)");
+//            }else if (sum == 160){
+//                data.add(sum + " (相当于五年级水平)");
+//            }else if (sum == 200){
+//                data.add(sum + " (相当于六年级水平)");
+//            }else if (sum == 240){
+//                data.add(sum + " (相当于七年级水平)");
+//            }else if (sum == 320){
+//                data.add(sum + " (相当于八年级水平)");
+//            }else if (sum == 400){
+//                data.add(sum + " (相当于九年级水平)");
+//            }else if (sum == 450){
+//                data.add(sum + " (相当于高中一年级水平)");
+//            }else if (sum == 500){
+//                data.add(sum + " (相当于高中二年级水平)");
+//            }else if (sum == 550){
+//                data.add(sum + " (相当于高中三年级水平)");
+//            }else if (sum == 600) {
+//                data.add(sum + " (相当于大学及以上水平)");
+//            }else{
+//                data.add(sum + " ");
+//            }
         }
         SelectLevelAdapter adapter = new SelectLevelAdapter(this, data);
         listView.setAdapter(adapter);
@@ -109,7 +111,7 @@ public class SelectLevelActivity extends AppCompatActivity {
      * @date 2024/5/8 14:22
      */
     private void showAlertDialog(int position) {
-        int num = 5 + position*5;
+        int num = position;
         new AlertDialog.Builder(this)
                 .setTitle("阅读难度选择")  // 设置对话框标题
                 .setMessage("选择阅读难度为" + num)  // 设置对话框显示的文本

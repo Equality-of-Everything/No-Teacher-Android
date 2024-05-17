@@ -95,6 +95,6 @@ public class CItemFragment extends Fragment{
         });
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
         Log.e("typeIdAAAAAAA", typeId +"");
-//        viewModel.fetchAllArticle(getActivity());
+        viewModel.fetchAllArticle(getActivity(), typeId);
     }
 }
