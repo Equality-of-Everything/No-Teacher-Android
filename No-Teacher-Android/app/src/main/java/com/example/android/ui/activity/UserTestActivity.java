@@ -64,6 +64,11 @@ public class UserTestActivity extends AppCompatActivity {
         viewModel.getCurrentPageLiveData().observe(this, page -> {
             binding.wordPageText.setText("第"+(page*8+1)+"~"+(page+1)*8+"单词");
         });
+        binding.testSkip.setOnClickListener(v -> {
+           Intent intent = new Intent();
+           intent.setClass(UserTestActivity.this, SelectLevelActivity.class);
+           startActivity(intent);
+        });
     }
 
     private void setupButtonListeners() {

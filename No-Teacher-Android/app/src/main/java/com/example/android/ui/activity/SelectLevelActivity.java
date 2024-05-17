@@ -1,6 +1,8 @@
 package com.example.android.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -13,20 +15,28 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.android.util.TokenManager;
+import com.example.android.viewmodel.SelectLevelViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.android.adapter.SelectLevelAdapter;
+import com.example.no_teacher_andorid.databinding.ActivityLevelSelectBinding;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 
 public class SelectLevelActivity extends AppCompatActivity {
     private MaterialToolbar topAppBar;
-    private Button btnToTest;
+    private SelectLevelViewModel viewModel;
+    private ActivityLevelSelectBinding binding;
+    private String userId;
+    private int num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_level_select);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_level_select);
+        viewModel = new ViewModelProvider(this).get(SelectLevelViewModel.class);
+        binding.setViewModel(viewModel);
 
         // 初始化 Toolbar
         topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
@@ -43,42 +53,16 @@ public class SelectLevelActivity extends AppCompatActivity {
         for (int i = 0;i <240;i++){
             sum += 5;
             if (sum == 110){
-                data.add(sum + " (相当于一年级及以下水平)");
+                data.add(sum + " (容易)");
             }else if (sum == 150){
-                data.add(sum + " (相当于一年级水平)");
+                data.add(sum + " (适中)");
             }else if (sum == 200){
-                data.add(sum + " (相当于二年级水平)");
+                data.add(sum + " (困难)");
             }
-//            }else if (sum == 60){
-//                data.add(sum + " (相当于三年级水平)");
-//            }
-//            }else if (sum == 110){
-//                data.add(sum + " (相当于四年级水平)");
-//            }else if (sum == 160){
-//                data.add(sum + " (相当于五年级水平)");
-//            }else if (sum == 200){
-//                data.add(sum + " (相当于六年级水平)");
-//            }else if (sum == 240){
-//                data.add(sum + " (相当于七年级水平)");
-//            }else if (sum == 320){
-//                data.add(sum + " (相当于八年级水平)");
-//            }else if (sum == 400){
-//                data.add(sum + " (相当于九年级水平)");
-//            }else if (sum == 450){
-//                data.add(sum + " (相当于高中一年级水平)");
-//            }else if (sum == 500){
-//                data.add(sum + " (相当于高中二年级水平)");
-//            }else if (sum == 550){
-//                data.add(sum + " (相当于高中三年级水平)");
-//            }else if (sum == 600) {
-//                data.add(sum + " (相当于大学及以上水平)");
-//            }else{
-//                data.add(sum + " ");
-//            }
         }
         SelectLevelAdapter adapter = new SelectLevelAdapter(this, data);
         listView.setAdapter(adapter);
-
+        userId = TokenManager.getUserId(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,17 +73,6 @@ public class SelectLevelActivity extends AppCompatActivity {
             }
         });
 
-        //初始化按钮
-        btnToTest = (Button) findViewById(R.id.btn_to_test);
-        if (btnToTest != null) {
-            btnToTest.setOnClickListener(v -> {
-                Intent intent = new Intent();
-                intent.setClass(SelectLevelActivity.this, UserTestActivity.class);
-                startActivity(intent);
-            });
-        } else {
-            Log.e("SelectLevelActivity", "Button to test not found.");
-        }
     }
 
 
@@ -111,13 +84,26 @@ public class SelectLevelActivity extends AppCompatActivity {
      * @date 2024/5/8 14:22
      */
     private void showAlertDialog(int position) {
-        int num = position;
+        num = 0;
+        if(position == 0) {
+            num = 110;
+        } else if(position == 1) {
+            num = 150;
+        } else {
+            num = 200;
+        }
+        int finalNum = num;
         new AlertDialog.Builder(this)
                 .setTitle("阅读难度选择")  // 设置对话框标题
                 .setMessage("选择阅读难度为" + num)  // 设置对话框显示的文本
                 .setPositiveButton("确定", (dialog, which) -> {
                     // 用户点击确定按钮的处理逻辑
-                    finish();
+                    viewModel.updateLexile(this, userId, num);
+
+                    Log.e("userId", userId);
+                    Intent intent = new Intent();
+                    intent.setClass(SelectLevelActivity.this, MainActivity.class);
+                    startActivity(intent);
                 })
                 .setNegativeButton("取消", (dialog, which) -> {
 

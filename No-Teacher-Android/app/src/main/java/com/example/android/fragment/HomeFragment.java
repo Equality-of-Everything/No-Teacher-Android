@@ -77,8 +77,9 @@ public class HomeFragment extends Fragment {
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
             if (isTest) {
                 binding.btnTest.setEnabled(false);
+                binding.btnSetDifficult.setEnabled(false);
             }
-        });;
+        });
 
         viewModel.getArticleNum(getContext());
         totalPages = viewModel.getTotalPages();
@@ -162,20 +163,6 @@ public class HomeFragment extends Fragment {
             currentPage--; // 如果超过总页数，回退一页保持原样
             swipeRefreshLayout.setRefreshing(false);
         }
-//        int targetPage = isRefresh ? currentPage : currentPage + 1;
-//
-//        viewModel.fetchArticles(getActivity(), lexile, currentPage);
-//        if(targetPage <= totalPages) {
-//            viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles1 -> {
-//                if(isRefresh) {
-//                    adapter.addMoreArticle(articles);
-//                } else {
-//                    adapter.addMoreArticle(articles);
-//                    currentPage = targetPage; //更新当前页码
-//                }
-//                swipeRefreshLayout.setRefreshing(false);
-//            });
-//        }
 
     }
 
