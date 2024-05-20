@@ -3,6 +3,7 @@ package com.example.android.bean.entity;
 import android.content.Context;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -123,6 +124,7 @@ public class WordClickableSpan extends ClickableSpan {
                         @Override
                         public void onResponse(Call<TextRes> call, Response<TextRes> response) {
                             if (response.isSuccessful() && response.body() != null) {
+                                if(response.body().getTranslation()==null) return;
                                 String translatedText = response.body().getTranslation().get(0);
                                 if (translatedTextView != null) {
                                     translatedTextView.setText(translatedText);
@@ -161,6 +163,7 @@ public class WordClickableSpan extends ClickableSpan {
                         @Override
                         public void onResponse(Call<TextRes> call, Response<TextRes> response) {
                             if (response.isSuccessful() && response.body() != null) {
+                                if(response.body().getTranslation()==null) return;
                                 String translatedText = response.body().getTranslation().get(0);
                                 item.setTranslatedExample(translatedText);
                                 adapter.notifyDataSetChanged();
