@@ -17,6 +17,7 @@ import com.example.android.adapter.ExamplesAdapter;
 import com.example.android.api.DictionaryAPI;
 import com.example.android.http.RetrofitClient;
 import com.example.android.util.TextTranslator;
+import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -140,14 +141,16 @@ public class WordClickableSpan extends ClickableSpan {
                         }
                     });
                 } else {
-                    Toast.makeText(widget.getContext(), "未找到该单词的详细信息", Toast.LENGTH_SHORT).show();
+                    ToastManager.showCustomToast(widget.getContext(), "未找到该单词的详细信息");
+//                    Toast.makeText(widget.getContext(), "未找到该单词的详细信息", Toast.LENGTH_SHORT).show();
                 }
             }
 
 
             @Override
             public void onFailure(Call<List<Words>> call, Throwable t) {
-                Toast.makeText(widget.getContext(), "请求失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastManager.showCustomToast(widget.getContext(), "请求失败：" + t.getMessage());
+//                Toast.makeText(widget.getContext(), "请求失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         bottomSheetDialog.show();

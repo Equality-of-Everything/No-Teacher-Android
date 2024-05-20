@@ -247,7 +247,7 @@ public class HomeViewModel extends ViewModel {
      * @description 获取所有文章（文库）
      * @date 2024/5/16 8:12
      */
-    public void fetchAllArticle(Context context, int typeId){
+    public void fetchAllArticle(Context context, int typeId,int lexile){
         RetrofitManager.getInstance(context, WORD_SERVICE)
                 .getApi(ApiService.class)
                 .getAllArticle()
@@ -260,7 +260,7 @@ public class HomeViewModel extends ViewModel {
                             List<Article> list = response.body().getData();
                             List<Article> articles = new ArrayList<>();
                             for(Article article : list) {
-                                if(article.getTypeId() == typeId) {
+                                if(article.getTypeId() == typeId && article.getLexile() == lexile) {
                                     articles.add(article);
                                 }
                                 articlesLiveData.postValue(articles);

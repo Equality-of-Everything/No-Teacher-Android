@@ -34,6 +34,7 @@ import com.example.android.ui.activity.SelectLevelActivity;
 import com.example.android.ui.activity.UserTestActivity;
 import com.example.android.adapter.ArticleAdapter;
 import com.example.android.util.DataManager;
+import com.example.android.util.ToastManager;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.HomeViewModel;
 import com.example.android.viewmodel.SelectLevelViewModel;
@@ -111,7 +112,8 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
                 getActivity().finish();  // 如果需要结束当前Activity，正确地调用
             } else {
-                Toast.makeText(getActivity(), "Verification failed.", Toast.LENGTH_SHORT).show();
+                ToastManager.showCustomToast(getActivity(), "Verification failed.");
+//                Toast.makeText(getActivity(), "Verification failed.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -139,7 +141,8 @@ public class HomeFragment extends Fragment {
                 loadData(false); // 加载下一页数据
             } else {
                 swipeRefreshLayout.setRefreshing(false); // 如果已经是最后一页，停止刷新动画
-                Toast.makeText(getActivity(), "No more articles to load", Toast.LENGTH_SHORT).show();
+                ToastManager.showCustomToast(getActivity(), "No more articles to load");
+//                Toast.makeText(getActivity(), "No more articles to load", Toast.LENGTH_SHORT).show();
             }
         });
 //        swipeRefreshLayout = binding.swipeRefresh;

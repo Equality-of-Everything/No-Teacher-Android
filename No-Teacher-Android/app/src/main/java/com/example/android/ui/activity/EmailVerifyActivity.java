@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.android.api.ApiService;
 import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.ToastManager;
 import com.example.android.viewmodel.EmailVerifyViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityEmailVerifyBinding;
@@ -63,7 +64,8 @@ public class EmailVerifyActivity extends AppCompatActivity {
                startActivity(intent);
                finish();
            } else {
-               Toast.makeText(this, "Verification failed.", Toast.LENGTH_SHORT).show();
+               ToastManager.showCustomToast(this, "Verification failed.");
+//               Toast.makeText(this, "Verification failed.", Toast.LENGTH_SHORT).show();
            }
         });
     }
@@ -71,7 +73,8 @@ public class EmailVerifyActivity extends AppCompatActivity {
         String emailInput = binding.edTxtVerifyEmail.getText().toString();
         Log.e("EmailVerifyActivity", "Email input: " + emailInput);
         if (!TextUtils.isEmpty(emailInput)) {
-            Toast.makeText(this, "请接收验证码", Toast.LENGTH_LONG).show();
+            ToastManager.showCustomToast(this, "请接收验证码" + emailInput);
+//            Toast.makeText(this, "请接收验证码", Toast.LENGTH_LONG).show();
             viewModel.setEmail(emailInput);
             viewModel.requestSendVerificationCode(this);
 
@@ -88,7 +91,8 @@ public class EmailVerifyActivity extends AppCompatActivity {
                 }
             }.start();
         } else {
-            Toast.makeText(this, "请输入邮箱", Toast.LENGTH_LONG).show();
+            ToastManager.showCustomToast(this, "请输入邮箱");
+//            Toast.makeText(this, "请输入邮箱", Toast.LENGTH_LONG).show();
         }
     }
 
