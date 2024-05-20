@@ -28,6 +28,7 @@ import com.example.no_teacher_andorid.databinding.FragmentCItemBinding;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CItemFragment extends Fragment{
@@ -66,11 +67,7 @@ public class CItemFragment extends Fragment{
 
         //设置难度列表
         difficultyRV = binding.getRoot().findViewById(R.id.difficultyRV);
-        List<Integer> difficultyItemList = new ArrayList<>();
-        for (int i = 5; i <= 1200; i += 5) {
-            //难度值
-            difficultyItemList.add(i);
-        }
+        List<Integer> difficultyItemList = new ArrayList<>(Arrays.asList(110,150,200));
         //创建难度列表适配器
         DifficultyAdapter difficultyadapter = new DifficultyAdapter(getContext(),difficultyItemList);
         //设置水平布局
@@ -78,6 +75,8 @@ public class CItemFragment extends Fragment{
         //设置点击事件
         difficultyadapter.setOnItemClickListener((difficulty) ->{
             Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " +category+ "Id-" + typeId + ", 难度 - " +difficulty);
+            lexile = difficulty;
+            viewModel.fetchAllArticle(getContext(),typeId,lexile);
         });
 
 
@@ -107,7 +106,7 @@ public class CItemFragment extends Fragment{
             }
         });
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
-        Log.e("typeIdAAAAAAA", typeId +"");
-        viewModel.fetchAllArticle(getActivity(), typeId);
+        Log.e("typeIdAAAAAAA", typeId +""+lexile);
+        viewModel.fetchAllArticle(getActivity(), typeId,lexile);
     }
 }
