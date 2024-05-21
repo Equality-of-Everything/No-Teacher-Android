@@ -103,6 +103,9 @@ public class EmailVerifyViewModel extends ViewModel {
                                 Log.e("aaaaaaaa", user.toString());
                                 String userId = user.getUserId();
                                 TokenManager.saveUserId(context.getApplicationContext(), userId);
+                                TokenManager.saveUserAvatar(context.getApplicationContext(), user.getAvatar());
+                                String avatar = TokenManager.getUserAvatar(context.getApplicationContext());
+                                Log.e("avatar", avatar);
 
                             } else {
                                 Log.e("Request Error", "Error from server: " + body.getMessage());

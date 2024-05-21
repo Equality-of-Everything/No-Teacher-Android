@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.api.ApiService;
 import com.example.android.bean.entity.Article;
@@ -116,6 +117,13 @@ public class HomeFragment extends Fragment {
 //                Toast.makeText(getActivity(), "Verification failed.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        String avatar = TokenManager.getUserAvatar(getContext());
+        if(avatar != null) {
+            Glide.with(getActivity())
+                    .load(avatar)
+                    .into(binding.ivIndividualAvatar);
+        }
 
         binding.btnSetDifficult.setOnClickListener(new View.OnClickListener() {
             @Override

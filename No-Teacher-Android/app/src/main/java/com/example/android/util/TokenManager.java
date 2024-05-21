@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class TokenManager {
     private static final String TOKEN_PREFS = "TokenPrefs";
     private static final String USER_ID = "userId";
+    private static final String USER_AVATAR = "userAvatar";
     private static final String PREFS_NAME = "WordIdPreferences";
     private static final String KEY_WORD_IDS = "wordIds";
 
@@ -50,6 +51,33 @@ public class TokenManager {
     public static String getUserId(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(TOKEN_PREFS, Context.MODE_PRIVATE);
         return sharedPreferences.getString(USER_ID, null);
+    }
+
+    /**
+     * @param context:
+     * @param userAvatar:
+     * @return void
+     * @author Lee
+     * @description 存一下用户的头像url
+     * @date 2024/5/21 8:38
+     */
+    public static void saveUserAvatar(Context context, String userAvatar) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("userAvatar", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_AVATAR, userAvatar);
+        editor.apply();
+    }
+
+    /**
+     * @param context:
+     * @return String
+     * @author Lee
+     * @description 取用户头像url
+     * @date 2024/5/21 8:39
+     */
+    public static String getUserAvatar(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("userAvatar", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(USER_AVATAR, null);
     }
 
     /**

@@ -17,10 +17,13 @@ import java.util.List;
 
 import kotlin.Metadata;
 import kotlin.ParameterName;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -49,8 +52,8 @@ public interface ApiService {
     Call<BaseResponse<Void>> sendTestResultToServer(@QueryMap HashMap<String, String> params);
 
     //上传头像
-    @POST("userInfo/updateAvatar")
-    Call<BaseResponse<Void>> uploadAvatar(@QueryMap HashMap<String, String> params);
+//    @POST("userInfo/updateAvatar")
+//    Call<BaseResponse<Void>> uploadAvatar(@QueryMap HashMap<String, String> params);
 
     //更新个人资料
     @POST("userInfo/addUser")
@@ -72,8 +75,12 @@ public interface ApiService {
 
     //将用户自行选择的难度值传给后端
     @POST("userInfo/updateLexile")
-//    Call<BaseResponse<Void>> updateLexile(@Body LexileRequest params);
     Call<BaseResponse<Void>> updateLexile(@QueryMap HashMap<String, String> params);
+
+    //将头像传给后端
+    @Multipart
+    @POST("userInfo/updateAvatar")
+    Call<BaseResponse<Void>> uploadAvatar(@Part("userId") String userId, @Part MultipartBody.Part file);
 }
 
 

@@ -20,13 +20,17 @@ import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.util.TokenManager;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Multipart;
 
 public class UserEditViewModel extends ViewModel {
 
@@ -36,6 +40,8 @@ public class UserEditViewModel extends ViewModel {
     private MutableLiveData<String> userAvatar = new MutableLiveData<>();
 
     private MutableLiveData<String> statusMsg = new MutableLiveData<>();
+    private MutableLiveData<String> uploadStatus = new MutableLiveData<>();
+    private MutableLiveData<Integer> uploadProgress = new MutableLiveData<>();
     private ApiService apiService;
 
     private String userId = "120937";
@@ -84,6 +90,13 @@ public class UserEditViewModel extends ViewModel {
         statusMsg.setValue(message);
     }
 
+    public LiveData<String> getUploadStatus() {
+        return uploadStatus;
+    }
+    public LiveData<Integer> getUploadProgress() {
+        return uploadProgress;
+    }
+
     public void updateUserInfo(Context context) {
         UserInfoRequest request = new UserInfoRequest(userId, username.getValue(), userBirthday.getValue(), userSex.getValue(), userAvatar.getValue());
         HashMap<String, String> params = new LinkedHashMap<>();
@@ -111,30 +124,69 @@ public class UserEditViewModel extends ViewModel {
                     }
                 });
     }
+
+    /**
+     * @param context:
+     * @param userId:
+     * @param file:
+     * @return void
+     * @author Lee
+     * @description 更新头像
+     * @date 2024/5/21 9:23
+     */
+    public void uploadAvatar(Context context, String userId, MultipartBody.Part file) {
+        ApiService service = RetrofitManager.getInstance(context, USER_SERVICE)
+                        .getApi(ApiService.class);
+        Call<BaseResponse<Void>> call = service.uploadAvatar(userId, file);
+        call.enqueue(new Callback<BaseResponse<Void>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+                if (response.isSuccessful()) {
+                    uploadStatus.setValue("File uploaded successfully!");
+                    Log.e("Success", "Response Code: " + response.code() + " Message: " + response.message());
+                } else {
+                    uploadStatus.setValue("Upload failed: " + response.message());
+                    Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
+                }
+                uploadProgress.setValue(100);
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+                uploadStatus.setValue("Upload failed: " + t.getMessage());
+                Log.e("UploadAvatar-Error", "Network-Error"+t.getMessage());
+                uploadProgress.setValue(0);
+            }
+        });
+
+
+    }
+
+    /**
+     *
+     * @param enteredUsername
+     * @param enteredBirthday
+     * @param enteredSex
+     * @param enteredImage
+     * @param validationRules
+     */
+    private void getErrorInfo(String enteredUsername, String enteredBirthday, String enteredSex, String enteredImage, Map<Boolean, ErrorInfo> validationRules) {
+        validationRules.put(!isValidUsername(enteredUsername),
+                new ErrorInfo("温馨提示", "用户名不符合规则，请输入合法用户名"));
+        validationRules.put(TextUtils.isEmpty(enteredUsername)||TextUtils.isEmpty(enteredBirthday)||TextUtils.isEmpty(enteredSex)||TextUtils.isEmpty(enteredImage),new ErrorInfo("温馨提示","请输入完整信息后再进行注册"));
+    }
+
+    /**
+     * 非法用户名判断
+     * @param username
+     * @return
+     */
+    public boolean isValidUsername(String username) {
+        String pattern = "^[a-zA-Z0-9_]+$";
+        return username.matches(pattern);
+    }
 }
 
 
-//    /**
-//     *
-//     * @param enteredUsername
-//     * @param enteredBirthday
-//     * @param enteredSex
-//     * @param enteredImage
-//     * @param validationRules
-//     */
-//    private void getErrorInfo(String enteredUsername, String enteredBirthday, String enteredSex, String enteredImage, Map<Boolean, ErrorInfo> validationRules) {
-//        validationRules.put(!isValidUsername(enteredUsername),
-//                new ErrorInfo("温馨提示", "用户名不符合规则，请输入合法用户名"));
-//        validationRules.put(TextUtils.isEmpty(enteredUsername)||TextUtils.isEmpty(enteredBirthday)||TextUtils.isEmpty(enteredSex)||TextUtils.isEmpty(enteredImage),new ErrorInfo("温馨提示","请输入完整信息后再进行注册"));
-//    }
-//
-//    /**
-//     * 非法用户名判断
-//     * @param username
-//     * @return
-//     */
-//    public boolean isValidUsername(String username) {
-//        String pattern = "^[a-zA-Z0-9_]+$";
-//        return username.matches(pattern);
-//    }
+
 

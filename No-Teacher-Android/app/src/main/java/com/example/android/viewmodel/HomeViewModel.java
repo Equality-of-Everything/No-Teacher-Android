@@ -255,7 +255,7 @@ public class HomeViewModel extends ViewModel {
                     @Override
                     public void onResponse(Call<BaseResponse<List<Article>>> call, Response<BaseResponse<List<Article>>> response) {
                         if(response.isSuccessful() && response.body() != null) {
-                            Log.e("getAllArticle", response.body().getData().toString());
+//                            Log.e("getAllArticle", response.body().getData().toString());
 
                             List<Article> list = response.body().getData();
                             List<Article> articles = new ArrayList<>();
@@ -264,7 +264,7 @@ public class HomeViewModel extends ViewModel {
                                     articles.add(article);
                                 }
                                 articlesLiveData.postValue(articles);
-                                Log.e("ArticleType", article.getTypeId()+"");
+//                                Log.e("ArticleType", article.getTypeId()+"");
                             }
 
 

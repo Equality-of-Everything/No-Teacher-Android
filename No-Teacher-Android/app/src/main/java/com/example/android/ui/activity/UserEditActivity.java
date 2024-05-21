@@ -8,19 +8,28 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.android.api.ApiService;
 import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.ToastManager;
+import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.UserEditViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserEditBinding;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,6 +37,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class UserEditActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SELECT_IMAGE = 1;
@@ -146,8 +159,44 @@ public class UserEditActivity extends AppCompatActivity {
             binding.ivIndividualAvatar.setImageURI(imageUri);
             userAvatar = imageUri.toString();
             userEditViewModel.setUserAvatar(userAvatar);
+
+            SaveToLocalStorage(userAvatar);
         }
     }
 
+    /**
+     * @param selectedImageUri:
+     * @return void
+     * @author Lee
+     * @description 将头像保存到本地
+     * @date 2024/5/21 9:19
+     */
+    private void SaveToLocalStorage(String selectedImageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(selectedImageUri));
+            File internalStorageDir = getFilesDir();
+            File avatarFile = new File(internalStorageDir, "avatar.jpg");
+            OutputStream outputStream = new FileOutputStream(avatarFile);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+            binding.ivIndividualAvatar.setImageURI(Uri.fromFile(avatarFile));
+
+            // 构建 MultipartBody.Part
+            RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(Uri.parse(selectedImageUri))), avatarFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", avatarFile.getName(), requestFile);
+            userEditViewModel.uploadAvatar(this, "userId", body);
+        } catch (IOException e) {
+            ToastManager.showCustomToast(this,  "Error saving image");
+            e.printStackTrace();
+        }
+    }
 
 }
+
+
+
