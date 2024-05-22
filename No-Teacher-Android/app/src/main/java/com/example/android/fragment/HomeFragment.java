@@ -80,6 +80,7 @@ public class HomeFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         viewModel.isTest(getContext(), TokenManager.getUserId(getContext()));
+        binding.tvHomeName.setText(TokenManager.getUserName(getActivity()));
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
             if (isTest) {
                 binding.btnTest.setEnabled(false);

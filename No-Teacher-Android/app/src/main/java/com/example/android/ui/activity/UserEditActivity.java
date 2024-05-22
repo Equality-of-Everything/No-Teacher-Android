@@ -2,6 +2,7 @@ package com.example.android.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.android.api.ApiService;
 import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
@@ -71,6 +73,13 @@ public class UserEditActivity extends AppCompatActivity {
 
         userId = TokenManager.getUserId(this);
         userEditViewModel.setUserId(userId);
+        String avatar = TokenManager.getUserAvatar(this);
+        if(avatar != null) {
+            Glide.with(this)
+                    .load(avatar)
+                    .into(binding.ivIndividualAvatar);
+        }
+
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
         materialDateBuilder.setTitleText("选择日期");
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
@@ -117,6 +126,7 @@ public class UserEditActivity extends AppCompatActivity {
                 TokenManager.getUserName(UserEditActivity.this);
                 Log.e("userNameFormToken", TokenManager.getUserName(UserEditActivity.this));
 
+                DataManager.getInstance().setIsRefreshNameLiveData(true);
 
                 userEditViewModel.updateUserInfo(UserEditActivity.this);
             }

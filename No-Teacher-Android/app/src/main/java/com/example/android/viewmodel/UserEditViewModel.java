@@ -15,6 +15,7 @@ import com.example.android.bean.UserInfoRequest;
 import com.example.android.bean.entity.ErrorInfo;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.DataManager;
 import com.example.android.util.TokenManager;
 
 import java.util.HashMap;
@@ -163,6 +164,8 @@ public class UserEditViewModel extends ViewModel {
                     userAvatar.setValue(response.body().getData());
                     Log.e("Avatar", response.body().getData());
                     TokenManager.saveUserAvatar(context, response.body().getData());
+
+                    DataManager.getInstance().setIsRefreshAvatarLiveData(true);
                 } else {
                     uploadStatus.setValue("Upload failed: " + response.message());
                     Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());

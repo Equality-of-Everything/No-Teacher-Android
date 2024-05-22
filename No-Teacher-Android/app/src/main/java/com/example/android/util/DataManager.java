@@ -17,6 +17,8 @@ public class DataManager {
 
     private DataManager() {
         isSelectLiveData = new MutableLiveData();
+        isRefreshNameLiveData = new MutableLiveData<>();
+        isRefreshAvatarLiveData = new MutableLiveData<>();
     }
 
     public static synchronized DataManager getInstance() {
@@ -38,15 +40,15 @@ public class DataManager {
         return isRefreshNameLiveData;
     }
 
-    public void setIsRefreshNameLiveData(MutableLiveData<Boolean> isRefreshNameLiveData) {
-        this.isRefreshNameLiveData = isRefreshNameLiveData;
+    public void setIsRefreshNameLiveData(Boolean isRefreshName) {
+        isRefreshNameLiveData.postValue(isRefreshName);
     }
 
     public MutableLiveData<Boolean> getIsRefreshAvatarLiveData() {
         return isRefreshAvatarLiveData;
     }
 
-    public void setIsRefreshAvatarLiveData(MutableLiveData<Boolean> isRefreshAvatarLiveData) {
-        this.isRefreshAvatarLiveData = isRefreshAvatarLiveData;
+    public void setIsRefreshAvatarLiveData(Boolean isRefreshAvatar) {
+        isRefreshAvatarLiveData.postValue(isRefreshAvatar);
     }
 }

@@ -11,13 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.UserEditActivity;
+import com.example.android.util.DataManager;
+import com.example.android.util.TokenManager;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
@@ -29,6 +34,8 @@ import java.util.ArrayList;
  */
 public class MineFragment extends Fragment {
     private RecyclerView recyclerView;
+    private ImageView ivAvatar;
+    private TextView tvName;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -72,6 +79,35 @@ public class MineFragment extends Fragment {
             });
         } else {
             Log.e("MineFragment", "Button not found");
+        }
+
+        ivAvatar = view.findViewById(R.id.image_avatar);
+        tvName = view.findViewById(R.id.text_name);
+
+        tvName.setText(TokenManager.getUserName(getContext()));
+        String avatar = TokenManager.getUserAvatar(getContext());
+        if(avatar != null) {
+            Glide.with(getActivity())
+                    .load(avatar)
+                    .into(ivAvatar);
+        }
+
+        LiveData<Boolean> isRefreshNameLiveData = DataManager.getInstance().getIsRefreshNameLiveData();
+        if (isRefreshNameLiveData != null) {
+            isRefreshNameLiveData.observe(getViewLifecycleOwner(), isRefreshName -> {
+                if (isRefreshName != null && isRefreshName) {
+                    tvName.setText(TokenManager.getUserName(getActivity()));
+                }
+            });
+        }
+
+        LiveData<Boolean> isRefreshAvatarLiveData = DataManager.getInstance().getIsRefreshAvatarLiveData();
+        if (isRefreshAvatarLiveData != null) {
+            isRefreshAvatarLiveData.observe(getActivity(), isRefreshAvatar -> {
+                if (isRefreshAvatar != null && isRefreshAvatar) {
+                    Glide.with(this).load(TokenManager.getUserAvatar(getActivity())).into(ivAvatar);
+                }
+            });
         }
 
         return view;
