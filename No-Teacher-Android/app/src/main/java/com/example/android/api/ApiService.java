@@ -51,9 +51,6 @@ public interface ApiService {
     @POST("userLevel/insertData")
     Call<BaseResponse<Void>> sendTestResultToServer(@QueryMap HashMap<String, String> params);
 
-    //上传头像
-//    @POST("userInfo/updateAvatar")
-//    Call<BaseResponse<Void>> uploadAvatar(@QueryMap HashMap<String, String> params);
 
     //更新个人资料
     @POST("userInfo/addUser")
@@ -79,8 +76,8 @@ public interface ApiService {
 
     //将头像传给后端
     @Multipart
-    @POST("userInfo/updateAvatar")
-    Call<BaseResponse<Void>> uploadAvatar(@Part("userId") String userId, @Part MultipartBody.Part file);
+    @POST("userInfo/updateAvatar/{userId}")
+    Call<BaseResponse<String>> uploadAvatar(@Path("userId") String userId, @Part MultipartBody.Part file);
 }
 
 

@@ -137,12 +137,13 @@ public class UserEditViewModel extends ViewModel {
     public void uploadAvatar(Context context, String userId, MultipartBody.Part file) {
         ApiService service = RetrofitManager.getInstance(context, USER_SERVICE)
                         .getApi(ApiService.class);
-        Call<BaseResponse<Void>> call = service.uploadAvatar(userId, file);
-        call.enqueue(new Callback<BaseResponse<Void>>() {
+        Call<BaseResponse<String>> call = service.uploadAvatar(userId, file);
+        call.enqueue(new Callback<BaseResponse<String>>() {
             @Override
-            public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+            public void onResponse(Call<BaseResponse<String>> call, Response<BaseResponse<String>> response) {
                 if (response.isSuccessful()) {
                     uploadStatus.setValue("File uploaded successfully!");
+                    Log.e("AAAAAAAAAAAAAAA", response.body().getMsg() + "");
                     Log.e("Success", "Response Code: " + response.code() + " Message: " + response.message());
                 } else {
                     uploadStatus.setValue("Upload failed: " + response.message());
@@ -152,10 +153,11 @@ public class UserEditViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+            public void onFailure(Call<BaseResponse<String>> call, Throwable t) {
                 uploadStatus.setValue("Upload failed: " + t.getMessage());
                 Log.e("UploadAvatar-Error", "Network-Error"+t.getMessage());
                 uploadProgress.setValue(0);
+                t.printStackTrace();
             }
         });
 

@@ -100,6 +100,7 @@ public class UserEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectAvatar();
+
             }
         });
         
@@ -189,7 +190,7 @@ public class UserEditActivity extends AppCompatActivity {
             // 构建 MultipartBody.Part
             RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(Uri.parse(selectedImageUri))), avatarFile);
             MultipartBody.Part body = MultipartBody.Part.createFormData("file", avatarFile.getName(), requestFile);
-            userEditViewModel.uploadAvatar(this, "userId", body);
+            userEditViewModel.uploadAvatar(this, TokenManager.getUserId(this), body);
         } catch (IOException e) {
             ToastManager.showCustomToast(this,  "Error saving image");
             e.printStackTrace();
