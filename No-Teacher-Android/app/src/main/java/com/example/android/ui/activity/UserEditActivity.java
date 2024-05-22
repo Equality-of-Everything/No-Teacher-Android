@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.android.api.ApiService;
 import com.example.android.constants.BuildConfig;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.DataManager;
 import com.example.android.util.ToastManager;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.UserEditViewModel;
@@ -50,6 +51,7 @@ public class UserEditActivity extends AppCompatActivity {
     DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("yyyy年M月d日", Locale.CHINA);
     DateTimeFormatter serverFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
+    private String userId;
     private String userName;
     private String userBirthday;
     private String userSex;
@@ -67,7 +69,8 @@ public class UserEditActivity extends AppCompatActivity {
 //        ApiService apiService = RetrofitManager.getInstance(this, BuildConfig.USER_SERVICE).getApi(ApiService.class);
 //        userEditViewModel.setApiService(apiService);
 
-
+        userId = TokenManager.getUserId(this);
+        userEditViewModel.setUserId(userId);
         MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.datePicker();
         materialDateBuilder.setTitleText("选择日期");
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
@@ -107,7 +110,21 @@ public class UserEditActivity extends AppCompatActivity {
         binding.btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userName = binding.etUsername.getText().toString();
+                userEditViewModel.setUsername(userName);
+                TokenManager.saveUserName(UserEditActivity.this, userName);
+                Log.e("userName", userName);
+                TokenManager.getUserName(UserEditActivity.this);
+                Log.e("userNameFormToken", TokenManager.getUserName(UserEditActivity.this));
+
+
                 userEditViewModel.updateUserInfo(UserEditActivity.this);
+            }
+        });
+
+        userEditViewModel.getNavigateToMain().observe(this, shouldNavigate -> {
+            if(shouldNavigate) {
+                finish();
             }
         });
 
@@ -115,8 +132,6 @@ public class UserEditActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        userName = binding.etUsername.getText().toString();
-        userEditViewModel.setUsername(userName);
 
         binding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

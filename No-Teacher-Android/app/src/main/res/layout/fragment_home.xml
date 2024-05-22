@@ -41,7 +41,7 @@
                     android:fontFamily="@font/text2"
                     android:layout_marginTop="25dp"
                     android:layout_marginLeft="10dp"
-                    android:text="齐物" />
+                    />
 
                 <Button
                     android:id="@+id/btn_test"

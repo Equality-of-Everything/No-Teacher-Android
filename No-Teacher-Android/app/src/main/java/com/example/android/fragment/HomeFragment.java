@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -92,6 +93,24 @@ public class HomeFragment extends Fragment {
                 binding.btnSetDifficult.setEnabled(false);
             }
         });
+
+        LiveData<Boolean> isRefreshNameLiveData = DataManager.getInstance().getIsRefreshNameLiveData();
+        if (isRefreshNameLiveData != null) {
+            isRefreshNameLiveData.observe(getViewLifecycleOwner(), isRefreshName -> {
+                if (isRefreshName != null && isRefreshName) {
+                    binding.tvHomeName.setText(TokenManager.getUserName(getContext()));
+                }
+            });
+        }
+
+        LiveData<Boolean> isRefreshAvatarLiveData = DataManager.getInstance().getIsRefreshAvatarLiveData();
+        if (isRefreshAvatarLiveData != null) {
+            isRefreshAvatarLiveData.observe(getViewLifecycleOwner(), isRefreshAvatar -> {
+                if (isRefreshAvatar != null && isRefreshAvatar) {
+                    Glide.with(getContext()).load(TokenManager.getUserAvatar(getContext())).into(binding.ivIndividualAvatar);
+                }
+            });
+        }
 
 
         viewModel.getArticleNum(getContext());

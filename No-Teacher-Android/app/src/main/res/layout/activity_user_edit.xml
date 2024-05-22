@@ -88,7 +88,7 @@
                     app:endIconMode="clear_text"
                     android:hint="输入用户名">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <EditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

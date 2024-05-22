@@ -11,29 +11,24 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
-import com.example.android.bean.EmailRequest;
-import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.UserInfoRequest;
 import com.example.android.bean.entity.ErrorInfo;
-import com.example.android.bean.entity.User;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
 import com.example.android.util.TokenManager;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 public class UserEditViewModel extends ViewModel {
 
+    private MutableLiveData<String> userId = new MutableLiveData<>();
     private MutableLiveData<String> username = new MutableLiveData<>();
     private MutableLiveData<String> userBirthday = new MutableLiveData<>();
     private MutableLiveData<String> userSex = new MutableLiveData<>();
@@ -42,9 +37,17 @@ public class UserEditViewModel extends ViewModel {
     private MutableLiveData<String> statusMsg = new MutableLiveData<>();
     private MutableLiveData<String> uploadStatus = new MutableLiveData<>();
     private MutableLiveData<Integer> uploadProgress = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> navigateToMain = new MutableLiveData<>();
     private ApiService apiService;
 
-    private String userId = "120937";
+    public MutableLiveData<String> getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId.setValue(userId);
+    }
 
     public void setApiService(ApiService apiService) {
         this.apiService = apiService;
@@ -97,10 +100,21 @@ public class UserEditViewModel extends ViewModel {
         return uploadProgress;
     }
 
+    public LiveData<Boolean> getNavigateToMain() {
+        return navigateToMain;
+    }
+
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 更新用户个人资料
+     * @date 2024/5/22 9:00
+     */
     public void updateUserInfo(Context context) {
-        UserInfoRequest request = new UserInfoRequest(userId, username.getValue(), userBirthday.getValue(), userSex.getValue(), userAvatar.getValue());
+        UserInfoRequest request = new UserInfoRequest(userId.getValue(), username.getValue(), userBirthday.getValue(), userSex.getValue(), userAvatar.getValue());
         HashMap<String, String> params = new LinkedHashMap<>();
-        params.put("userId", userId);
+        params.put("userId", userId.getValue());
         params.put("userName", username.getValue());
         params.put("birthdate", userBirthday.getValue());
         params.put("sex", userSex.getValue());
@@ -114,6 +128,7 @@ public class UserEditViewModel extends ViewModel {
                         Log.e("TAG", "onResponse: " + response.toString());
                         if (response.isSuccessful() && response.body() != null) {
                             Log.e("TAG", "onResponse: " + response.body().toString());
+                            navigateToMain.setValue(true);
                         }
                     }
 
@@ -145,6 +160,9 @@ public class UserEditViewModel extends ViewModel {
                     uploadStatus.setValue("File uploaded successfully!");
                     Log.e("AAAAAAAAAAAAAAA", response.body().getMsg() + "");
                     Log.e("Success", "Response Code: " + response.code() + " Message: " + response.message());
+                    userAvatar.setValue(response.body().getData());
+                    Log.e("Avatar", response.body().getData());
+                    TokenManager.saveUserAvatar(context, response.body().getData());
                 } else {
                     uploadStatus.setValue("Upload failed: " + response.message());
                     Log.e("HTTP Error", "Response Code: " + response.code() + " Message: " + response.message());
