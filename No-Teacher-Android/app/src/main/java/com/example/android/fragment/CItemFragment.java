@@ -76,7 +76,8 @@ public class CItemFragment extends Fragment{
         difficultyadapter.setOnItemClickListener((difficulty) ->{
             Log.d("DifficultyAdapter", "onDifficultyItemClick: 分类 - " +category+ "Id-" + typeId + ", 难度 - " +difficulty);
             lexile = difficulty;
-            viewModel.fetchAllArticle(getContext(),typeId,lexile);
+            setupArticle();
+
         });
 
 
@@ -87,6 +88,7 @@ public class CItemFragment extends Fragment{
     }
 
     private void setupArticle() {
+        final int FIRST_CATEGORY_ID = 0;
         //获取文章列表
         articleRV = binding.getRoot().findViewById(R.id.contentRV);
         viewModel.getArticleLiveData().observe(getViewLifecycleOwner(), articles -> {
@@ -99,7 +101,7 @@ public class CItemFragment extends Fragment{
                     Intent intent = new Intent(getActivity(), ReadActivity.class);
                     // 传递文章数据
                     intent.putExtra("title", clickedArticle.getTitle());
-                    intent.putExtra("imageUrl", clickedArticle.getCover()); // 假设是图片的URL
+                    intent.putExtra("imageUrl", clickedArticle.getCover());
                     intent.putExtra("content", clickedArticle.getContent());
                     startActivity(intent);
                 });
@@ -107,6 +109,12 @@ public class CItemFragment extends Fragment{
         });
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
         Log.e("typeIdAAAAAAA", typeId +""+lexile);
-        viewModel.fetchAllArticle(getActivity(), typeId,lexile);
+        if (typeId == FIRST_CATEGORY_ID) {
+            // 对第一个类别使用特殊的方法获取数据
+            viewModel.fetchArticles(getActivity(), lexile, currentPage);
+        } else {
+            // 对其他类别使用常规方法获取数据
+            viewModel.fetchAllArticle(getActivity(), typeId, lexile);
+        }
     }
 }
