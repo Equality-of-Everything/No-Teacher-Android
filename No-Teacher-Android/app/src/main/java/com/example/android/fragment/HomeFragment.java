@@ -1,10 +1,12 @@
 package com.example.android.fragment;
 
+import static android.app.appsearch.AppSearchResult.RESULT_OK;
 import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
