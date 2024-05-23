@@ -10,10 +10,15 @@ import androidx.lifecycle.MutableLiveData;
 
 public class DataManager {
     private static DataManager instance;
-    private MutableLiveData<Boolean> isSelectLiveData;
+    private MutableLiveData<Boolean> isSelectLiveData;//测试按钮
+
+    private MutableLiveData<Boolean> isRefreshNameLiveData;//用户名更新
+    private MutableLiveData<Boolean> isRefreshAvatarLiveData;//头像更新
 
     private DataManager() {
         isSelectLiveData = new MutableLiveData();
+        isRefreshNameLiveData = new MutableLiveData<>();
+        isRefreshAvatarLiveData = new MutableLiveData<>();
     }
 
     public static synchronized DataManager getInstance() {
@@ -29,5 +34,21 @@ public class DataManager {
 
     public void setIsSelectLiveData(Boolean isSelect) {
         isSelectLiveData.postValue(isSelect);
+    }
+
+    public MutableLiveData<Boolean> getIsRefreshNameLiveData() {
+        return isRefreshNameLiveData;
+    }
+
+    public void setIsRefreshNameLiveData(Boolean isRefreshName) {
+        isRefreshNameLiveData.postValue(isRefreshName);
+    }
+
+    public MutableLiveData<Boolean> getIsRefreshAvatarLiveData() {
+        return isRefreshAvatarLiveData;
+    }
+
+    public void setIsRefreshAvatarLiveData(Boolean isRefreshAvatar) {
+        isRefreshAvatarLiveData.postValue(isRefreshAvatar);
     }
 }

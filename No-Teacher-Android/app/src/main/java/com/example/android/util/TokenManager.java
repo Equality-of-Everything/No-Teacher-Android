@@ -23,6 +23,7 @@ public class TokenManager {
     private static final String TOKEN_PREFS = "TokenPrefs";
     private static final String USER_ID = "userId";
     private static final String USER_AVATAR = "userAvatar";
+    private static final String USER_NAME = "userName";
     private static final String PREFS_NAME = "WordIdPreferences";
     private static final String KEY_WORD_IDS = "wordIds";
 
@@ -80,6 +81,32 @@ public class TokenManager {
         return sharedPreferences.getString(USER_AVATAR, null);
     }
 
+    /**
+     * @param context:
+     * @param userName:
+     * @return void
+     * @author Lee
+     * @description 存用户名
+     * @date 2024/5/22 9:07
+     */
+    public static void saveUserName(Context context, String userName) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("userName", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_NAME, userName);
+        editor.apply();
+    }
+
+    /**
+     * @param context:
+     * @return String
+     * @author Lee
+     * @description 取用户名
+     * @date 2024/5/22 9:07
+     */
+    public static String getUserName(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("userName", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(USER_NAME, null);
+    }
     /**
      * @param words:
      * @param context:
