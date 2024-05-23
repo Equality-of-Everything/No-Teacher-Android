@@ -11,14 +11,14 @@
 
     <item
         android:id="@+id/navigation_b"
-        android:icon="@drawable/email"
-        android:title="b"
+        android:icon="@drawable/headset"
+        android:title="听读"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/navigation_c"
-        android:icon="@drawable/email"
-        android:title="c"
+        android:icon="@drawable/book"
+        android:title="文库"
         app:showAsAction="always" />
 
     <item
