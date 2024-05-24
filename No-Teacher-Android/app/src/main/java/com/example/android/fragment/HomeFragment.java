@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
         totalPages = viewModel.getTotalPages();
         // 设置 RecyclerView 和适配器
         //设置ListView和SwipeRefreshLayout以实现下拉上拉刷新数据
-        setupRecyclerView();
+//        setupRecyclerView();
         setupListView();
         setupSwipeRefreshLayout();
 
@@ -330,23 +330,23 @@ public class HomeFragment extends Fragment {
 //        snapHelper.attachToRecyclerView(carouselRecyclerView);
 //    }
 
-    private void setupRecyclerView() {
-        ArrayList<Integer> imageResourceList = new ArrayList<>();
-        imageResourceList.add(R.drawable.img_4);
-        imageResourceList.add(R.drawable.img_2);
-        imageResourceList.add(R.drawable.img_3);
-        imageResourceList.add(R.drawable.img);
-
-        ImageAdapter adapter = new ImageAdapter(requireContext(), imageResourceList);
-        adapter.setOnItemClickListener((imageView, imageResId) -> {
-            Intent intent = new Intent(requireContext(), ImageViewActivity.class);
-            intent.putExtra("image", imageResId);
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(requireActivity());
-            startActivity(intent, options.toBundle());
-        });
-        binding.recyclerA.setAdapter(adapter);
-
-    }
+//    private void setupRecyclerView() {
+//        ArrayList<Integer> imageResourceList = new ArrayList<>();
+//        imageResourceList.add(R.drawable.img_4);
+//        imageResourceList.add(R.drawable.img_2);
+//        imageResourceList.add(R.drawable.img_3);
+//        imageResourceList.add(R.drawable.img);
+//
+//        ImageAdapter adapter = new ImageAdapter(requireContext(), imageResourceList);
+//        adapter.setOnItemClickListener((imageView, imageResId) -> {
+//            Intent intent = new Intent(requireContext(), ImageViewActivity.class);
+//            intent.putExtra("image", imageResId);
+//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(requireActivity());
+//            startActivity(intent, options.toBundle());
+//        });
+//        binding.recyclerA.setAdapter(adapter);
+//
+//    }
 
     private void wordTestOnClick() {
 //        viewModel.requestTestWords(requireContext(), currentPage);

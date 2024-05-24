@@ -162,6 +162,12 @@
         app:icon="@drawable/logout"
         />
 
+     <ImageView
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:src="@drawable/grass3"
+    ></ImageView>
+
 
 </LinearLayout>
 

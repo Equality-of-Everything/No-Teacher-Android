@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carousel_item_container"
-    android:layout_width="200dp"
+    android:layout_width="150dp"
     android:layout_height="match_parent"
     android:layout_marginStart="4sp"
     android:layout_marginEnd="4sp"
