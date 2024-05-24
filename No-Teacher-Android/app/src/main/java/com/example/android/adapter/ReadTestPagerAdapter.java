@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.android.bean.entity.WordDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,5 +38,11 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragments.size();
+    }
+
+    public void addFragments(List<Fragment> additionalFragments) {
+        if (additionalFragments != null && !additionalFragments.isEmpty()) {
+            fragments.addAll(additionalFragments);
+        }
     }
 }

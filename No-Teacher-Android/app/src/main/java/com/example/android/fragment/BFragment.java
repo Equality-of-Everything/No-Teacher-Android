@@ -1,6 +1,7 @@
 package com.example.android.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +33,7 @@ public class BFragment extends Fragment {
     private Button nextButton;
     private BFragmentViewModel viewModel;
     private Button backButton;
+    private Button moreButton;
     private TextView pageNumberTextView;
     private ReadTestPagerAdapter pagerAdapter;
     private String userId ;
@@ -47,6 +49,23 @@ public class BFragment extends Fragment {
 //        userId = TokenManager.getUserId(getContext());
         userId="9c6a1c47-da2e-4aec-adc9-a492d5861986";
         //设置推荐单词的请求参数
+
+
+        viewPager = view.findViewById(R.id.view_pager);
+        nextButton = view.findViewById(R.id.next_button);
+        backButton = view.findViewById(R.id.back_button);
+        moreButton = view.findViewById(R.id.more_button);
+        pageNumberTextView = view.findViewById(R.id.page_number_text_view);
+
+        nextButton.setOnClickListener(v -> nextPage());
+        backButton.setOnClickListener(v -> prevPage());
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                updatePageNumber(position);
+                updateButtonVisibility(position);
+            }
+        });
         viewModel.setRecommendWords(getContext(), userId, currentPage);
         //观察ViewModel中推荐单词列表的LiveData
         viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
@@ -58,36 +77,56 @@ public class BFragment extends Fragment {
             }
         });
 
-        viewPager = view.findViewById(R.id.view_pager);
-        nextButton = view.findViewById(R.id.next_button);
-        backButton = view.findViewById(R.id.back_button);
-        pageNumberTextView = view.findViewById(R.id.page_number_text_view);
-
-        nextButton.setOnClickListener(v -> nextPage());
-        backButton.setOnClickListener(v -> prevPage());
-
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageSelected(int position) {
-                updatePageNumber(position);
-                updateButtonVisibility(position);
+            public void onClick(View view) {
+                currentPage++; // 增加页码
+                viewModel.setRecommendWords(getContext(), userId, currentPage); // 请求下一页数据
+
+                // 观察LiveData以处理新获取的数据
+                viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
+                    @Override
+                    public void onChanged(List<WordDetail> newWordDetails) {
+                        if (newWordDetails != null) {
+                            // 创建新的Fragment列表
+                            List<Fragment> additionalFragments = new ArrayList<>();
+                            for (WordDetail detail : newWordDetails) {
+                                additionalFragments.add(ReadTestPagerFragment.newInstance(detail.getParaphrasePicture(), detail.getWord(), detail.getParaphrase()));
+                            }
+
+                            // 将新Fragment添加到现有Adapter的Fragment列表中
+                            pagerAdapter.addFragments(additionalFragments);
+                            pagerAdapter.updateData(newWordDetails);
+
+                            // 更新ViewPager的当前项，确保在正确的页面上
+                            int nextPosition =currentPage*4 ;
+                            viewPager.setCurrentItem(nextPosition, true);
+
+                            // 更新按钮状态和页面编号
+                            updateButtonVisibility(nextPosition);
+
+                            updatePageNumber(nextPosition);
+//                            pagerAdapter.notifyDataSetChanged(); // 通知数据集变更
+                        }
+                    }
+                });
             }
         });
-
         return view;
     }
 
     // 在 ViewModel 数据变化时更新 ViewPager
     private void updateViewPagerWithWords(List<WordDetail> wordDetails) {
-        List<Fragment> dynamicFragments = new ArrayList<>();
+        List<Fragment> updatedFragments  = new ArrayList<>();
         for (WordDetail wordDetail : wordDetails) {
             // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
-            dynamicFragments.add(ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase()));
+            updatedFragments .add(ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase()));
         }
 
-        pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), dynamicFragments);
+        pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), updatedFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setCurrentItem(0, false); // 设置初始页面
+        updatePageNumber(0);
     }
 
     private void nextPage() {
@@ -105,11 +144,13 @@ public class BFragment extends Fragment {
     }
 
     private void updatePageNumber(int position) {
-        pageNumberTextView.setText((position + 1) + "/4");
+        int total=currentPage*4+4;
+        pageNumberTextView.setText((position + 1) + "/"+total);
     }
 
     private void updateButtonVisibility(int position) {
         backButton.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
         nextButton.setVisibility(position == pagerAdapter.getCount() - 1 ? View.INVISIBLE : View.VISIBLE);
+        moreButton.setVisibility(position == pagerAdapter.getCount() - 1 ? View.VISIBLE : View.GONE);
     }
 }

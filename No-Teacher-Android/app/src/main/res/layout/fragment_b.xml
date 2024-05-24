@@ -46,14 +46,23 @@
             android:textSize="18sp" />
 
 
+                <Button
+                    android:id="@+id/next_button"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/next_btn" />
         <Button
-            android:id="@+id/next_button"
+            android:id="@+id/more_button"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/next_btn" />
+            android:text="加载更多"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </RelativeLayout>
