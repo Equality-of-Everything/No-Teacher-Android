@@ -122,11 +122,11 @@ public class UserEditActivity extends AppCompatActivity {
                 userName = binding.etUsername.getText().toString();
                 userEditViewModel.setUsername(userName);
                 TokenManager.saveUserName(UserEditActivity.this, userName);
-                Log.e("userName", userName);
                 TokenManager.getUserName(UserEditActivity.this);
-                Log.e("userNameFormToken", TokenManager.getUserName(UserEditActivity.this));
 
                 DataManager.getInstance().setIsRefreshNameLiveData(true);
+
+
 
                 userEditViewModel.updateUserInfo(UserEditActivity.this);
             }
