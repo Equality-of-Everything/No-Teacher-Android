@@ -1,18 +1,16 @@
 package com.example.android.fragment;
 
+import static android.app.appsearch.AppSearchResult.RESULT_OK;
+import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,18 +71,11 @@ public class HomeFragment extends Fragment {
     private int totalPages = 0;
     private int lexile = 110;
 
-
-    private Handler handler;
-    private Runnable runnable;
-    private int currentIndex = 0;
-    private static final int SCROLL_DELAY = 3000; // 轮播间隔时间（毫秒））
-
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
-
 
 
         // 正确范围的 ViewModel

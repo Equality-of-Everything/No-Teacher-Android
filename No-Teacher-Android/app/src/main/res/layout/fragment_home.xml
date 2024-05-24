@@ -42,6 +42,26 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginLeft="10dp"
                     />
+                <TextView
+                    android:id="@+id/tv_sex"
+                    android:layout_toEndOf="@id/iv_individual_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/text2"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="未知"
+                    />
+                <TextView
+                    android:id="@+id/tv_age"
+                    android:layout_toEndOf="@id/iv_individual_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/text2"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:text="1岁"
+                    />
 
                 <Button
                     android:id="@+id/btn_test"
