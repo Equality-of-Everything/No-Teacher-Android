@@ -19,6 +19,8 @@ import com.example.android.util.ToastManager;
 import com.example.android.viewmodel.EmailVerifyViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityEmailVerifyBinding;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 
 public class EmailVerifyActivity extends AppCompatActivity {
 
@@ -29,6 +31,7 @@ public class EmailVerifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5e62dc3d");
         binding = DataBindingUtil.setContentView(this,R.layout.activity_email_verify);
 
         viewModel = new ViewModelProvider(this).get(EmailVerifyViewModel.class);
