@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.example.android.bean.entity.WordDetail;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
 
@@ -28,7 +30,7 @@ public class ReadTestPagerFragment extends Fragment {
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
 
-    private int imageResId;
+    private String imageUrl;
     private String text;
     private String countText;
 
@@ -39,29 +41,39 @@ public class ReadTestPagerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ReadTestPagerFragment newInstance(int imageResId, String text, String countText) {
+    public static ReadTestPagerFragment newInstance(String imageResId, String text, String countText) {
         ReadTestPagerFragment fragment = new ReadTestPagerFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_IMAGE_RES_ID, imageResId);
+        args.putString(ARG_IMAGE_RES_ID, imageResId);
         args.putString(ARG_TEXT, text);
         args.putString(ARG_COUNT_TEXT, countText);
         fragment.setArguments(args);
         return fragment;
     }
 
+//    public static Fragment newInstance(WordDetail wordDetail) {
+//        ReadTestPagerFragment fragment = new ReadTestPagerFragment();
+//        Bundle args = new Bundle();
+//        args.putString(ARG_IMAGE_RES_ID, wordDetail.getParaphrasePicture());
+//        args.putString(ARG_TEXT, wordDetail.getWord());
+//        args.putString(ARG_COUNT_TEXT, wordDetail.getParaphrase());
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            imageResId = getArguments().getInt(ARG_IMAGE_RES_ID);
+            imageUrl = getArguments().getString(ARG_IMAGE_RES_ID);
             text = getArguments().getString(ARG_TEXT);
             countText = getArguments().getString(ARG_COUNT_TEXT);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
 
         ImageView imageView = view.findViewById(R.id.imageView);
@@ -70,7 +82,9 @@ public class ReadTestPagerFragment extends Fragment {
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
 
-        imageView.setImageResource(imageResId);
+        Glide.with(this)
+                .load(imageUrl)
+                .into(imageView);
         textView1.setText(text);
         textView2.setText(countText);
 
