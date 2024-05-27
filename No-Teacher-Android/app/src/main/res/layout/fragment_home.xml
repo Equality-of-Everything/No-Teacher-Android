@@ -93,15 +93,21 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/text2"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="成长记录"
-                        android:textSize="20sp"
-                        ></TextView>
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/text2"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="成长记录"
+                            android:textSize="20sp"
+                            ></TextView>
+
+                    </RelativeLayout>
+
                     <LinearLayout
 
                         android:layout_width="match_parent"
