@@ -78,6 +78,11 @@ public interface ApiService {
     @Multipart
     @POST("userInfo/updateAvatar/{userId}")
     Call<BaseResponse<String>> uploadAvatar(@Path("userId") String userId, @Part MultipartBody.Part file);
+
+    //获取推荐单词
+    @GET("wordRec/getWordRec/{userId}/{currentPage}")
+    Call<BaseResponse<List<WordDetail>>> getRecommendWords(@Path("userId") String userId, @Path("currentPage") int currentPage);
+
 }
 
 

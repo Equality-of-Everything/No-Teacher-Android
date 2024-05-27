@@ -79,21 +79,21 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         TextView textView4;
     }
 
-    /**
-     * @param item:
-     * @return void
-     * @author Lee
-     * @description 添加新的文章数据
-     * @date 2024/5/14 9:12
-     */
-    public void addMoreArticle(List<Article> item) {
-        this.articles.addAll(item);
-        notifyDataSetChanged();
-    }
-
-    public void refreshItems(List<Article> item) {
-        this.articles.clear();
-        this.articles.addAll(item);
-        notifyDataSetChanged();
-    }
+//    /**
+//     * @param item:
+//     * @return void
+//     * @author Lee
+//     * @description 添加新的文章数据
+//     * @date 2024/5/14 9:12
+//     */
+//    public void addMoreArticle(List<Article> item) {
+//        this.articles.addAll(item);
+//        notifyDataSetChanged();
+//    }
+//
+//    public void refreshItems(List<Article> item) {
+//        this.articles.clear();
+//        this.articles.addAll(item);
+//        notifyDataSetChanged();
+//    }
 }
