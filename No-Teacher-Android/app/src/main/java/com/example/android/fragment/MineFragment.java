@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.adapter.ImageAdapter;
+import com.example.android.ui.activity.CalendarActivity;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.UserEditActivity;
 import com.example.android.util.DataManager;
@@ -52,20 +54,16 @@ public class MineFragment extends Fragment {
         imageResourceList.add(R.drawable.img_2); // 替换为你的图片资源 ID
         imageResourceList.add(R.drawable.img_3); // 替换为你的图片资源 ID
 
-        ImageAdapter adapter = new ImageAdapter(context, imageResourceList);
-        adapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
+        ImageAdapter adapter = new ImageAdapter(context, imageResourceList ,new ImageAdapter.OnClickListener(){
+
             @Override
-            public void onClick(ImageView imageView,int imageResId) {
-                // 创建一个意图
-                Intent intent = new Intent(requireContext(), ImageViewActivity.class);
-                // 将图片资源 ID 作为额外数据放入意图中
-                intent.putExtra("image", imageResId);
-
-                // 如果你使用了转场动画，需要在这里设置转场动画
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(requireActivity());
-
-                // 使用 Fragment 的方法 startActivityForResult() 来启动新的 Activity
-                startActivity(intent, options.toBundle());
+            public void onItemClick(int position) {
+                switch (position){
+                    case 0:
+                        Intent intent0=new Intent(getActivity(), CalendarActivity.class);
+                        startActivity(intent0);
+                        break;
+                }
             }
         });
 

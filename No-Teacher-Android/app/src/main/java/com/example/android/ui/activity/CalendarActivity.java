@@ -23,11 +23,13 @@ import com.example.android.bean.entity.BarDataEntity;
 import com.example.no_teacher_andorid.R;
 
 import java.text.DecimalFormat;
+import com.google.android.material.appbar.MaterialToolbar;
 
 
 public class CalendarActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
+    private MaterialToolbar topAppBar ;
 
     private TextView textViewSum;
     private DecimalFormat format = new DecimalFormat("#.##");
@@ -38,7 +40,13 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         calendarView = findViewById(R.id.calendarView);
-
+        topAppBar =findViewById(R.id.topAppBar);
+        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
@@ -56,7 +64,6 @@ public class CalendarActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_calender, null);
         dialog.setContentView(dialogView);
-
         TextView tvSelectedDate = dialogView.findViewById(R.id.tvSelectedDate);
 
         tvSelectedDate.setText(selectedDate);
@@ -64,6 +71,7 @@ public class CalendarActivity extends AppCompatActivity {
         LinearLayout barChartContainer = dialogView.findViewById(R.id.bar_chart_container);
         bindData(barChartContainer);
 
+        tvSelectedDate.setText("You selected: " + selectedDate);
         dialog.show();
     }
 
