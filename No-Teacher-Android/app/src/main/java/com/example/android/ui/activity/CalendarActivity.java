@@ -71,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity {
         LinearLayout barChartContainer = dialogView.findViewById(R.id.bar_chart_container);
         bindData(barChartContainer);
 
-        tvSelectedDate.setText("You selected: " + selectedDate);
+        tvSelectedDate.setText(selectedDate);
         dialog.show();
     }
 
