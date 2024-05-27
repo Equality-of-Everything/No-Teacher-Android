@@ -4,6 +4,7 @@ import com.example.android.bean.EmailRequest;
 import com.example.android.bean.LexileRequest;
 import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Article;
+import com.example.android.bean.entity.ReadLog;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.bean.entity.UserLevel;
@@ -78,6 +79,10 @@ public interface ApiService {
     @Multipart
     @POST("userInfo/updateAvatar/{userId}")
     Call<BaseResponse<String>> uploadAvatar(@Path("userId") String userId, @Part MultipartBody.Part file);
+
+    // 插入阅读记录
+    @POST("readLog/insert")
+    Call<BaseResponse<ReadLog>> insertReadLog(@QueryMap HashMap<String,String> params);
 }
 
 
