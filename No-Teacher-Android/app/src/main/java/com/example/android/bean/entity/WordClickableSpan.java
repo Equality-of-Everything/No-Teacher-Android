@@ -20,6 +20,7 @@ import com.example.android.util.TextTranslator;
 import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -65,7 +66,6 @@ public class WordClickableSpan extends ClickableSpan {
         TextView americanPhoneticTextView = bottomSheetDialog.findViewById(R.id.text_view_phonetic1);
         ListView examplesListView = bottomSheetDialog.findViewById(R.id.list_view_examples);
 
-
         if (textViewWord != null) {
             textViewWord.setText(clickedWord);
         }
@@ -75,18 +75,25 @@ public class WordClickableSpan extends ClickableSpan {
         Button enButton = bottomSheetDialog.findViewById(R.id.en_button);
         if (ukButton != null && enButton != null) {
             TtsUtil.getTts1(clickedWord, ukButton);
-            TtsUtil.getTts2(clickedWord,enButton);
+            TtsUtil.getTts2(clickedWord, enButton);
         }
+
+        // 获取 BottomSheetBehavior 并设置回调
+        View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheetInternal);
+
+        // 禁用拖动行为
+        behavior.setDraggable(false);
+
 
         // 使用 Retrofit 获取单词详情
         DictionaryAPI api = RetrofitClient.getDictionaryAPI();
         Call<List<Words>> call = api.getWordDetails(clickedWord);
 
-
         call.enqueue(new Callback<List<Words>>() {
             @Override
             public void onResponse(Call<List<Words>> call, Response<List<Words>> response) {
-                if (response.isSuccessful() && response.body() != null ) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     Words wordDetails = response.body().get(0);
 
                     // 设置音标
@@ -99,12 +106,13 @@ public class WordClickableSpan extends ClickableSpan {
                             britishPhoneticTextView.setText(phonetics.get(1).getText());
                         }
                     }
+
                     // Collect all examples
                     List<ExampleItem> exampleItems = new ArrayList<>();
                     for (Words.MeaningsDTO meaning : wordDetails.getMeanings()) {
                         for (Words.MeaningsDTO.DefinitionsDTO definition : meaning.getDefinitions()) {
                             String partOfSpeech = "词性：" + meaning.getPartOfSpeech();
-                            String definitionText ="定义：" + definition.getDefinition();
+                            String definitionText = "定义：" + definition.getDefinition();
                             String example = definition.getExample();
                             if (example != null) {
                                 exampleItems.add(new ExampleItem(partOfSpeech, definitionText, example));
@@ -124,7 +132,7 @@ public class WordClickableSpan extends ClickableSpan {
                     translationCall.enqueue(new Callback<TextRes>() {
                         @Override
                         public void onResponse(Call<TextRes> call, Response<TextRes> response) {
-                            if (response.isSuccessful() && response.body() != null) {
+                            if (response.isSuccessful() && response.body() != null && response.body().getTranslation() != null && !response.body().getTranslation().isEmpty()) {
                                 if(response.body().getTranslation()==null) return;
                                 String translatedText = response.body().getTranslation().get(0);
                                 if (translatedTextView != null) {
@@ -146,7 +154,6 @@ public class WordClickableSpan extends ClickableSpan {
                 }
             }
 
-
             @Override
             public void onFailure(Call<List<Words>> call, Throwable t) {
                 ToastManager.showCustomToast(widget.getContext(), "请求失败：" + t.getMessage());
@@ -155,6 +162,7 @@ public class WordClickableSpan extends ClickableSpan {
         });
         bottomSheetDialog.show();
     }
+
     private void translateExamples(ExamplesAdapter adapter, TextView translatedTextView) {
         if (adapter != null && translatedTextView != null) {
             for (int i = 0; i < adapter.getCount(); i++) {
@@ -165,7 +173,7 @@ public class WordClickableSpan extends ClickableSpan {
                     translationCall.enqueue(new Callback<TextRes>() {
                         @Override
                         public void onResponse(Call<TextRes> call, Response<TextRes> response) {
-                            if (response.isSuccessful() && response.body() != null) {
+                            if (response.isSuccessful() && response.body() != null && response.body().getTranslation() != null && !response.body().getTranslation().isEmpty()) {
                                 if(response.body().getTranslation()==null) return;
                                 String translatedText = response.body().getTranslation().get(0);
                                 item.setTranslatedExample(translatedText);

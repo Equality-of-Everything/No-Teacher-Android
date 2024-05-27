@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.android.bean.entity.WordDetail;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +18,15 @@ import java.util.List;
 public class ReadTestPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments;
-
+    private List<WordDetail> wordDetails;
     public ReadTestPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.fragments = fragments;
+    }
+
+    public void updateData(List<WordDetail> wordDetails) {
+        this.wordDetails = wordDetails;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -30,5 +38,11 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragments.size();
+    }
+
+    public void addFragments(List<Fragment> additionalFragments) {
+        if (additionalFragments != null && !additionalFragments.isEmpty()) {
+            fragments.addAll(additionalFragments);
+        }
     }
 }

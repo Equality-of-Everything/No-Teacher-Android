@@ -52,6 +52,14 @@ public class UserTestActivity extends AppCompatActivity {
         unknowWordsList.clear();
         knowWordsList.clear();
 
+        //显示弹窗
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("请选择你认识的单词");
+        builder.setPositiveButton("确定", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
         viewModel.getWordsLiveData().observe(this, this::setWords);
         viewModel.getTestCompleteLiveData().observe(this, complete -> {
             if(complete) {
