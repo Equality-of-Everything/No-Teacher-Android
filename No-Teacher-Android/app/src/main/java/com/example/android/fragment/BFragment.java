@@ -1,9 +1,7 @@
 package com.example.android.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,8 +44,8 @@ public class BFragment extends Fragment {
         //初始化viewModel
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
-//        userId = TokenManager.getUserId(getContext());
-        userId="9c6a1c47-da2e-4aec-adc9-a492d5861986";
+        userId = TokenManager.getUserId(getContext());
+//        userId="9c6a1c47-da2e-4aec-adc9-a492d5861986";
         //设置推荐单词的请求参数
 
 
