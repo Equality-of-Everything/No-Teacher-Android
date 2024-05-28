@@ -3,11 +3,6 @@ package com.example.android.ui.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.LeadingMarginSpan;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.android.bean.entity.ReaderPage;
+import com.example.android.view.ReaderPage;
 import com.example.no_teacher_andorid.R;
 import com.google.android.material.appbar.MaterialToolbar;
 

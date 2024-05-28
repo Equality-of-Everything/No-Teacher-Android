@@ -16,4 +16,5 @@
     <item name="btn_test" type="id" />
     <item name="text_view_word" type="id" />
     <item name="text_view_example" type="id" />
+    <item name="txt" type="id" />
 </resources>

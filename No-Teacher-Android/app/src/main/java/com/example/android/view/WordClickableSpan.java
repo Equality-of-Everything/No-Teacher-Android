@@ -1,4 +1,4 @@
-package com.example.android.bean.entity;
+package com.example.android.view;
 
 import android.content.Context;
 import android.text.TextPaint;
@@ -15,6 +15,10 @@ import androidx.core.content.ContextCompat;
 
 import com.example.android.adapter.ExamplesAdapter;
 import com.example.android.api.DictionaryAPI;
+import com.example.android.bean.entity.ExampleItem;
+import com.example.android.bean.entity.TextRes;
+import com.example.android.bean.entity.WordInfo;
+import com.example.android.bean.entity.Words;
 import com.example.android.http.RetrofitClient;
 import com.example.android.util.TextTranslator;
 import com.example.android.util.ToastManager;

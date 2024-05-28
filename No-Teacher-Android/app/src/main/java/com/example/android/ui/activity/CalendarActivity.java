@@ -30,8 +30,6 @@ public class CalendarActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private MaterialToolbar topAppBar ;
-
-    private TextView textViewSum;
     private DecimalFormat format = new DecimalFormat("#.##");
 
     @Override
@@ -141,83 +139,5 @@ public class CalendarActivity extends AppCompatActivity {
             container.addView(item);
         }
     }
-
-
-
-
-//    private void showCustomDialog(String selectedDate) {
-//        // 创建自定义对话框
-//        Dialog dialog = new Dialog(this);
-//        LayoutInflater inflater = getLayoutInflater();
-//        View dialogView = inflater.inflate(R.layout.dialog_calender, null);
-//        dialog.setContentView(dialogView);
-//
-//        TextView tvSelectedDate = dialogView.findViewById(R.id.tvSelectedDate);
-//
-//        tvSelectedDate.setText(selectedDate);
-//
-//        LinearLayout barChartContainer = dialogView.findViewById(R.id.bar_chart_container);
-//        bindData(barChartContainer);
-//
-//
-//        dialog.show();
-//    }
-//
-//    private void bindData(LinearLayout container) {
-//        container.removeAllViews();
-//        BarDataEntity data = new BarDataEntity();
-//        data.parseData();
-//        if (data == null || data.getTypeList() == null) {
-//            return;
-//        }
-//        int color = Color.parseColor("#3FA0FF");
-//        double maxScale = 0;
-//        for (int i = 0; i < data.getTypeList().size(); i++) {
-//            if (data.getTypeList().get(i).getTypeScale() > maxScale)
-//                maxScale = data.getTypeList().get(i).getTypeScale();
-//        }
-//        for (int i = 0; i < data.getTypeList().size(); i++) {
-//            final View item = LayoutInflater.from(this).inflate(R.layout.h_bar_item, container, false);
-//            final BarDataEntity.Type type = data.getTypeList().get(i);
-//            ((TextView) item.findViewById(R.id.index)).setText("");
-//            ((TextView) item.findViewById(R.id.name)).setText(type.getTypeName());
-//            ((TextView) item.findViewById(R.id.index)).setText("" + i);
-//            final View bar = item.findViewById(R.id.bar);
-//            bar.setBackgroundColor(color);
-//            ((TextView) item.findViewById(R.id.percent)).setText(format.format(type.getTypeScale() * 100) + "%");
-//            ((TextView) item.findViewById(R.id.percent)).setTextColor(color);
-//            final double finalMaxScale = maxScale;
-//            item.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                @Override
-//                public boolean onPreDraw() {
-//                    item.getViewTreeObserver().removeOnPreDrawListener(this);
-//                    int barContainerWidth = item.findViewById(R.id.bar_container).getWidth();
-//                    int percentTxtWidth = item.findViewById(R.id.percent).getWidth();
-//                    final int initWidth = barContainerWidth - percentTxtWidth;
-//                    final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) bar.getLayoutParams();
-//                    lp.width = (int) (initWidth * type.getTypeScale()/ finalMaxScale * 100 / 100);
-//                    bar.setLayoutParams(lp);
-//                    item.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            final int initWidth = bar.getWidth();
-//                            final ObjectAnimator anim = ObjectAnimator.ofFloat(bar, "alpha", 0.0F, 1.0F).setDuration(1500);
-//                            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                                @Override
-//                                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                                    float cVal = (Float) anim.getAnimatedValue();
-//                                    lp.width = (int) (initWidth * cVal);
-//                                    bar.setLayoutParams(lp);
-//                                }
-//                            });
-//                            anim.start();
-//                        }
-//                    }, 0);
-//                    return false;
-//                }
-//            });
-//            container.addView(item);
-//        }
-//    }
 
 }

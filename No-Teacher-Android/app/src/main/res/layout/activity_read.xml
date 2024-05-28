@@ -48,7 +48,7 @@
             android:src="@drawable/img"
             android:layout_height="200dp"></ImageView>
 
-        <com.example.android.bean.entity.ReaderPage
+        <com.example.android.view.ReaderPage
             android:id="@+id/readerPage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
