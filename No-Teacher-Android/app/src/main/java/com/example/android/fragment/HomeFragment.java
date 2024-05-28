@@ -86,7 +86,12 @@ public class HomeFragment extends Fragment {
         viewModel.getTodayReadDuration(getContext(),TokenManager.getUserId(getContext()));
         viewModel.getTodayReadDurationLiveData().observe(getViewLifecycleOwner(),TodayReadDurationLiveData->{
 
-            binding.textMin.setText(String.valueOf(TodayReadDurationLiveData/1000/60));
+            if (TodayReadDurationLiveData!=null){
+                binding.textMin.setText(String.valueOf(TodayReadDurationLiveData/1000/60));
+            }else {
+                binding.textMin.setText(String.valueOf(0));
+            }
+
         });
         //获取单词数目
         viewModel.getTotalWordNum(getContext(),TokenManager.getUserId(getContext()));
