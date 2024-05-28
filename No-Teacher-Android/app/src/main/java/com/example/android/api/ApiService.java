@@ -83,6 +83,12 @@ public interface ApiService {
     @GET("wordRec/getWordRec/{userId}/{currentPage}")
     Call<BaseResponse<List<WordDetail>>> getRecommendWords(@Path("userId") String userId, @Path("currentPage") int currentPage);
 
+    //发送请求获取阅读时长
+    @GET("readLog/{userId}")
+    Call<BaseResponse<Long>> getTodayReadDuration(@Path("userId") String userId);
+    @GET("readLog/totalWord/{userId}")
+    Call<BaseResponse<Integer>> getTotalWordNum(@Path("userId") String userId);
+
 }
 
 

@@ -80,8 +80,20 @@ public class HomeFragment extends Fragment {
 
         // 正确范围的 ViewModel
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         viewModel.isTest(getContext(), TokenManager.getUserId(getContext()));
+
+        //获取阅读时长
+        viewModel.getTodayReadDuration(getContext(),TokenManager.getUserId(getContext()));
+        viewModel.getTodayReadDurationLiveData().observe(getViewLifecycleOwner(),TodayReadDurationLiveData->{
+
+            binding.textMin.setText(String.valueOf(TodayReadDurationLiveData/1000/60));
+        });
+        //获取单词数目
+        viewModel.getTotalWordNum(getContext(),TokenManager.getUserId(getContext()));
+        viewModel.getTotalWordNumLiveData().observe(getViewLifecycleOwner(),TotalWordNumLiveData->{
+            binding.textCount.setText(String.valueOf(TotalWordNumLiveData));
+        });
+
         binding.tvHomeName.setText(TokenManager.getUserName(getActivity()));
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
             if (isTest) {
@@ -296,8 +308,6 @@ public class HomeFragment extends Fragment {
 //        super.onDestroyView();
 //        handler.removeCallbacks(runnable); // 停止轮播
 //    }
-
-
 
 //    private void setupRecyclerView() {
 //        ArrayList<Integer> imageResourceList = new ArrayList<>();
