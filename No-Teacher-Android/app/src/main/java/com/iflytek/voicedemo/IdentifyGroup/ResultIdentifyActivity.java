@@ -23,8 +23,6 @@ import java.text.DecimalFormat;
 /**
  * 1:N检测结果解析界面
  *
- * @author hjyu
- * @date 2017/9/28.
  * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
  */
 public class ResultIdentifyActivity extends Activity implements OnClickListener {

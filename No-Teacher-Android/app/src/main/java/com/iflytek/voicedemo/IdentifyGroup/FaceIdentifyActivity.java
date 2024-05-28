@@ -42,13 +42,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * 人脸验证示例demo
- *
- * @author hjyu
- * @date 2017/9/28.
- * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
- */
 public class FaceIdentifyActivity extends Activity implements OnClickListener {
     private final static String TAG = FaceIdentifyActivity.class.getSimpleName();
 

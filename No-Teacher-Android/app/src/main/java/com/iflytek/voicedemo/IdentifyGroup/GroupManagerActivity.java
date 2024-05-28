@@ -42,8 +42,6 @@ import java.util.Map;
  * 声纹密码和人脸识别相关组操作
  * 支持组创建/添加成员/查询组成员/删除成员/删除组/
  *
- * @author hjyu
- * @date 2017/9/28.
  * @see this#createGroup()
  * @see this#joinGroup(String)
  * @see //this#queryGroups()

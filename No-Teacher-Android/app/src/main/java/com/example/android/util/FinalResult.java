@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result;
+package com.example.android.util;
 
 public class FinalResult extends Result {
 

@@ -5,13 +5,7 @@ package com.iflytek.ise.result;
 
 import com.iflytek.ise.result.util.ResultFormatUtil;
 
-/**
- * <p>Title: ReadSentenceResult</p>
- * <p>Description: </p>
- * <p>Company: www.iflytek.com</p>
- * @author iflytek
- * @date 2015年1月12日 下午5:04:14
- */
+
 public class ReadSentenceResult extends Result {
 
     public ReadSentenceResult() {

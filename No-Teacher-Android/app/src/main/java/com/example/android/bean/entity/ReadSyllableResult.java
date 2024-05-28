@@ -1,8 +1,6 @@
-/**
- *
- */
-package com.iflytek.ise.result;
+package com.example.android.bean.entity;
 
+import com.example.android.util.Result;
 import com.iflytek.ise.result.util.ResultFormatUtil;
 
 public class ReadSyllableResult extends Result {

@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result.util;
+package com.example.android.bean.entity;
 
 import java.util.HashMap;
 
@@ -28,6 +25,6 @@ public class ResultTranslateUtil {
 
     public static String getContent(String content) {
         String val = special_content_map.get(content);
-        return (null == val) ? content : val;
+        return (null == val)? content: val;
     }
 }

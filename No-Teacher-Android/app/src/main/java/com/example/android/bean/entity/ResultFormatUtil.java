@@ -1,12 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result.util;
-
-import com.example.android.bean.entity.Phone;
-import com.example.android.bean.entity.Sentence;
-import com.example.android.bean.entity.Syll;
-import com.example.android.bean.entity.YuYinWord;
+package com.example.android.bean.entity;
 
 import java.util.ArrayList;
 
@@ -24,7 +16,7 @@ public class ResultFormatUtil {
             return buffer.toString();
         }
 
-        for (Sentence sentence : sentences) {
+        for (Sentence sentence: sentences ) {
             if ("噪音".equals(ResultTranslateUtil.getContent(sentence.content))
                     || "静音".equals(ResultTranslateUtil.getContent(sentence.content))) {
                 continue;
@@ -33,7 +25,7 @@ public class ResultFormatUtil {
             if (null == sentence.words) {
                 continue;
             }
-            for (YuYinWord word : sentence.words) {
+            for (YuYinWord word: sentence.words) {
                 if ("噪音".equals(ResultTranslateUtil.getContent(word.content))
                         || "静音".equals(ResultTranslateUtil.getContent(word.content))) {
                     continue;
@@ -47,13 +39,13 @@ public class ResultFormatUtil {
                     continue;
                 }
 
-                for (Syll syll : word.sylls) {
+                for (Syll syll: word.sylls) {
                     buffer.append("\n└音节[" + ResultTranslateUtil.getContent(syll.getStdSymbol()) + "] ");
                     if (null == syll.phones) {
                         continue;
                     }
 
-                    for (Phone phone : syll.phones) {
+                    for (Phone phone: syll.phones) {
                         buffer.append("\n\t└音素[" + ResultTranslateUtil.getContent(phone.getStdSymbol()) + "] ")
                                 .append(" 朗读：" + ResultTranslateUtil.getDpMessageInfo(phone.dp_message));
                     }
@@ -78,18 +70,18 @@ public class ResultFormatUtil {
             return buffer.toString();
         }
 
-        for (Sentence sentence : sentences) {
+        for (Sentence sentence: sentences ) {
             if (null == sentence.words) {
                 continue;
             }
 
-            for (YuYinWord word : sentence.words) {
+            for (YuYinWord word: sentence.words) {
                 buffer.append("\n词语[" + ResultTranslateUtil.getContent(word.content) + "] " + word.symbol + " 时长：" + word.time_len);
                 if (null == word.sylls) {
                     continue;
                 }
 
-                for (Syll syll : word.sylls) {
+                for (Syll syll: word.sylls) {
                     if ("噪音".equals(ResultTranslateUtil.getContent(syll.content))
                             || "静音".equals(ResultTranslateUtil.getContent(syll.content))) {
                         continue;
@@ -100,7 +92,7 @@ public class ResultFormatUtil {
                         continue;
                     }
 
-                    for (Phone phone : syll.phones) {
+                    for (Phone phone: syll.phones) {
                         buffer.append("\n\t└音素[" + ResultTranslateUtil.getContent(phone.content) + "] " + "时长：" + phone.time_len)
                                 .append(" 朗读：" + ResultTranslateUtil.getDpMessageInfo(phone.dp_message));
                     }

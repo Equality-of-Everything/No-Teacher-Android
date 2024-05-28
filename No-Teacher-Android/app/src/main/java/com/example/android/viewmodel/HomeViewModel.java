@@ -224,7 +224,7 @@ public class HomeViewModel extends ViewModel {
                             Log.e("getTotalWordNumNNNN", ""+response.body().getData()+ response.body().getMsg());
                             TotalWordNumLiveData.postValue(response.body().getData());
                         }else {
-                            Log.e("getTotalWordNumNNNN", "Business Error: " + response.body().getMsg());
+//                            Log.e("getTotalWordNumNNNN", "Business Error: " + response.body().getMsg());
                         }
                     }
 

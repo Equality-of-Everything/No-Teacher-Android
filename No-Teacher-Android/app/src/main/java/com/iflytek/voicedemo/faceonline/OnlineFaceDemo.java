@@ -41,8 +41,6 @@ import java.io.File;
 /**
  * 此demo意在为提供在线人脸识别相关api调用方式，1:1 识别
  *
- * @author hjyu
- * @date 2017/9/28.
  * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
  */
 public class OnlineFaceDemo extends Activity implements View.OnClickListener {
