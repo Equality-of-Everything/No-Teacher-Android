@@ -53,14 +53,13 @@ public class BarGroup extends LinearLayout {
             for (int i = 0; i < datas.size(); i++) {
                 /*通过柱状图的最大值和相对比例计算出每条柱状图的高度*/
                 float barHeight = datas.get(i).getAllcount()/maxValue*height;
-                View view = LayoutInflater.from(getContext()).inflate(R.layout.item_bar, null);
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.item_column_bar, null);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(DensityUtil.dip2px(getContext(),30),height);
 //                view.setLayoutParams(lp);
                 ((BarView) view.findViewById(R.id.barView)).setData(datas.get(i));
                 (view.findViewById(R.id.barView)).setLayoutParams(lp);
                 ((TextView)view.findViewById(R.id.title)).setText(getFeedString(datas.get(i).getTitle()));
                 DecimalFormat mFormat=new DecimalFormat("##.#");
-                ((TextView)view.findViewById(R.id.percent)).setText(mFormat.format(datas.get(i).getAllcount()));
                 addView(view);
             }
         }

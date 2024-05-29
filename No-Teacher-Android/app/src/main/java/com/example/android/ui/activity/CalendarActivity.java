@@ -12,13 +12,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import com.applandeo.materialcalendarview.CalendarDay;
 import com.example.android.bean.entity.BarDataEntity;
 import com.example.no_teacher_andorid.R;
 
@@ -89,7 +87,7 @@ public class CalendarActivity extends AppCompatActivity {
                 maxScale = data.getTypeList().get(i).getTypeScale();
         }
         for (int i = 0; i < data.getTypeList().size(); i++) {
-            final View item = LayoutInflater.from(this).inflate(R.layout.h_bar_item, container, false);
+            final View item = LayoutInflater.from(this).inflate(R.layout.item_calander_bar, container, false);
             final BarDataEntity.Type type = data.getTypeList().get(i);
             ((TextView) item.findViewById(R.id.name)).setText(type.getTypeName());
             final View bar = item.findViewById(R.id.bar);

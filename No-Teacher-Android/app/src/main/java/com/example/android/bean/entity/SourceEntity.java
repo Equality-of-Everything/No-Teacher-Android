@@ -1,7 +1,10 @@
 package com.example.android.bean.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -19,16 +22,31 @@ public class SourceEntity {
     public void parseData() {
         list = new ArrayList<>();
         Random r = new Random();
-        for (int i = 0; i <= 6; i++) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd", Locale.getDefault());
+
+        // 生成过去6天的日期
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 6; i++) {
             Source source = new Source();
             source.setBadCount(r.nextInt(100));
             source.setGoodCount(r.nextInt(100));
             source.setOtherCount(r.nextInt(100));
             source.setScale(r.nextInt(100));
-            source.setSource("品类" + i);
+            source.setSource(sdf.format(calendar.getTime()));
             source.setAllCount(source.getBadCount() + source.getGoodCount() + source.getOtherCount());
             list.add(source);
+            calendar.add(Calendar.DAY_OF_YEAR, -1); // 向前一天
         }
+
+        // 添加“今日”的数据项
+        Source todaySource = new Source();
+        todaySource.setBadCount(r.nextInt(100));
+        todaySource.setGoodCount(r.nextInt(100));
+        todaySource.setOtherCount(r.nextInt(100));
+        todaySource.setScale(r.nextInt(100));
+        todaySource.setSource("今日");
+        todaySource.setAllCount(todaySource.getBadCount() + todaySource.getGoodCount() + todaySource.getOtherCount());
+        list.add(todaySource);
     }
 
     public static class Source {

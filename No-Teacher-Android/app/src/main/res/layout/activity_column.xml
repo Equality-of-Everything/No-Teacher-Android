@@ -2,13 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background">
 
-    <TextView
-        android:layout_marginTop="100dp"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="自定义分段柱状图：" />
+        android:background="@drawable/white_background2"
+        tools:ignore="MissingConstraints">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:minHeight="?attr/actionBarSize"
+            app:title="学习情况"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/back" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <!--    <LinearLayout-->
     <!--        android:layout_width="wrap_content"-->
@@ -34,6 +50,7 @@
     <!--    </LinearLayout>-->
 
     <RelativeLayout
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -54,13 +71,20 @@
                     android:layout_height="wrap_content"
                     android:text="500000" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/left_base_line"
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/email" />
+                    android:layout_marginLeft="20dp"/>
+
+<!--                <View-->
+<!--                    android:id="@+id/left_base_line"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="2dp"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginLeft="20dp"-->
+<!--                    android:background="@drawable/email" />-->
             </LinearLayout>
 
             <LinearLayout
@@ -74,12 +98,11 @@
                     android:layout_height="wrap_content"
                     android:text="400000" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/email" />
+                    android:layout_marginLeft="20dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -93,12 +116,11 @@
                     android:layout_height="wrap_content"
                     android:text="300000" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/email" />
+                    android:layout_marginLeft="20dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -112,12 +134,11 @@
                     android:layout_height="wrap_content"
                     android:text="200000" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/email" />
+                    android:layout_marginLeft="20dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -131,12 +152,11 @@
                     android:layout_height="wrap_content"
                     android:text="100000" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/email" />
+                    android:layout_marginLeft="20dp"/>
             </LinearLayout>
 
             <View
@@ -161,13 +181,6 @@
                 android:layout_height="wrap_content" />
         </HorizontalScrollView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/bar_scroll"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="-20dp"
-            android:text="总数" />
     </RelativeLayout>
 
 </LinearLayout>

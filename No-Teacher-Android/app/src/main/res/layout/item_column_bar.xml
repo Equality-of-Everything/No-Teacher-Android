@@ -7,23 +7,24 @@
 
     <com.example.android.view.BarView
         android:id="@+id/barView"
+        android:layout_marginLeft="10dp"
         android:layout_width="30dp"
         android:layout_height="220dp"
         />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="百度\n贴吧" />
+        android:text="百度贴吧" />
 
-    <TextView
-        android:id="@+id/percent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="99.9%" />
+<!--    <TextView-->
+<!--        android:id="@+id/percent"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:gravity="center"-->
+<!--        android:text="99.9%" />-->
 </LinearLayout>

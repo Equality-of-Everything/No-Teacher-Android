@@ -68,6 +68,10 @@ public class ColumnActivity extends AppCompatActivity {
                 sourceMax = source.getAllCount();
             }
         }
+
+        // 向上舍入到最接近的50的倍数
+        sourceMax = (float) (Math.ceil(sourceMax / 50.0) * 50);
+
         for (int i = 0; i < size; i++) {
             BarEntity barEntity = new BarEntity();
             SourceEntity.Source entity = sourceEntity.getList().get(i);
@@ -117,9 +121,10 @@ public class ColumnActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             final float top = view.getHeight() - barItem.getFillHeight();
                             SourceEntity.Source ss = sourceEntity.getList().get(finalI);
-                            String showText = "正面：" + (int) ss.getGoodCount() + "条\n"
-                                    + "中性：" + (int) ss.getOtherCount() + "条\n"
-                                    + "负面：" + (int) ss.getBadCount() + "条\n";
+                            String showText = "优秀：" + (int) ss.getGoodCount() + "个\n"
+                                    + "良好：" + (int) ss.getOtherCount() + "个\n"
+                                    + "一般：" + (int) ss.getBadCount() + "个\n"
+                                    + "总共：" + (int) ss.getAllCount() + "个";
 //                                    + "动画时间单元：" + barItem.getAnimTimeCell(); // 获取动画时间单元值
                             ((TextView) popView.findViewById(R.id.txt)).setText(showText);
                             showPop(barItem, top);
@@ -145,10 +150,13 @@ public class ColumnActivity extends AppCompatActivity {
             }
         }
 
-        tv_num1.setText(String.valueOf((int) (sourceMax / 5)));
-        tv_num2.setText(String.valueOf((int) (sourceMax * 2 / 5)));
-        tv_num3.setText(String.valueOf((int) (sourceMax * 3 / 5)));
-        tv_num4.setText(String.valueOf((int) (sourceMax * 4 / 5)));
+        // 向上舍入到最接近的50的倍数
+        sourceMax = (float) (Math.ceil(sourceMax / 50.0) * 50);
+
+        tv_num1.setText(String.valueOf(50));
+        tv_num2.setText(String.valueOf(100));
+        tv_num3.setText(String.valueOf(150));
+        tv_num4.setText(String.valueOf(200));
         tv_num5.setText(String.valueOf((int) sourceMax));
     }
 

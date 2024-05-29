@@ -102,7 +102,7 @@
                             android:fontFamily="@font/text2"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="10dp"
-                            android:text="成长记录"
+                            android:text="今日记录"
                             android:textSize="20sp"
                             ></TextView>
 

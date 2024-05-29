@@ -8,11 +8,11 @@ package com.example.android.bean.entity;
 public class BarEntity {
     public String title = "";
     private float positivePer;
-    public String negativeColor = "#FEB356";
+    public String negativeColor = "#ffb5a0";
     private float neutralPer;
-    public String neutralColor = "#51D6C5";
+    public String neutralColor = "#f5e1a7";
     private float negativePer;
-    public String positiveColor = "#3FA0FF";
+    public String positiveColor = "#c5ecce";
     private float Allcount;
     private float scale;
     /*填充区域比例*/
