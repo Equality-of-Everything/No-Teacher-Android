@@ -22,6 +22,7 @@ import com.example.android.bean.entity.SourceEntity;
 import com.example.android.view.BarGroup;
 import com.example.android.view.BarView;
 import com.example.no_teacher_andorid.R;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,15 +38,23 @@ public class ColumnActivity extends AppCompatActivity {
     private View popView;
     private PopupWindow popupWindow;
     private int initPopHeight = 0;
+    private MaterialToolbar topAppBar ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_column);
-
         barGroup = findViewById(R.id.bar_group);
         root = findViewById(R.id.bar_scroll);
         popView = LayoutInflater.from(this).inflate(R.layout.pop_bg, null);
+        //返回事件
+        topAppBar=findViewById(R.id.topAppBar);
+        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         setBarChart();
     }

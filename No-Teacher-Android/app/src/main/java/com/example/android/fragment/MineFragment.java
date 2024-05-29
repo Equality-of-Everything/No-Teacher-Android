@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.android.adapter.ImageAdapter;
 import com.example.android.ui.activity.CalendarActivity;
+import com.example.android.ui.activity.ColumnActivity;
 import com.example.android.ui.activity.ImageViewActivity;
 import com.example.android.ui.activity.UserEditActivity;
 import com.example.android.util.DataManager;
@@ -28,6 +29,8 @@ import com.example.android.util.TokenManager;
 import com.example.no_teacher_andorid.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Auther : Tcy
@@ -53,16 +56,21 @@ public class MineFragment extends Fragment {
         imageResourceList.add(R.drawable.img_4); // 替换为你的图片资源 ID
         imageResourceList.add(R.drawable.img_2); // 替换为你的图片资源 ID
         imageResourceList.add(R.drawable.img_3); // 替换为你的图片资源 ID
-
-        ImageAdapter adapter = new ImageAdapter(context, imageResourceList ,new ImageAdapter.OnClickListener(){
-
+        List<String> listText= new ArrayList<>(Arrays.asList("成长记录","这是一个文本1","这是一个文本2"));
+        ImageAdapter adapter = new ImageAdapter(context, imageResourceList,listText ,new ImageAdapter.OnClickListener(){
             @Override
+            //点击跳转
             public void onItemClick(int position) {
                 switch (position){
                     case 0:
                         Intent intent0=new Intent(getActivity(), CalendarActivity.class);
                         startActivity(intent0);
                         break;
+                    case 1:
+                        Intent intent1 =new Intent(getActivity(), ColumnActivity.class);
+                        startActivity(intent1);
+                        break;
+
                 }
             }
         });
