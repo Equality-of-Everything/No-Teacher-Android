@@ -1,9 +1,8 @@
 package com.example.android.view;
-
 import android.content.Context;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;

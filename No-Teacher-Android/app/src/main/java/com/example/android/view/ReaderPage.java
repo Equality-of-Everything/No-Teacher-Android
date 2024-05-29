@@ -1,16 +1,17 @@
-package com.example.android.bean.entity;
+package com.example.android.view;
 
 import android.content.Context;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
+
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.example.android.bean.entity.WordInfo;
 import com.example.android.ui.activity.ReadActivity;
 
 import java.util.ArrayList;
