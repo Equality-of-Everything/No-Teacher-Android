@@ -26,6 +26,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/white_background2"></ImageView>
         <TextView
+            android:id="@+id/item_list_text"
             android:text="这是一个文本"
             android:layout_alignParentBottom="true"
             android:textStyle="bold"

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.no_teacher_andorid.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Auther : Tcy
@@ -24,13 +28,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
     Context context;
     ArrayList<Integer> imageResourceList;
     private OnClickListener onClickListener;
+    private List<String> textList;
     public interface OnClickListener {
         void onItemClick(int position);
     }
 
-    public ImageAdapter(Context context, ArrayList<Integer> imageResourceList,OnClickListener onClickListener){
+    public ImageAdapter(Context context, ArrayList<Integer> imageResourceList,List<String> textList,OnClickListener onClickListener){
         this.context = context;
         this.imageResourceList = imageResourceList;
+        this.textList=textList;
         this.onClickListener = onClickListener;
     }
 
@@ -45,6 +51,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // 加载本地资源的图片
         Glide.with(context).load(imageResourceList.get(position)).into(holder.imageView);
+        //填充文本
+        String text=textList.get(position);
+        holder.textView.setText(text);
         // 设置 item 点击监听
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +72,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        TextView textView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.list_item_image);
+            textView=itemView.findViewById(R.id.item_list_text);
         }
     }
 }
