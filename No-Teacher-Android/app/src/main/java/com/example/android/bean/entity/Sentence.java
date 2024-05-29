@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result.entity;
+package com.example.android.bean.entity;
 
 import java.util.ArrayList;
 
@@ -35,7 +32,20 @@ public class Sentence {
      */
     public int word_count;
     /**
+     * 流利度分
+     */
+    public float fluency_score;
+    /**
+     * 准确度分
+     */
+    public float accuracy_score;
+    /**
+     * 标准度分
+     */
+    public float standard_score;
+    /**
      * sentence包括的word
      */
-    public ArrayList<Word> words;
+    public ArrayList<YuYinWord> words;
 }
+

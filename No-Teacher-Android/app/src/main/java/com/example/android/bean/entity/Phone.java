@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result.entity;
+package com.example.android.bean.entity;
 
 import java.util.HashMap;
 
@@ -92,7 +89,7 @@ public class Phone {
 
     public static String getStdSymbol(String content) {
         String std = phone_map.get(content);
-        return (null == std) ? content : std;
+        return (null == std)? content: std;
     }
 
 }

@@ -1,10 +1,6 @@
-/**
- *
- */
-package com.iflytek.ise.result.entity;
+package com.example.android.bean.entity;
 
 import java.util.ArrayList;
-
 
 public class Syll {
     /**

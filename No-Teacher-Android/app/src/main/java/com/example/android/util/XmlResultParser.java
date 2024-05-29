@@ -1,5 +1,10 @@
-package com.iflytek.ise.result.xml;
+package com.example.android.util;
 
+/**
+ * @Author : Lee
+ * @Date : Created in 2024/5/28 9:38
+ * @Decription :
+ */
 import android.text.TextUtils;
 import android.util.Xml;
 
@@ -10,8 +15,10 @@ import com.example.android.bean.entity.ReadWordResult;
 import com.example.android.bean.entity.Sentence;
 import com.example.android.bean.entity.Syll;
 import com.example.android.bean.entity.YuYinWord;
-import com.example.android.util.FinalResult;
-import com.example.android.util.Result;
+
+//import com.iflytek.ise.result.ReadSentenceResult;
+//import com.iflytek.ise.result.ReadWordResult;
+//import com.iflytek.ise.result.entity.Word;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,7 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 
 public class XmlResultParser {
 
@@ -100,7 +106,7 @@ public class XmlResultParser {
                             if (!rec_paperPassed) {
                                 result = new ReadWordResult();
                                 String lan = getLanguage(pullParser);
-                                result.language = (null == lan) ? "cn" : lan;
+                                result.language = (null == lan)? "cn": lan;
                             } else {
                                 readTotalResult(result, pullParser);
                             }
@@ -109,7 +115,7 @@ public class XmlResultParser {
                             if (!rec_paperPassed) {
                                 result = new ReadSentenceResult();
                                 String lan = getLanguage(pullParser);
-                                result.language = (null == lan) ? "cn" : lan;
+                                result.language = (null == lan)? "cn": lan;
                             } else {
                                 readTotalResult(result, pullParser);
                             }
@@ -175,6 +181,10 @@ public class XmlResultParser {
         result.time_len = getInt(pullParser, "time_len");
         result.except_info = getExceptInfo(pullParser);
         result.is_rejected = getIsRejected(pullParser);
+        result.accuracy_score = getFloat(pullParser,"accuracy_score");
+        result.integrity_score = getFloat(pullParser,"integrity_score");
+        result.standard_score = getFloat(pullParser,"standard_score");
+        result.fluency_score = getFloat(pullParser,"fluency_score");
     }
 
     private Phone createPhone(XmlPullParser pullParser) {
@@ -224,6 +234,10 @@ public class XmlResultParser {
         sentence.time_len = getInt(pullParser, "time_len");
         sentence.index = getInt(pullParser, "index");
         sentence.word_count = getInt(pullParser, "word_count");
+        sentence.total_score = getFloat(pullParser, "total_score");
+        sentence.accuracy_score = getFloat(pullParser,"accuracy_score");
+        sentence.standard_score = getFloat(pullParser,"standard_score");
+        sentence.fluency_score = getFloat(pullParser,"fluency_score");
         return sentence;
     }
 

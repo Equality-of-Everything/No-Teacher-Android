@@ -1,5 +1,6 @@
 package com.example.android.viewmodel;
 
+import static com.example.android.constants.BuildConfig.USER_SERVICE;
 import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.content.Context;
@@ -37,10 +38,13 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Article>> articlesLiveData;
     private MutableLiveData<Boolean> navigateToWordTest = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTestLiveData = new MutableLiveData<>();
+    private MutableLiveData<Long> TodayReadDurationLiveData=new MutableLiveData<>();
     private MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
+    private MutableLiveData<Integer> TotalWordNumLiveData=new MutableLiveData<>();
+    private MutableLiveData<Integer> TodayReadWordNumLiveData=new MutableLiveData<>();
+
     private ApiService apiService;
     private int lexile = 110;
-
     private int curPage = 0;
     private int totalPages = 1;//初始设置为-1，表示还未获取到总页数
 
@@ -52,6 +56,7 @@ public class HomeViewModel extends ViewModel {
         return currentPageLiveData;
     }
 
+
     // 提供LiveData的访问方法
     public LiveData<List<Article>> getArticleLiveData() {
         return articlesLiveData;
@@ -60,7 +65,17 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Boolean> getIsTestLiveData() {
         return isTestLiveData;
     }
+    public  MutableLiveData<Long> getTodayReadDurationLiveData(){
+        return TodayReadDurationLiveData;
+    }
 
+    public  MutableLiveData<Integer> getTotalWordNumLiveData(){
+        return TotalWordNumLiveData;
+    }
+
+    public MutableLiveData<Integer> getTodayReadWordNumLiveData(){
+        return  TodayReadWordNumLiveData;
+    }
     public void setApiService(ApiService apiService) {
         this.apiService = apiService;
     }
@@ -181,6 +196,77 @@ public class HomeViewModel extends ViewModel {
                 });
     }
 
+    public void getTodayReadDuration(Context context ,String userId){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getTodayReadDuration(userId)
+                .enqueue(new Callback<BaseResponse<Long>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Long>> call, Response<BaseResponse<Long>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                                Log.e("getTodayReadDuration", ""+response.body().getData()+ response.body().getMsg());
+                                TodayReadDurationLiveData.postValue(response.body().getData());
+                            }else {
+                            TodayReadDurationLiveData.setValue(0L);
+                            Log.e("getTodayReadDuration", "Business Error: " + response.body().getMsg());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse<Long>> call, Throwable t) {
+                        Log.e("getTodayReadDuration-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    public void getTotalWordNum(Context context,String userId){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getTotalWordNum(userId)
+                .enqueue(new Callback<BaseResponse<Integer>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("getTotalWordNum", ""+response.body().getData()+ response.body().getMsg());
+                            TotalWordNumLiveData.postValue(response.body().getData());
+                        }else {
+                            TotalWordNumLiveData.setValue(0);
+                            Log.e("getTotalWordNum", "Business Error: " + response.body().getMsg());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("getTotalWordNum-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    public void getTodayReadWordNumByuserId(Context context,String userId){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getTodayReadWordNumByuserId(userId)
+                .enqueue(new Callback<BaseResponse<Integer>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("getTodayReadWordNumByuserId", ""+response.body().getData()+ response.body().getMsg());
+                            TodayReadWordNumLiveData.postValue(response.body().getData());
+                        }else {
+                            Log.e("getTodayReadWordNumByuserId", "Business Error: " + response.body().getMsg());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("getTodayReadWordNumByuserId-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+
     /**
      * @param context:
      * @return void
@@ -207,7 +293,6 @@ public class HomeViewModel extends ViewModel {
                     @Override
                     public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
                         Log.e("HomeFragment-Error", "Network-Error");
-                        t.printStackTrace();
                     }
                 });
     }

@@ -80,8 +80,37 @@ public class HomeFragment extends Fragment {
 
         // 正确范围的 ViewModel
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         viewModel.isTest(getContext(), TokenManager.getUserId(getContext()));
+
+        //获取阅读时长
+        viewModel.getTodayReadDuration(getContext(),TokenManager.getUserId(getContext()));
+        if(viewModel.getTodayReadDurationLiveData().getValue()!=null){
+            viewModel.getTodayReadDurationLiveData().observe(getViewLifecycleOwner(),TodayReadDurationLiveData->{
+                if(TodayReadDurationLiveData==0L) binding.textMin.setText(0);
+                else binding.textMin.setText(TodayReadDurationLiveData/1000/60+"");
+            });
+        }
+//        binding.textMin.setText(0+"");
+
+        //获取单词数目
+        viewModel.getTotalWordNum(getContext(),TokenManager.getUserId(getContext()));
+        if (viewModel.getTotalWordNumLiveData().getValue()!=null){
+            viewModel.getTotalWordNumLiveData().observe(getViewLifecycleOwner(),TotalWordNumLiveData->{
+                binding.textCount.setText(String.valueOf(TotalWordNumLiveData));
+            });
+        }
+
+        //获取阅读单词数目
+        viewModel.getTodayReadWordNumByuserId(getContext(),TokenManager.getUserId(getContext()));
+        if (viewModel.getTodayReadWordNumLiveData().getValue()!=null){
+            viewModel.getTodayReadWordNumLiveData().observe(getViewLifecycleOwner(),TodayReadWordNumLiveData->{
+                if(TodayReadWordNumLiveData==0) binding.textReadCount.setText(0);
+                else binding.textReadCount.setText(String.valueOf(TodayReadWordNumLiveData));
+            });
+        }
+
+
+
         binding.tvHomeName.setText(TokenManager.getUserName(getActivity()));
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {
             if (isTest) {
@@ -296,8 +325,6 @@ public class HomeFragment extends Fragment {
 //        super.onDestroyView();
 //        handler.removeCallbacks(runnable); // 停止轮播
 //    }
-
-
 
 //    private void setupRecyclerView() {
 //        ArrayList<Integer> imageResourceList = new ArrayList<>();

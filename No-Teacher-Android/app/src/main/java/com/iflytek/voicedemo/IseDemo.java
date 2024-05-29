@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.util.Result;
 import com.example.no_teacher_andorid.R;
 
 import com.iflytek.cloud.EvaluatorListener;
@@ -21,8 +23,7 @@ import com.iflytek.cloud.EvaluatorResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechEvaluator;
-import com.iflytek.ise.result.Result;
-import com.iflytek.ise.result.xml.XmlResultParser;
+import com.example.android.util.XmlResultParser;
 import com.iflytek.speech.setting.IseSettings;
 
 

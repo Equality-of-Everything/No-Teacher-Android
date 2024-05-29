@@ -31,7 +31,7 @@ public class EmailVerifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5e62dc3d");
+
         binding = DataBindingUtil.setContentView(this,R.layout.activity_email_verify);
 
         viewModel = new ViewModelProvider(this).get(EmailVerifyViewModel.class);

@@ -11,11 +11,6 @@ import androidx.annotation.Nullable;
 
 import com.example.no_teacher_andorid.R;
 
-/**
- * @author hjyu
- * @date 2018/5/31.
- * @see <a href="http://www.xfyun.cn">讯飞开放平台</a>
- */
 
 public class UrlSettings extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 

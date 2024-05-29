@@ -1,10 +1,6 @@
-/**
- *
- */
-package com.iflytek.ise.result;
+package com.example.android.bean.entity;
 
-import com.iflytek.ise.result.util.ResultFormatUtil;
-
+import com.example.android.util.Result;
 
 public class ReadWordResult extends Result {
 
@@ -26,7 +22,7 @@ public class ReadWordResult extends Result {
         } else {
             if (is_rejected) {
                 buffer.append("检测到乱读，")
-                        .append("except_info:" + except_info + "\n\n");    // except_info代码说明详见《语音评测参数、结果说明文档》
+                        .append("except_info:" + except_info + "\n\n");	// except_info代码说明详见《语音评测参数、结果说明文档》
             }
 
             buffer.append("[总体结果]\n")
@@ -39,3 +35,4 @@ public class ReadWordResult extends Result {
         return buffer.toString();
     }
 }
+

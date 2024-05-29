@@ -159,7 +159,6 @@ public class UserEditViewModel extends ViewModel {
             public void onResponse(Call<BaseResponse<String>> call, Response<BaseResponse<String>> response) {
                 if (response.isSuccessful()) {
                     uploadStatus.setValue("File uploaded successfully!");
-                    Log.e("AAAAAAAAAAAAAAA", response.body().getMsg() + "");
                     Log.e("Success", "Response Code: " + response.code() + " Message: " + response.message());
                     userAvatar.setValue(response.body().getData());
                     Log.e("Avatar", response.body().getData());

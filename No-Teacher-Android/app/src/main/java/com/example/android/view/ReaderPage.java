@@ -1,17 +1,17 @@
-package com.example.android.view;
+package com.example.android.bean.entity;
 
 import android.content.Context;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.example.android.bean.entity.WordInfo;
-import com.example.android.view.WordClickableSpan;
+import com.example.android.ui.activity.ReadActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 public class ReaderPage extends AppCompatTextView {
     private SpannableString mSpannableString;
     private List<WordInfo> mWordInfos;
+    private ReadActivity readActivity;
 
     public ReaderPage(Context context) {
         super(context);
@@ -41,6 +42,11 @@ public class ReaderPage extends AppCompatTextView {
         super(context, attrs, defStyleAttr);
         initialize();
     }
+
+    public void setReadActivity(ReadActivity readActivity) {
+        this.readActivity = readActivity;
+    }
+
 
     private void initialize() {
         setMovementMethod(LinkMovementMethod.getInstance());
@@ -85,7 +91,7 @@ public class ReaderPage extends AppCompatTextView {
 
     private void setClickableSpans() {
         for (WordInfo info : mWordInfos) {
-            mSpannableString.setSpan(new WordClickableSpan(info, getContext()),
+            mSpannableString.setSpan(new WordClickableSpan(info, getContext(),readActivity),
                     info.getStart(), info.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }

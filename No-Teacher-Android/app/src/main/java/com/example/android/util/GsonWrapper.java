@@ -10,11 +10,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
 
-/**
- * @Author wpt
- * @Date 2023/2/22-11:47
- * @desc
- */
+
 public class GsonWrapper {
     static final String TAG = "GsonWrapper";
     private static final Gson GSON;
