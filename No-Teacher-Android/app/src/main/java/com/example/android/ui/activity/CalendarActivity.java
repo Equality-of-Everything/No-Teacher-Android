@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 
 
 import com.example.android.bean.entity.BarDataEntity;
+import com.example.android.util.TokenManager;
+import com.example.android.viewmodel.CalenderViewModel;
+import com.example.android.viewmodel.HomeViewModel;
 import com.example.no_teacher_andorid.R;
 
 import java.text.DecimalFormat;
@@ -29,6 +33,8 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarView calendarView;
     private MaterialToolbar topAppBar ;
     private DecimalFormat format = new DecimalFormat("#.##");
+    private CalenderViewModel calenderViewModel;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,10 @@ public class CalendarActivity extends AppCompatActivity {
 
         calendarView = findViewById(R.id.calendarView);
         topAppBar =findViewById(R.id.topAppBar);
+        calenderViewModel = new CalenderViewModel();
+        homeViewModel = new HomeViewModel();
+        calenderViewModel.getReadLongDataCount(this, TokenManager.getUserId(this));
+        homeViewModel.getTotalWordNum(this,TokenManager.getUserId(this));
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +57,7 @@ public class CalendarActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 // 处理日期选择事件
-                String selectedDate = year + "/" + (month + 1) + "/" + dayOfMonth;
+                String selectedDate = year + "年"  +(month + 1) + "月" + dayOfMonth+"日";
                 showCustomDialog(selectedDate);
             }
         });
@@ -61,6 +71,27 @@ public class CalendarActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_calender, null);
         dialog.setContentView(dialogView);
         TextView tvSelectedDate = dialogView.findViewById(R.id.tvSelectedDate);
+        TextView tvReadTime = dialogView.findViewById(R.id.text_min);
+        TextView tvReadCount = dialogView.findViewById(R.id.text_read_count);
+        TextView tvReadWordCount = dialogView.findViewById(R.id.text_count);
+        calenderViewModel.getReadlogDataCountLiveData().observe(this, readLogDataCounts -> {
+            readLogDataCounts.forEach(readLogDataCount -> {
+                    Log.e("AAAAAAAAAAAAAAAAA", readLogDataCount.getToday().toLocaleString().contains(selectedDate) + "");
+                if (readLogDataCount.getToday().toLocaleString().contains(selectedDate)) {
+                    tvReadTime.setText(readLogDataCount.getTotalReadDuration() / 1000 / 60 + "");
+                    if (readLogDataCount.getTotalReadWordNum() == null) {
+                        tvReadCount.setText("0");
+                    } else {
+                        tvReadCount.setText(readLogDataCount.getTotalReadWordNum() + "");
+                    }
+                    homeViewModel.getTotalWordNumLiveData().observe(this, totalWordNum -> {
+                        tvReadWordCount.setText(totalWordNum + "");
+                    });
+                }
+
+                });
+
+            });
 
         tvSelectedDate.setText(selectedDate);
 

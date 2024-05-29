@@ -5,6 +5,7 @@ import com.example.android.bean.LexileRequest;
 import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Article;
 import com.example.android.bean.entity.ReadLog;
+import com.example.android.bean.entity.ReadLogDataCount;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.bean.entity.UserLevel;
@@ -87,16 +88,22 @@ public interface ApiService {
     //发送请求获取阅读时长
     @GET("readLog/{userId}")
     Call<BaseResponse<Long>> getTodayReadDuration(@Path("userId") String userId);
+
     //发送请求获取总单词数目
     @GET("readLog/totalWord/{userId}")
     Call<BaseResponse<Integer>> getTotalWordNum(@Path("userId") String userId);
+
     //发送请求获取文章单词数目
     @GET("readLog/wordNum/{userId}")
     Call<BaseResponse<Integer>> getTodayReadWordNumByuserId(@Path("userId") String userId);
 
     // 插入阅读记录
     @POST("readLog/insert")
-    Call<BaseResponse<ReadLog>> insertReadLog(@QueryMap HashMap<String,String> params);
+    Call<BaseResponse<ReadLog>> insertReadLog(@QueryMap HashMap<String, String> params);
+
+    // 拿到用户阅读数据统计
+    @GET("/dataCount/{userId}")
+    Call<BaseResponse<List<ReadLogDataCount>>> getReadLongDataCount(@Path("userId") String userId);
 }
 
 
