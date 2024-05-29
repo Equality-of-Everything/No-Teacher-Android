@@ -26,31 +26,8 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_gravity="right"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        android:padding="5dp">-->
-
-    <!--        <TextView-->
-    <!--            style="111"-->
-    <!--            android:drawableLeft="@color/white"-->
-    <!--            android:text="正面" />-->
-
-    <!--        <TextView-->
-    <!--            style="@style/barchartBar"-->
-    <!--            android:drawableLeft="@mipmap/iv_sentiment_middle"-->
-    <!--            android:text="中性" />-->
-
-    <!--        <TextView-->
-    <!--            style="@style/barchartBar"-->
-    <!--            android:drawableLeft="@mipmap/iv_sentiment_right"-->
-    <!--            android:text="负面" />-->
-    <!--    </LinearLayout>-->
-
     <RelativeLayout
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -180,7 +157,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </HorizontalScrollView>
-
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:src="@drawable/negtive"></ImageView>
+            <TextView
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="阅读一般的单词量"
+                android:textColor="#ffb5a0"></TextView>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:src="@drawable/neutral"></ImageView>
+            <TextView
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="阅读良好的单词量"
+                android:textColor="#f5e1a7"></TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="21dp"
+                android:layout_height="21dp"
+                android:src="@drawable/positive"></ImageView>
+            <TextView
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="阅读优秀的单词量"
+                android:textColor="#c5ecce"></TextView>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

@@ -22,10 +22,11 @@ public class SourceEntity {
     public void parseData() {
         list = new ArrayList<>();
         Random r = new Random();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("MM.dd", Locale.getDefault());
 
-        // 生成过去6天的日期
+        // 生成过去6天的日期，最后一个日期为今日
         Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -6); // 向前6天
         for (int i = 0; i < 6; i++) {
             Source source = new Source();
             source.setBadCount(r.nextInt(100));
@@ -35,7 +36,7 @@ public class SourceEntity {
             source.setSource(sdf.format(calendar.getTime()));
             source.setAllCount(source.getBadCount() + source.getGoodCount() + source.getOtherCount());
             list.add(source);
-            calendar.add(Calendar.DAY_OF_YEAR, -1); // 向前一天
+            calendar.add(Calendar.DAY_OF_YEAR, 1); // 向后一天
         }
 
         // 添加“今日”的数据项
@@ -48,6 +49,7 @@ public class SourceEntity {
         todaySource.setAllCount(todaySource.getBadCount() + todaySource.getGoodCount() + todaySource.getOtherCount());
         list.add(todaySource);
     }
+
 
     public static class Source {
         private String source;

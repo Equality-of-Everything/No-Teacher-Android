@@ -52,23 +52,28 @@ public class BarGroup extends LinearLayout {
         if (datas != null) {
             for (int i = 0; i < datas.size(); i++) {
                 /*通过柱状图的最大值和相对比例计算出每条柱状图的高度*/
-                float barHeight = datas.get(i).getAllcount()/maxValue*height;
+//                float barHeight = datas.get(i).getAllcount()/maxValue*height;
                 View view = LayoutInflater.from(getContext()).inflate(R.layout.item_column_bar, null);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(DensityUtil.dip2px(getContext(),30),height);
 //                view.setLayoutParams(lp);
                 ((BarView) view.findViewById(R.id.barView)).setData(datas.get(i));
                 (view.findViewById(R.id.barView)).setLayoutParams(lp);
                 ((TextView)view.findViewById(R.id.title)).setText(getFeedString(datas.get(i).getTitle()));
-                DecimalFormat mFormat=new DecimalFormat("##.#");
+//                DecimalFormat mFormat=new DecimalFormat("##.#");
+//                ((TextView)view.findViewById(R.id.percent)).setText(mFormat.format(datas.get(i).getAllcount()));
                 addView(view);
             }
         }
     }
 
     /*字符串換行*/
-    private String getFeedString(String text){
+    private String getFeedString(String text) {
         StringBuilder sb = new StringBuilder(text);
-        sb.insert(2,"\n");
+        int length = sb.length();
+        for (int i = 6; i < length; i += 7) {
+            sb.insert(i, "\n");
+            length++; // Adjust length to account for the inserted newline
+        }
         return sb.toString();
     }
 }

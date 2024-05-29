@@ -69,8 +69,8 @@ public class ColumnActivity extends AppCompatActivity {
             }
         }
 
-        // 向上舍入到最接近的50的倍数
-        sourceMax = (float) (Math.ceil(sourceMax / 50.0) * 50);
+        // 固定最大值为250
+        sourceMax = 250;
 
         for (int i = 0; i < size; i++) {
             BarEntity barEntity = new BarEntity();
@@ -125,12 +125,20 @@ public class ColumnActivity extends AppCompatActivity {
                                     + "良好：" + (int) ss.getOtherCount() + "个\n"
                                     + "一般：" + (int) ss.getBadCount() + "个\n"
                                     + "总共：" + (int) ss.getAllCount() + "个";
-//                                    + "动画时间单元：" + barItem.getAnimTimeCell(); // 获取动画时间单元值
                             ((TextView) popView.findViewById(R.id.txt)).setText(showText);
                             showPop(barItem, top);
                         }
                     });
                 }
+
+                // 滚动到最后一个子视图
+                root.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        root.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                    }
+                });
+
                 return false;
             }
         });
@@ -143,37 +151,11 @@ public class ColumnActivity extends AppCompatActivity {
         TextView tv_num4 = findViewById(R.id.tv_num4);
         TextView tv_num5 = findViewById(R.id.tv_num5);
 
-        sourceMax = 0;
-        for (SourceEntity.Source source : list) {
-            if (source.getAllCount() > sourceMax) {
-                sourceMax = source.getAllCount();
-            }
-        }
-
-        // 向上舍入到最接近的50的倍数
-        sourceMax = (float) (Math.ceil(sourceMax / 50.0) * 50);
-
         tv_num1.setText(String.valueOf(50));
         tv_num2.setText(String.valueOf(100));
         tv_num3.setText(String.valueOf(150));
         tv_num4.setText(String.valueOf(200));
-        tv_num5.setText(String.valueOf((int) sourceMax));
-    }
-
-    public List<SourceEntity.Source> parseData() {
-        List<SourceEntity.Source> list = new ArrayList<>();
-        Random r = new Random();
-        for (int i = 0; i <= 6; i++) {
-            SourceEntity.Source source = new SourceEntity.Source();
-            source.setBadCount(r.nextInt(100));
-            source.setGoodCount(r.nextInt(100));
-            source.setOtherCount(r.nextInt(100));
-            source.setScale(r.nextInt(100));
-            source.setSource("品类" + i);
-            source.setAllCount(source.getBadCount() + source.getGoodCount() + source.getOtherCount());
-            list.add(source);
-        }
-        return list;
+        tv_num5.setText(String.valueOf(250));
     }
 
     private void showPop(final View barItem, final float top) {
