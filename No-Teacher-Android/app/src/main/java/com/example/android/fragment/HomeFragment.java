@@ -84,10 +84,14 @@ public class HomeFragment extends Fragment {
 
         //获取阅读时长
         viewModel.getTodayReadDuration(getContext(),TokenManager.getUserId(getContext()));
-        viewModel.getTodayReadDurationLiveData().observe(getViewLifecycleOwner(),TodayReadDurationLiveData->{
+        if(viewModel.getTodayReadDurationLiveData().getValue()!=null){
+            viewModel.getTodayReadDurationLiveData().observe(getViewLifecycleOwner(),TodayReadDurationLiveData->{
+                if(TodayReadDurationLiveData==0L) binding.textMin.setText(0);
+                else binding.textMin.setText(TodayReadDurationLiveData/1000/60+"");
+            });
+        }
+        binding.textMin.setText(0+"");
 
-            binding.textMin.setText(String.valueOf(TodayReadDurationLiveData/1000/60));
-        });
         //获取单词数目
         viewModel.getTotalWordNum(getContext(),TokenManager.getUserId(getContext()));
         viewModel.getTotalWordNumLiveData().observe(getViewLifecycleOwner(),TotalWordNumLiveData->{

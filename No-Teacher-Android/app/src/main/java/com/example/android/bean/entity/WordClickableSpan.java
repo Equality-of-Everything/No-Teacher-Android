@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.example.android.adapter.ExamplesAdapter;
 import com.example.android.api.DictionaryAPI;
 import com.example.android.http.RetrofitClient;
+import com.example.android.ui.activity.ReadActivity;
 import com.example.android.util.TextTranslator;
 import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
@@ -38,9 +39,11 @@ import retrofit2.Response;
 public class WordClickableSpan extends ClickableSpan {
     private WordInfo wordInfo;
     private Context context;
-    public WordClickableSpan(WordInfo wordInfo, Context context) {
+    private ReadActivity readActivity;
+    public WordClickableSpan(WordInfo wordInfo, Context context, ReadActivity readActivity) {
         this.wordInfo = wordInfo;
         this.context = context;
+        this.readActivity = readActivity;
     }
 
     //修改页面字体颜色，去除下划线
@@ -56,6 +59,11 @@ public class WordClickableSpan extends ClickableSpan {
     @Override
     public void onClick(@NonNull View widget) {
         String clickedWord = wordInfo.getWord();
+
+        // 通知 ReadActivity 单词被点击
+        if (readActivity != null) {
+            readActivity.incrementWordClickCount();
+        }
 
         // 显示 BottomSheetDialog
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(widget.getContext());

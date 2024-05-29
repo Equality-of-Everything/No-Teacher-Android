@@ -16,17 +16,14 @@ public class ReadLog {
     private Timestamp endTime;
     private long readDuration;
     private int articleId;
+    private int readWordNum;
 
-    public ReadLog(String id, String userId, Timestamp startTime, Timestamp endTime, long readDuration, int articleId) {
-        this.id = id;
-        this.userId = userId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.readDuration = readDuration;
-        this.articleId = articleId;
+    public int getReadWordNum() {
+        return readWordNum;
     }
 
-    public ReadLog() {
+    public void setReadWordNum(int readWordNum) {
+        this.readWordNum = readWordNum;
     }
 
     @Override
@@ -38,7 +35,30 @@ public class ReadLog {
                 ", endTime=" + endTime +
                 ", readDuration=" + readDuration +
                 ", articleId=" + articleId +
+                ", readWordNum=" + readWordNum +
                 '}';
+    }
+
+    public ReadLog(String id, String userId, Timestamp startTime, Timestamp endTime, long readDuration, int articleId, int readWordNum) {
+        this.id = id;
+        this.userId = userId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.readDuration = readDuration;
+        this.articleId = articleId;
+        this.readWordNum = readWordNum;
+    }
+
+    public ReadLog(String id, String userId, Timestamp startTime, Timestamp endTime, long readDuration, int articleId) {
+        this.id = id;
+        this.userId = userId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.readDuration = readDuration;
+        this.articleId = articleId;
+    }
+
+    public ReadLog() {
     }
 
     public String getId() {

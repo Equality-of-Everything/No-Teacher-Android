@@ -44,7 +44,7 @@ public class ReadActivityViewModel extends ViewModel {
                         if (response.isSuccessful() && response.body().getData() != null) {
                             Log.e("AAAAAAAAAAAAAAA", response.body().getData().toString());
                         }
-                        Log.e("BBBBBBBBBBBBBBB", response.isSuccessful() + "");
+
                     }
 
                     @Override

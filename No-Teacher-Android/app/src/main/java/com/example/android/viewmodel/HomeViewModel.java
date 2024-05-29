@@ -202,6 +202,7 @@ public class HomeViewModel extends ViewModel {
                                 Log.e("getTodayReadDuration", ""+response.body().getData()+ response.body().getMsg());
                                 TodayReadDurationLiveData.postValue(response.body().getData());
                             }else {
+                            TodayReadDurationLiveData.setValue(0L);
                             Log.e("getTodayReadDuration", "Business Error: " + response.body().getMsg());
                         }
                     }

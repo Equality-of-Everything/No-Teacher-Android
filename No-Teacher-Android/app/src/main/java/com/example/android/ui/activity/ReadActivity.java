@@ -51,12 +51,16 @@ public class ReadActivity extends AppCompatActivity {
     private Timestamp startTime = null;
     private Timestamp endTime = null;
     private ReadActivityViewModel readActivityViewModel;
+
+    // 用于记录单词点击数目
+    private int wordClickCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
         ReaderPage readerPage = findViewById(R.id.readerPage);
+        readerPage.setReadActivity(this);
 
         String title = getIntent().getStringExtra("title");
         String imageUrl = getIntent().getStringExtra("imageUrl");
@@ -88,6 +92,11 @@ public class ReadActivity extends AppCompatActivity {
         readerPage.setContent(content);
         readActivityViewModel = new ReadActivityViewModel();
 
+    }
+
+    public void incrementWordClickCount() {
+        wordClickCount++;
+        Log.e("ReadActivity", "Word clicked " + wordClickCount + " times");
     }
 
     public void startTimer() {
@@ -151,6 +160,7 @@ public class ReadActivity extends AppCompatActivity {
             readLog.setStartTime(startTime);
             readLog.setEndTime(endTime);
             readLog.setArticleId(articleId);
+            readLog.setReadWordNum(wordClickCount);
 //            String json_readLog = GsonUtils.getGsonInstance().toJson(readLog);
             readActivityViewModel.insertReadLog(readLog,this);
             Log.e("ReadActivity-onStop",readLog.toString());

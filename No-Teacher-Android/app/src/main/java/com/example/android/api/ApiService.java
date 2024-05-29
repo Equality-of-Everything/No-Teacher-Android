@@ -4,6 +4,7 @@ import com.example.android.bean.EmailRequest;
 import com.example.android.bean.LexileRequest;
 import com.example.android.bean.RegisterRequest;
 import com.example.android.bean.entity.Article;
+import com.example.android.bean.entity.ReadLog;
 import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.bean.entity.UserLevel;
