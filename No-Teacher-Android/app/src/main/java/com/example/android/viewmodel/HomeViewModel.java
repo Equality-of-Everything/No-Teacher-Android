@@ -41,6 +41,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Long> TodayReadDurationLiveData=new MutableLiveData<>();
     private MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>();
     private MutableLiveData<Integer> TotalWordNumLiveData=new MutableLiveData<>();
+    private MutableLiveData<Integer> TodayReadWordNumLiveData=new MutableLiveData<>();
 
     private ApiService apiService;
     private int lexile = 110;
@@ -70,6 +71,10 @@ public class HomeViewModel extends ViewModel {
 
     public  MutableLiveData<Integer> getTotalWordNumLiveData(){
         return TotalWordNumLiveData;
+    }
+
+    public MutableLiveData<Integer> getTodayReadWordNumLiveData(){
+        return  TodayReadWordNumLiveData;
     }
     public void setApiService(ApiService apiService) {
         this.apiService = apiService;
@@ -222,16 +227,40 @@ public class HomeViewModel extends ViewModel {
                     @Override
                     public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("getTotalWordNumNNNN", ""+response.body().getData()+ response.body().getMsg());
+                            Log.e("getTotalWordNum", ""+response.body().getData()+ response.body().getMsg());
                             TotalWordNumLiveData.postValue(response.body().getData());
                         }else {
-//                            Log.e("getTotalWordNumNNNN", "Business Error: " + response.body().getMsg());
+                            TotalWordNumLiveData.setValue(0);
+                            Log.e("getTotalWordNum", "Business Error: " + response.body().getMsg());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
                         Log.e("getTotalWordNum-Error", "Network-Error");
+                        t.printStackTrace();
+                    }
+                });
+    }
+
+    public void getTodayReadWordNumByuserId(Context context,String userId){
+        RetrofitManager.getInstance(context, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .getTodayReadWordNumByuserId(userId)
+                .enqueue(new Callback<BaseResponse<Integer>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Integer>> call, Response<BaseResponse<Integer>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("getTodayReadWordNumByuserId", ""+response.body().getData()+ response.body().getMsg());
+                            TodayReadWordNumLiveData.postValue(response.body().getData());
+                        }else {
+                            Log.e("getTodayReadWordNumByuserId", "Business Error: " + response.body().getMsg());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse<Integer>> call, Throwable t) {
+                        Log.e("getTodayReadWordNumByuserId-Error", "Network-Error");
                         t.printStackTrace();
                     }
                 });

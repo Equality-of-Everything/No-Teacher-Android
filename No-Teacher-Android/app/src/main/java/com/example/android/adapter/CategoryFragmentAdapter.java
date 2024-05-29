@@ -1,7 +1,5 @@
 package com.example.android.adapter;
 
-import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

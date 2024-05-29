@@ -90,13 +90,26 @@ public class HomeFragment extends Fragment {
                 else binding.textMin.setText(TodayReadDurationLiveData/1000/60+"");
             });
         }
-        binding.textMin.setText(0+"");
+//        binding.textMin.setText(0+"");
 
         //获取单词数目
         viewModel.getTotalWordNum(getContext(),TokenManager.getUserId(getContext()));
-        viewModel.getTotalWordNumLiveData().observe(getViewLifecycleOwner(),TotalWordNumLiveData->{
-            binding.textCount.setText(String.valueOf(TotalWordNumLiveData));
-        });
+        if (viewModel.getTotalWordNumLiveData().getValue()!=null){
+            viewModel.getTotalWordNumLiveData().observe(getViewLifecycleOwner(),TotalWordNumLiveData->{
+                binding.textCount.setText(String.valueOf(TotalWordNumLiveData));
+            });
+        }
+
+        //获取阅读单词数目
+        viewModel.getTodayReadWordNumByuserId(getContext(),TokenManager.getUserId(getContext()));
+        if (viewModel.getTodayReadWordNumLiveData().getValue()!=null){
+            viewModel.getTodayReadWordNumLiveData().observe(getViewLifecycleOwner(),TodayReadWordNumLiveData->{
+                if(TodayReadWordNumLiveData==0) binding.textReadCount.setText(0);
+                else binding.textReadCount.setText(String.valueOf(TodayReadWordNumLiveData));
+            });
+        }
+
+
 
         binding.tvHomeName.setText(TokenManager.getUserName(getActivity()));
         viewModel.getIsTestLiveData().observe(getActivity(), isTest -> {

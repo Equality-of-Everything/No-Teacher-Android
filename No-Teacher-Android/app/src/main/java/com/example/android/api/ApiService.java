@@ -87,9 +87,12 @@ public interface ApiService {
     //发送请求获取阅读时长
     @GET("readLog/{userId}")
     Call<BaseResponse<Long>> getTodayReadDuration(@Path("userId") String userId);
+    //发送请求获取总单词数目
     @GET("readLog/totalWord/{userId}")
     Call<BaseResponse<Integer>> getTotalWordNum(@Path("userId") String userId);
-
+    //发送请求获取文章单词数目
+    @GET("readLog/wordNum/{userId}")
+    Call<BaseResponse<Integer>> getTodayReadWordNumByuserId(@Path("userId") String userId);
 
     // 插入阅读记录
     @POST("readLog/insert")
