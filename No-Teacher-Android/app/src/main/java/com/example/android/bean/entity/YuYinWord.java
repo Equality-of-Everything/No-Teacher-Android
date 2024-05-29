@@ -1,11 +1,8 @@
-/**
- *
- */
-package com.iflytek.ise.result.entity;
+package com.example.android.bean.entity;
 
 import java.util.ArrayList;
 
-public class Word {
+public class YuYinWord {
     /**
      * 开始帧位置，每帧相当于10ms
      */

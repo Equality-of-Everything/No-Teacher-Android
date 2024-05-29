@@ -247,7 +247,6 @@ public class HomeFragment extends Fragment {
                     intent.putExtra("title", clickedArticle.getTitle());
                     intent.putExtra("imageUrl", clickedArticle.getCover()); // 假设是图片的URL
                     intent.putExtra("content", clickedArticle.getContent());
-                    intent.putExtra("articleId", clickedArticle.getId());
                     startActivity(intent);
                 });
             }

@@ -1,8 +1,4 @@
-/**
- *
- */
-package com.iflytek.ise.result;
-
+package com.example.android.util;
 
 import com.example.android.bean.entity.Sentence;
 
@@ -45,6 +41,22 @@ public class Result {
      * 是否乱读（cn）
      */
     public boolean is_rejected;
+    /**
+     * 流利度分
+     */
+    public float fluency_score;
+    /**
+     * 准确度分
+     */
+    public float accuracy_score;
+    /**
+     * 标准度分
+     */
+    public float standard_score;
+    /**
+     * 完整度分
+     */
+    public float integrity_score;
     /**
      * xml结果中的sentence标签
      */
