@@ -4,8 +4,12 @@ import static android.service.controls.ControlsProviderService.TAG;
 
 import static java.lang.String.format;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.util.ToastManager;
 import com.example.android.util.XmlResultParser;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -80,6 +88,25 @@ public class ReadTestPagerFragment extends Fragment {
         lines = new ArrayList<>();
     }
 
+    //录制音频
+    private MediaRecorder mediaRecorder;
+    private String outputFilePath;
+    private int recordingIndex = 1;
+    private boolean isRecording = false;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 210;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 220;
+
+    private enum RecorderState {
+        IDLE,
+        INITIALIZING,
+        READY,
+        RECORDING,
+        ERROR,
+        STOPPED
+    }
+    private RecorderState currentState = RecorderState.IDLE;
+
 
     public ReadTestPagerFragment() {
         // Required empty public constructor
@@ -138,18 +165,147 @@ public class ReadTestPagerFragment extends Fragment {
         SpeechUtility.createUtility(getActivity(), SpeechConstant.APPID +"=5e62dc3d");
         mIse = SpeechEvaluator.createEvaluator(getActivity(), null);
 
+
+        //请求录音的相关权限
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    REQUEST_RECORD_AUDIO_PERMISSION);
+        } else {
+            // 初始化录音设置
+            initRecording();
+        }
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.e(TAG,"进来");
 
 
+                if (!isRecording) {
+                    startRecording();
+
+                    ToastManager.showCustomToast(getActivity(), "开始录音");
+                } else {
+                    stopRecording();
+                    ToastManager.showCustomToast(getActivity(), "结束录音");
+                }
+                isRecording = !isRecording;
+
+                //开始句子测评
                 startSentenceTest();
             }
         });
 
         return view;
     }
+
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 初始化录音设置
+     * @date 2024/5/29 14:16
+     */
+    private void initRecording() {
+        File directory = new File(getActivity().getExternalCacheDir().getAbsolutePath());
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        outputFilePath = directory.getAbsolutePath() + "/recording" + recordingIndex + ".mp3";
+        Log.d("Recording", "Output file path: " + outputFilePath);
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setOutputFile(outputFilePath);
+        currentState = RecorderState.READY;
+    }
+
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 开始录音
+     * @date 2024/5/29 14:16
+     */
+    private void startRecording() {
+        if (currentState == RecorderState.READY) {
+            try {
+                mediaRecorder.prepare();
+                mediaRecorder.start();
+                currentState = RecorderState.RECORDING;
+            } catch (IOException | IllegalStateException e) {
+                e.printStackTrace();
+                currentState = RecorderState.ERROR;
+            }
+        }
+    }
+
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 停止录音
+     * @date 2024/5/29 14:16
+     */
+    private void stopRecording() {
+        if (currentState == RecorderState.RECORDING) {
+            try {
+                mediaRecorder.stop();
+                mediaRecorder.release(); // Release the MediaRecorder
+                recordingIndex++;
+
+                File dir = new File(Environment.getExternalStorageDirectory(), "AudioRecorder");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                File file = new File(dir, "/recording" + recordingIndex + ".mp3");
+
+                mediaRecorder = new MediaRecorder(); // Reinitialize the MediaRecorder for subsequent recordings
+                initRecording(); // Reinitialize recording settings
+                currentState = RecorderState.READY;
+
+                // Check if the recording file exists
+                File recordingFile = new File(outputFilePath);
+                if (recordingFile.exists() && recordingFile.isFile()) {
+                    // Recording file generated
+                    Log.d("Recording", "Recording file generated at: " + outputFilePath);
+                } else {
+                    // Recording file not generated
+                    Log.e("Recording", "Recording file not generated");
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION ||
+                requestCode == REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION ||
+                requestCode == REQUEST_READ_EXTERNAL_STORAGE_PERMISSION) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(Manifest.permission.RECORD_AUDIO) &&
+                        grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    initRecording();
+                }
+            }
+        }
+    }
+
+
 
     private void startSentenceTest(){
         new Thread(new Runnable() {
