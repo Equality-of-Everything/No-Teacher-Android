@@ -45,9 +45,6 @@ public class BFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
         userId = TokenManager.getUserId(getContext());
-//        userId="9c6a1c47-da2e-4aec-adc9-a492d5861986";
-        //设置推荐单词的请求参数
-
 
         viewPager = view.findViewById(R.id.view_pager);
         nextButton = view.findViewById(R.id.next_button);
