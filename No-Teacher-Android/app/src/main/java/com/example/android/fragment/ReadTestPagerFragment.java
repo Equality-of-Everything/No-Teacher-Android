@@ -22,16 +22,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.bean.entity.WordDetail;
 import com.example.android.util.ToastManager;
 import com.example.android.util.XmlResultParser;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.android.util.IFlySpeechUtils;
 import com.example.android.util.TtsUtil;
+import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.EvaluatorListener;
@@ -75,6 +79,8 @@ public class ReadTestPagerFragment extends Fragment {
     private Button btnSpeak;
 //    private TextToSpeech mTTS;
 
+    private BFragmentViewModel viewModel;
+
     //科大讯飞
     private SpeechEvaluator mIse;
     private String mTestContent = "";
@@ -94,6 +100,8 @@ public class ReadTestPagerFragment extends Fragment {
     }
 
     //录制音频
+    private String curWord;//当前界面上显示的单词
+
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
     private String outputFilePath;
@@ -151,7 +159,11 @@ public class ReadTestPagerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
+
         View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
+        //初始化viewModel
+        viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
         ImageView imageView = view.findViewById(R.id.imageView);
         TextView textView1 = view.findViewById(R.id.textView);
@@ -159,20 +171,34 @@ public class ReadTestPagerFragment extends Fragment {
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
 
+        curWord = "hello";
         Glide.with(this)
                 .load(imageUrl)
                 .into(imageView);
         textView1.setText(text);
         textView2.setText(countText);
 
+        viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), wordDetails ->  {
+
+            if (wordDetails != null){
+                for (WordDetail wordDetail : wordDetails) {
+                    // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
+                    curWord = wordDetail.getWord();
+                    Log.e("curWord", curWord);
+                }
+            }
+        });
+
         // Use TtsUtil to set up the TTS buttons
         TtsUtil.getTts1(text, btnSpeak);
 
-        SpeechUtility.createUtility(getActivity(), SpeechConstant.APPID +"=5e62dc3d");
-        mIse = SpeechEvaluator.createEvaluator(getActivity(), null);
+//        SpeechUtility.createUtility(getContext(), SpeechConstant.APPID +"=" + "5e62dc3d");
+        mIse = SpeechEvaluator.createEvaluator(getContext(), null);
 
         if(mIse != null) {
             setParams();
+        } else {
+            Log.e("mIse", "语音评测初始化失败");
         }
 
         //请求录音的相关权限
@@ -197,19 +223,18 @@ public class ReadTestPagerFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(TAG,"进来");
 
 
                 if (!isRecording) {
                     startRecording();
 
                     ToastManager.showCustomToast(getActivity(), "开始录音");
-                    //开始句子测评
-                    startSentenceTest();
                 } else {
                     stopRecording();
                     ToastManager.showCustomToast(getActivity(), "结束录音");
 
+                    //开始句子测评
+                    startSentenceTest();
                 }
                 isRecording = !isRecording;
 
@@ -231,7 +256,7 @@ public class ReadTestPagerFragment extends Fragment {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        outputFilePath = directory.getAbsolutePath() + "/recording" + recordingIndex + ".mp3";
+        outputFilePath = directory.getAbsolutePath() + "/recording.mp3";
         Log.e("Recording", "Output file path: " + outputFilePath);
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -273,13 +298,12 @@ public class ReadTestPagerFragment extends Fragment {
             try {
                 mediaRecorder.stop();
                 mediaRecorder.release(); // Release the MediaRecorder
-                recordingIndex++;
 
                 File dir = new File(Environment.getExternalStorageDirectory(), "AudioRecorder");
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                File file = new File(dir, "/recording" + recordingIndex + ".mp3");
+                File file = new File(dir, "/recording.mp3");
 
                 mediaRecorder = new MediaRecorder(); // Reinitialize the MediaRecorder for subsequent recordings
                 initRecording(); // Reinitialize recording settings
@@ -319,12 +343,11 @@ public class ReadTestPagerFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 InputStream inputStream = null;
                 OutputStream outputStream = null;
 
                 try{
-                    File file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.example.no_teacher_andorid/cache/recording" + recordingIndex + ".mp3");
+                    File file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.example.no_teacher_andorid/cache/recording.mp3");
                     if (file.exists()) {
                         // 进行你的操作，比如播放音频或者处理音频数据
                         playAudio(file);
@@ -333,7 +356,8 @@ public class ReadTestPagerFragment extends Fragment {
 //                        int ret = mIse.startEvaluating(isWords() ? "[word]\n" + format(mTestContent) : format(mTestContent), null, mEvaluatorListener);
                         if(mIse != null) {
                             Log.e("mIse", "mIse初始化完成，开始接入语音测评");
-                            int ret = mIse.startEvaluating("hello", null, mEvaluatorListener);//接入语音评测
+                            int ret = mIse.startEvaluating(format(curWord), null, mEvaluatorListener);
+//                            int ret = mIse.startEvaluating(curWord,null, mEvaluatorListener);//接入语音评测
                             if (ret == ErrorCode.SUCCESS) {
                                 byte[] audioData = FucUtil.readAudioFile(getActivity(), file.getAbsolutePath());
                                 if (audioData != null) {
@@ -348,6 +372,8 @@ public class ReadTestPagerFragment extends Fragment {
                             } else {
                                 Log.d("writeAudio", "写入音频文件失败");
                             }
+                        } else {
+                            Log.e("mIse", "未初始化");
                         }
 
                         synchronized (lock) {
@@ -359,9 +385,9 @@ public class ReadTestPagerFragment extends Fragment {
                             }
                         }
 
-
+                        Log.e("开始测评", "begin");
                     } else {
-                        Toast.makeText(getActivity(), "File does not exist", Toast.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "File does not exist", Toast.LENGTH_SHORT).show());
                     }
                 } finally {
                     // 关闭输入流和输出流
@@ -426,14 +452,13 @@ public class ReadTestPagerFragment extends Fragment {
      */
     private void setParams() {
         // 清空参数
-//        mIse.setParameter(SpeechConstant.PARAMS, null);
+        mIse.setParameter(SpeechConstant.PARAMS, null);
         // 设置评测语言
         language = "en_us";
         // 设置需要评测的类型
-        category =  isWords() ? "read_word" : "read_sentence";
+        category =  "read_word";
 
         Log.e("hkkk","category="+category);
-//        category = "read_word";
         // 设置结果等级（中文仅支持complete）
         result_level =  "complete";
         // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
@@ -616,30 +641,38 @@ public class ReadTestPagerFragment extends Fragment {
                         while ((line = reader.readLine()) != null) {
                             fileContent.append(line).append("\n");
                         }
+
                         // 显示Toast需要在UI线程执行
                         String finalContent = fileContent.toString();
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
                     } catch (IOException e) {
                         Log.e(TAG, "读取文件时发生错误", e);
                     }
                 } else {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "File does not exist", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    activity.runOnUiThread(() -> Toast.makeText(activity, "File does not exist", Toast.LENGTH_SHORT).show());
                 }
             }
         }).start();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mIse == null) {
+            mIse = SpeechEvaluator.createEvaluator(getContext(), null);
+        } else{
+            Log.e("mIse onResume", "Error");
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (null != mIse) {
+            mIse.destroy();
+//            mIse = null;
+        }
+    }
 //    private EvaluatorListener mEvaluatorListener = new EvaluatorListener() {
 //
 //        @Override

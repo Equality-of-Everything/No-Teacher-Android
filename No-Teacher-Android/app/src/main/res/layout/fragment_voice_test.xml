@@ -1,54 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
-    <!-- 图片 -->
-    <ImageView
-        android:id="@+id/imageView"
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.android.viewmodel.BFragmentViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/img" />
-    <Button
-        style="?attr/materialIconButtonStyle"
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:icon="@drawable/volume"/>
+        android:orientation="vertical"
+        android:layout_height="match_parent">
 
-    <!-- 文本 -->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is a sample text"
-        android:layout_marginBottom="20dp"
-        android:textSize="25sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal"/>
+        <!-- 图片 -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/img" />
+        <Button
+            style="?attr/materialIconButtonStyle"
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:icon="@drawable/volume"/>
 
-<!--    分数-->
+        <!-- 文本 -->
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is a sample text"
+            android:layout_marginBottom="20dp"
+            android:textSize="25sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"/>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="100"
-        android:layout_marginBottom="10dp"
-        android:layout_gravity="center_horizontal"
-        ></TextView>
+        <!--    分数-->
 
-    <!-- 按钮 -->
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="100"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            ></TextView>
+
+        <!-- 按钮 -->
 
         <Button
             style="?attr/materialIconButtonFilledStyle"
@@ -58,4 +67,5 @@
             app:icon="@drawable/voice"
             android:layout_gravity="center_horizontal"/>
 
-</LinearLayout>
+    </LinearLayout>
+</layout>
