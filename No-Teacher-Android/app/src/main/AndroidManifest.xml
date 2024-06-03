@@ -32,6 +32,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="com.example.android.ui.activity.SpellingActivity"
+            android:exported="true" />
+        <activity
             android:name="com.example.android.ui.activity.ColumnActivity"
             android:exported="true" />
         <activity
@@ -73,7 +76,7 @@
             android:exported="true"
             android:icon="@drawable/icon"
             android:label="讯飞语音示例"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name="com.iflytek.speech.setting.TtsSettings" />
         <activity android:name="com.iflytek.speech.setting.IatSettings" />
         <activity
