@@ -1,6 +1,7 @@
 package com.iflytek.speech.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.SpeechConstant;
@@ -9,6 +10,8 @@ import com.iflytek.cloud.SpeechUtility;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -124,21 +127,45 @@ public class FucUtil {
      *
      * @return 二进制文件数据
      */
-    public static byte[] readAudioFile(Context context, String filename) {
-        try {
-            InputStream ins = context.getAssets().open(filename);
-            byte[] data = new byte[ins.available()];
+//    public static byte[] readAudioFile(Context context, String filename) {
+//        try {
+//            InputStream ins = context.getAssets().open(filename);
+//            byte[] data = new byte[ins.available()];
+//
+//            ins.read(data);
+//            ins.close();
+//
+//            return data;
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
+    public static byte[] readAudioFile(Context context, String filePath) {
+        File file = new File(filePath);
 
-            ins.read(data);
-            ins.close();
+        if (!file.exists()) {
+            Log.e("FileError", "File not found at " + filePath);
+            return null;
+        }
 
-            return data;
+        byte[] data = null;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            data = new byte[(int) file.length()];
+            int readBytes = fis.read(data);
+
+            if (readBytes != data.length) {
+                Log.e("FileError", "Could not read entire file");
+                return null;
+            }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return null;
+        return data;
     }
-
 }
+
+

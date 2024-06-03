@@ -360,6 +360,7 @@ public class ReadTestPagerFragment extends Fragment {
 //                            int ret = mIse.startEvaluating(curWord,null, mEvaluatorListener);//接入语音评测
                             if (ret == ErrorCode.SUCCESS) {
                                 byte[] audioData = FucUtil.readAudioFile(getActivity(), file.getAbsolutePath());
+                                Log.e("AAAAAAAAAAAAA", file.getAbsolutePath());
                                 if (audioData != null) {
                                     try {
                                         Thread.sleep(200);  // 等待200毫秒
