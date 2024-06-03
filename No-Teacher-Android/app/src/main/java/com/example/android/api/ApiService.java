@@ -105,19 +105,3 @@ public interface ApiService {
     @GET("/dataCount/{userId}")
     Call<BaseResponse<List<ReadLogDataCount>>> getReadLongDataCount(@Path("userId") String userId);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

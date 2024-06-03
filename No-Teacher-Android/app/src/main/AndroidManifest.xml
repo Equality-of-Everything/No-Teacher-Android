@@ -32,31 +32,34 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.example.android.ui.activity.ColumnActivity"
-            android:exported="true" />
-        <activity
-            android:name="com.example.android.ui.activity.CalendarActivity"
-            android:exported="true" />
-        <activity
-            android:name="com.example.android.ui.activity.ArticleActivity"
+            android:name=".ListenTestActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.android.ui.activity.ReadActivity"
+            android:name=".ColumnActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.android.ui.activity.ImageViewActivity"
+            android:name=".CalendarActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ArticleActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.android.ui.activity.UserTestActivity"
+            android:name=".ReadActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.android.ui.activity.MainActivity"
+            android:name=".ImageViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserTestActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.android.ui.activity.UserEditActivity"
+            android:name=".MainActivity"
             android:exported="true" />
         <activity
-            android:name="com.example.android.ui.activity.EmailVerifyActivity"
+            android:name=".UserEditActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EmailVerifyActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.android.ui.activity.SelectLevelActivity"
+            android:name=".SelectLevelActivity"
             android:exported="true" />
         <activity
             android:name="com.iflytek.voicedemo.MainActivity"
@@ -73,7 +76,7 @@
             android:exported="true"
             android:icon="@drawable/icon"
             android:label="讯飞语音示例"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name="com.iflytek.speech.setting.TtsSettings" />
         <activity android:name="com.iflytek.speech.setting.IatSettings" />
         <activity

@@ -93,7 +93,7 @@ public class ColumnActivity extends AppCompatActivity {
             barEntity.setTitle(entity.getSource());
             barEntity.setScale(entity.getScale());
             barEntity.setAllcount(entity.getAllCount());
-            /*计算柱状图透明区域的比例*/
+            //计算柱状图透明区域的比例
             barEntity.setFillScale(1 - entity.getAllCount() / sourceMax);
             datas.add(barEntity);
         }
@@ -166,7 +166,6 @@ public class ColumnActivity extends AppCompatActivity {
         tv_num4.setText(String.valueOf(200));
         tv_num5.setText(String.valueOf(250));
     }
-
     private void showPop(final View barItem, final float top) {
         if (popupWindow != null)
             popupWindow.dismiss();
