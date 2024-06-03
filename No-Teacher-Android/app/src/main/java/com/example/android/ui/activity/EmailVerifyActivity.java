@@ -41,7 +41,7 @@ public class EmailVerifyActivity extends AppCompatActivity {
         ApiService apiService = RetrofitManager.getInstance(this, BuildConfig.USER_SERVICE).getApi(ApiService.class);
         viewModel.setApiService(apiService);
 
-
+        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=" + "5e62dc3d");
         // 设置按钮的点击事件
         binding.edtTxtVerifyNumber.setOnClickListener(new View.OnClickListener() {
             @Override

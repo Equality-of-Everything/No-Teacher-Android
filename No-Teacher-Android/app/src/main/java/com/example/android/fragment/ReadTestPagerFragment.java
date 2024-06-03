@@ -5,8 +5,10 @@ import static android.service.controls.ControlsProviderService.TAG;
 import static java.lang.String.format;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,17 +20,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android.bean.entity.WordDetail;
 import com.example.android.util.ToastManager;
 import com.example.android.util.XmlResultParser;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.android.util.IFlySpeechUtils;
 import com.example.android.util.TtsUtil;
+import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.EvaluatorListener;
@@ -41,10 +48,12 @@ import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.speech.util.FucUtil;
 import com.example.android.util.Result;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +79,8 @@ public class ReadTestPagerFragment extends Fragment {
     private Button btnSpeak;
 //    private TextToSpeech mTTS;
 
+    private BFragmentViewModel viewModel;
+
     //科大讯飞
     private SpeechEvaluator mIse;
     private String mTestContent = "";
@@ -89,7 +100,10 @@ public class ReadTestPagerFragment extends Fragment {
     }
 
     //录制音频
+    private String curWord;//当前界面上显示的单词
+
     private MediaRecorder mediaRecorder;
+    private MediaPlayer mediaPlayer;
     private String outputFilePath;
     private int recordingIndex = 1;
     private boolean isRecording = false;
@@ -145,7 +159,11 @@ public class ReadTestPagerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
+
         View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
+        //初始化viewModel
+        viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
         ImageView imageView = view.findViewById(R.id.imageView);
         TextView textView1 = view.findViewById(R.id.textView);
@@ -153,18 +171,35 @@ public class ReadTestPagerFragment extends Fragment {
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
 
+        curWord = "hello";
         Glide.with(this)
                 .load(imageUrl)
                 .into(imageView);
         textView1.setText(text);
         textView2.setText(countText);
 
+        viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), wordDetails ->  {
+
+            if (wordDetails != null){
+                for (WordDetail wordDetail : wordDetails) {
+                    // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
+                    curWord = wordDetail.getWord();
+                    Log.e("curWord", curWord);
+                }
+            }
+        });
+
         // Use TtsUtil to set up the TTS buttons
         TtsUtil.getTts1(text, btnSpeak);
 
-        SpeechUtility.createUtility(getActivity(), SpeechConstant.APPID +"=5e62dc3d");
-        mIse = SpeechEvaluator.createEvaluator(getActivity(), null);
+//        SpeechUtility.createUtility(getContext(), SpeechConstant.APPID +"=" + "5e62dc3d");
+        mIse = SpeechEvaluator.createEvaluator(getContext(), null);
 
+        if(mIse != null) {
+            setParams();
+        } else {
+            Log.e("mIse", "语音评测初始化失败");
+        }
 
         //请求录音的相关权限
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO)
@@ -188,7 +223,6 @@ public class ReadTestPagerFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(TAG,"进来");
 
 
                 if (!isRecording) {
@@ -198,11 +232,12 @@ public class ReadTestPagerFragment extends Fragment {
                 } else {
                     stopRecording();
                     ToastManager.showCustomToast(getActivity(), "结束录音");
+
+                    //开始句子测评
+                    startSentenceTest();
                 }
                 isRecording = !isRecording;
 
-                //开始句子测评
-                startSentenceTest();
             }
         });
 
@@ -221,8 +256,8 @@ public class ReadTestPagerFragment extends Fragment {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        outputFilePath = directory.getAbsolutePath() + "/recording" + recordingIndex + ".mp3";
-        Log.d("Recording", "Output file path: " + outputFilePath);
+        outputFilePath = directory.getAbsolutePath() + "/recording.mp3";
+        Log.e("Recording", "Output file path: " + outputFilePath);
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -263,13 +298,12 @@ public class ReadTestPagerFragment extends Fragment {
             try {
                 mediaRecorder.stop();
                 mediaRecorder.release(); // Release the MediaRecorder
-                recordingIndex++;
 
                 File dir = new File(Environment.getExternalStorageDirectory(), "AudioRecorder");
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                File file = new File(dir, "/recording" + recordingIndex + ".mp3");
+                File file = new File(dir, "/recording.mp3");
 
                 mediaRecorder = new MediaRecorder(); // Reinitialize the MediaRecorder for subsequent recordings
                 initRecording(); // Reinitialize recording settings
@@ -305,169 +339,108 @@ public class ReadTestPagerFragment extends Fragment {
         }
     }
 
-
-
     private void startSentenceTest(){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int num = 0;
-                String directory = "sentence";
-                //j 句子的序号
-                for(int j=1;j<=10;j++){
-                    flag =true;
-                    flagNum++;
-                    //i 每个句子中的音频文件序号
-                    for(int i=1;i<=15;i++){
-                        num++;
-                        Log.e("hkk","i="+i);
+                InputStream inputStream = null;
+                OutputStream outputStream = null;
 
-                        AssetManager assetManager = getActivity().getAssets();
-                        InputStream inputStream = null;
-                        OutputStream outputStream = null;
+                try{
+                    File file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.example.no_teacher_andorid/cache/recording.mp3");
+                    if (file.exists()) {
+                        // 进行你的操作，比如播放音频或者处理音频数据
+                        playAudio(file);
 
-                        String audioName ="audio_"+String.valueOf(i)+".mp3";
-                        try {
-                            // 打开资产文件并准备从中读取数据
-                            inputStream = assetManager.open(directory+ File.separator+j+File.separator+audioName);
-
-                            File folder1 = new File(getActivity().getExternalFilesDir(null)+File.separator+directory, String.valueOf(j));
-                            if (!folder1.exists()) {
-                                folder1.mkdirs();
-                            }
-                            // 获取外部存储器上的文件对象
-                            File file = new File(getActivity().getExternalFilesDir(null)+File.separator+directory+File.separator+j, audioName);
-
-                            if (file.exists()) {
-                                // 文件已经存在，无需重复创建
-                                Log.d(TAG, "File already exists: " + file.getAbsolutePath());
-                                //讯飞开始录音
-                                mTestContent =lines.get(num-1);
-//                                mTestContent =reduceString(mTestContent);
-                                setParams();
-                                //通过科大讯飞的语音评测服务 mIse 对音频进行评测。评测内容为句子或单词，根据 isWords() 方法的返回值确定
-                                int ret = mIse.startEvaluating(isWords() ? "[word]\n" + format(mTestContent):format(mTestContent), null, mEvaluatorListener);
-                                if (ret != ErrorCode.SUCCESS) {
-                                    android.util.Log.d(TAG, "onStopRecording: "+"识别失败,错误码：" + ret);
-                                } else {
-                                    byte[] audioData = FucUtil.readAudioFile(getActivity(),file.getAbsolutePath());
-                                    if(audioData != null) {
-                                        //防止写入音频过早导致失败
-                                        try{
-                                            new Thread().sleep(200);
-                                        }catch (InterruptedException e) {
-                                            Log.d(TAG,"InterruptedException :"+e);
-                                        }
-                                        mIse.writeAudio(audioData,0,audioData.length);
-                                        mIse.stopEvaluating();
-                                    }
-                                }
-                                synchronized (lock) {
+                        //通过科大讯飞的语音评测服务 mIse 对音频进行评测。评测内容为句子或单词，根据 isWords() 方法的返回值确定
+//                        int ret = mIse.startEvaluating(isWords() ? "[word]\n" + format(mTestContent) : format(mTestContent), null, mEvaluatorListener);
+                        if(mIse != null) {
+                            Log.e("mIse", "mIse初始化完成，开始接入语音测评");
+                            int ret = mIse.startEvaluating(format(curWord), null, mEvaluatorListener);
+//                            int ret = mIse.startEvaluating(curWord,null, mEvaluatorListener);//接入语音评测
+                            if (ret == ErrorCode.SUCCESS) {
+                                byte[] audioData = FucUtil.readAudioFile(getActivity(), file.getAbsolutePath());
+                                if (audioData != null) {
                                     try {
-                                        lock.wait(); // 工作线程暂停等待回调
+                                        Thread.sleep(200);  // 等待200毫秒
+                                        mIse.writeAudio(audioData, 0, audioData.length);
+                                        mIse.stopEvaluating();
                                     } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                        Log.d("writeAudio", "写入音频时中断异常");
                                     }
                                 }
-                                continue;
-                            }
-                            // 创建输出流并将读取的数据写入文件
-                            outputStream = new FileOutputStream(file);
-                            byte[] buffer = new byte[1024];
-                            int length;
-                            while ((length = inputStream.read(buffer)) > 0) {
-                                outputStream.write(buffer, 0, length);
-                            }
-
-                            // 文件写入成功
-                            Log.d("TAG", "Saved file to: " + file.getAbsolutePath());
-
-                            //讯飞开始录音
-                            mTestContent =lines.get(num-1);
-//                            mTestContent =reduceString(mTestContent);
-                            setParams();
-                            int ret = mIse.startEvaluating(isWords() ? "[word]\n" + format(mTestContent):format(mTestContent), null, mEvaluatorListener);
-                            if (ret != ErrorCode.SUCCESS) {
-                                android.util.Log.d(TAG, "onStopRecording: "+"识别失败,错误码：" + ret);
                             } else {
-                                byte[] audioData = FucUtil.readAudioFile(getActivity(),file.getAbsolutePath());
-                                if(audioData != null) {
-                                    //防止写入音频过早导致失败
-                                    try{
-                                        new Thread().sleep(200);
-                                    }catch (InterruptedException e) {
-                                        Log.d(TAG,"InterruptedException :"+e);
-                                    }
-                                    mIse.writeAudio(audioData,0,audioData.length);
-                                    mIse.stopEvaluating();
-                                }
+                                Log.d("writeAudio", "写入音频文件失败");
                             }
-                            synchronized (lock) {
-                                try {
-                                    lock.wait(); // 工作线程暂停等待回调
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        } catch (FileNotFoundException e) {
-                            num--;
-                            flag =true;
-                            flagNum++;
-                            // 处理文件未找到错误
-                            Log.e("TAG", "Failed to find file: " + e.getMessage());
-                            break;
-                        } catch (IOException e) {
-                            // 处理文件读取或写入错误
-                            Log.e("TAG", "Failed to read/write file: " + e.getMessage());
-                            break;
-                        } finally {
-                            // 关闭输入流和输出流
-                            if (inputStream != null) {
-                                try {
-                                    inputStream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (outputStream != null) {
-                                try {
-                                    outputStream.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                        } else {
+                            Log.e("mIse", "未初始化");
+                        }
+
+                        synchronized (lock) {
+                            try {
+                                lock.wait(); // 工作线程暂停等待回调
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                Log.e(TAG, "Thread interrupted", e);
                             }
                         }
-                        Log.e("hkk","到末尾");
 
+                        Log.e("开始测评", "begin");
+                    } else {
+                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "File does not exist", Toast.LENGTH_SHORT).show());
                     }
-                }
-                BufferedWriter writer = null;
-                try {
-                    String fileName = "sentence_xf_transform.txt";
-
-                    // 获取外部存储器上的文件对象
-                    File file = new File(getActivity().getExternalFilesDir(null), fileName);
-                    writer = new BufferedWriter(new FileWriter(file, true));
-
-                    writer.newLine(); // 插入换行符
-                    writer.newLine(); // 插入换行符
-                    writer.append("sentence - "+50+" end ------");
-                    writer.flush();
-
-                } catch ( IOException e) {
-                    e.printStackTrace();
-                }finally {
-                    if (writer != null) {
+                } finally {
+                    // 关闭输入流和输出流
+                    if (inputStream != null) {
                         try {
-                            writer.close();
+                            inputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 }
+                Log.e("hkk","到末尾");
+
+
             }
         }).start();
     }
+
+    private void playAudio(File audioFile) {
+        releaseMediaPlayer();  // 确保之前的 MediaPlayer 被释放
+        Log.e("MediaPlayer", "播放录音：" + audioFile.getPath());
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(audioFile.getPath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(mp -> {
+                Log.e("MediaPlayer", "播放完成");
+                releaseMediaPlayer();
+            });
+        } catch (IOException e) {
+            Log.e("MediaPlayer", "播放错误: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void releaseMediaPlayer() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 
 
     /**
@@ -479,14 +452,13 @@ public class ReadTestPagerFragment extends Fragment {
      */
     private void setParams() {
         // 清空参数
-//        mIse.setParameter(SpeechConstant.PARAMS, null);
+        mIse.setParameter(SpeechConstant.PARAMS, null);
         // 设置评测语言
         language = "en_us";
         // 设置需要评测的类型
-        category =  isWords() ? "read_word" : "read_sentence";
+        category =  "read_word";
 
         Log.e("hkkk","category="+category);
-//        category = "read_word";
         // 设置结果等级（中文仅支持complete）
         result_level =  "complete";
         // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
@@ -548,7 +520,7 @@ public class ReadTestPagerFragment extends Fragment {
 
     private boolean isWords(){
         boolean isWords = format(mTestContent).split(" ").length == 1;
-        Log.d("===wpt===","wordStr=" + mTestContent+ ",isWords=" + isWords);
+        Log.d("isWords测评","wordStr=" + mTestContent+ ",isWords=" + isWords);
         return isWords;
     }
 
@@ -556,300 +528,442 @@ public class ReadTestPagerFragment extends Fragment {
      * @param null:
      * @return null
      * @author Lee
-     * @description 评测监听接口
+     * @description 评测监听接口(监听评测结果)
      * @date 2024/5/27 15:55
      */
     private EvaluatorListener mEvaluatorListener = new EvaluatorListener() {
-
         @Override
         public void onResult(EvaluatorResult result, boolean isLast) {
-            android.util.Log.d(TAG, "evaluator result :" + isLast);
-
+            Log.e("EvaluatorResult", "" + isLast);
             if (isLast) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(result.getResultString());
+                StringBuilder builder = new StringBuilder(result.getResultString());
                 mLastResult = builder.toString();
                 XmlResultParser resultParser = new XmlResultParser();
                 Result scoreResult = resultParser.parse(mLastResult);
-//                Result scoreResult = resultParser.parse(mLastResult);
+                Log.e("EvaluatorResult", "评测结束\n" + mLastResult);
+                if (scoreResult != null) {
 
-                android.util.Log.d(TAG, "评测:评测结束"+"\n"+mLastResult);
-                if (null != scoreResult) {
+                    //显示语音评测结果
+                    BufferedWriter writer = null;
+                    try {
+                        StringBuilder contentBuilder = new StringBuilder(mTestContent);
+                        contentBuilder.append("  ------time_len (时长):  ")
+                                .append(scoreResult.time_len)
+                                .append("  ------ total_score(总分):  ")
+                                .append(scoreResult.total_score)
+                                .append("  ------ accuracy_score(准确度分):  ")
+                                .append(scoreResult.accuracy_score)
+                                .append("  ------ fluency_score(流利度):  ")
+                                .append(scoreResult.fluency_score)
+                                .append("  ------ integrity_score(完整性):  ")
+                                .append(scoreResult.integrity_score)
+                                .append("  ------ 转化分: ")
+                                .append(isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult));
 
+                        String content = contentBuilder.toString();
 
-                    android.util.Log.d(TAG, "评测:评测结束解析"+"\n"+scoreResult.language);
-                    if ((scoreResult.is_rejected&&scoreResult.total_score<0.5)||scoreResult.accuracy_score<0.5){
-                        if(TextUtils.isEmpty(scoreResult.except_info)){
-//                            YUtils.showToast("系统检测为乱说类型，打分失败");
+                        String fileName = "evaluation_results.txt";
+                        File file = new File(getActivity().getExternalFilesDir(null), fileName);
+                        writer = new BufferedWriter(new FileWriter(file, true));
+                        writer.append(content);
+                        writer.newLine();  // 插入换行符
+                        writer.flush();
+                        Log.d(TAG, "评测结果已写入文件: " + content);
 
-                        }else {
-//                            android.util.Log.e(TAG, "hk :" + isLast);
-                            if (scoreResult.except_info.equals("28673")){
-//                                YUtils.showToast("系统检测为无语音或音量小，打分失败");
-                                Log.e(TAG,"系统检测为无语音或音量小，打分失败");
-                            }else if (scoreResult.except_info.equals("28676")){
-//                                YUtils.showToast("系统检测为乱说类型，打分失败");
-                                Log.e(TAG,"系统检测为乱说类型，打分失败");
-                            }else if (scoreResult.except_info.equals("28680")){
-//                                YUtils.showToast("系统检测为信噪比低类型，打分失败");
-                                Log.e(TAG,"系统检测为信噪比低类型，打分失败");
-                            }else if (scoreResult.except_info.equals("28690")){
-//                                YUtils.showToast("系统检测为截幅类型，打分失败");
-                                Log.e(TAG,"系统检测为截幅类型，打分失败");
-                            }else if (scoreResult.except_info.equals("28689")){
-//                                YUtils.showToast("未检测到音频输入，请检测音频或录音设备是否正常");
-                                Log.e(TAG,"未检测到音频输入，请检测音频或录音设备是否正常");
-                            }else {
-//                                YUtils.showToast(scoreResult.except_info);
-                                Log.e(TAG,scoreResult.except_info);
+                        displayResultsFromFile();//调用方法读取评测结果文件
+                    } catch (IOException e) {
+                        Log.e(TAG, "写入文件时发生错误", e);
+                    } finally {
+                        if (writer != null) {
+                            try {
+                                writer.close();
+                            } catch (IOException e) {
+                                Log.e(TAG, "关闭文件写入器时发生错误", e);
                             }
-                        }
-
-                        BufferedWriter writer = null;
-                        try {
-
-                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
-                            Log.e(TAG,"mTestContent ="+mTestContent);
-                            stringBuilder.append("  ------系统检测为乱说!!!  ");
-                            String content =stringBuilder.toString();
-
-
-                            String fileName = "sentence_xf_transform.txt";
-
-                            // 获取外部存储器上的文件对象
-                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
-                            writer = new BufferedWriter(new FileWriter(file, true));
-
-
-                            if(flag){
-                                flag =false;
-                                if(flagNum ==1){
-//                                    writer.append("sentence - "+1+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }else if(flagNum%2!=0){
-                                    writer.newLine(); // 插入换行符
-//                                    writer.append("sentence - "+(flagNum/2)+" end ------");
-                                    writer.newLine(); // 插入换行符
-//                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }
-                            }
-                            writer.append(content);
-                            writer.newLine(); // 插入换行符
-
-
-                            writer.flush();
-
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }finally {
-                            if (writer != null) {
-                                try {
-                                    writer.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        synchronized (lock) {
-                            lock.notify(); // 唤醒工作线程继续执行
-                        }
-
-                    }else if(scoreResult.accuracy_score<2){
-
-                        int score = isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult);
-
-                        BufferedWriter writer = null;
-                        try {
-
-                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
-                            Log.e(TAG,"mTestContent ="+mTestContent);
-                            stringBuilder.append("  ------time_len (时长):  ")
-                                    .append(scoreResult.time_len)
-                                    .append("  ------ total_score(总分):  ")
-                                    .append(scoreResult.total_score)
-                                    .append("  ------ accuracy_score(准确度分):  ")
-                                    .append(scoreResult.accuracy_score)
-                                    .append("  ------ fluency_score(流利度):  ")
-                                    .append(scoreResult.fluency_score)
-                                    .append("  ------ integrity_score(完整性):  ")
-                                    .append(scoreResult.integrity_score)
-                                    .append("  ------ 转化分: ")
-                                    .append(score);
-                            String content =stringBuilder.toString();
-
-
-                            String fileName = "sentence_xf_transform.txt";
-
-                            // 获取外部存储器上的文件对象
-                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
-                            writer = new BufferedWriter(new FileWriter(file, true));
-
-
-                            if(flag){
-                                flag =false;
-                                if(flagNum ==1){
-                                    writer.append("sentence - "+1+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }else if(flagNum%2!=0){
-                                    writer.newLine(); // 插入换行符
-                                    writer.append("sentence - "+(flagNum/2)+" end ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }
-                            }
-                            writer.append(content);
-                            writer.newLine(); // 插入换行符
-
-
-                            writer.flush();
-
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }finally {
-                            if (writer != null) {
-                                try {
-                                    writer.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                        synchronized (lock) {
-                            lock.notify(); // 唤醒工作线程继续执行
-                        }
-                    }else {
-
-                        int score = isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult);
-                        BufferedWriter writer = null;
-                        try {
-
-                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
-                            Log.e(TAG,"mTestContent ="+mTestContent);
-                            stringBuilder.append("  ------time_len (时长):  ")
-                                    .append(scoreResult.time_len)
-                                    .append("  ------ total_score(总分):  ")
-                                    .append(scoreResult.total_score)
-                                    .append("  ------ accuracy_score(准确度分):  ")
-                                    .append(scoreResult.accuracy_score)
-                                    .append("  ------ fluency_score(流利度):  ")
-                                    .append(scoreResult.fluency_score)
-                                    .append("  ------ integrity_score(完整性):  ")
-                                    .append(scoreResult.integrity_score)
-                                    .append("  ------ 转化分: ")
-                                    .append(score);
-                            String content =stringBuilder.toString();
-
-
-                            String fileName = "sentence_xf_transform.txt";
-
-                            // 获取外部存储器上的文件对象
-                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
-                            writer = new BufferedWriter(new FileWriter(file, true));
-
-
-                            if(flag){
-                                flag =false;
-                                if(flagNum ==1){
-                                    writer.append("sentence - "+1+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }else if(flagNum%2!=0){
-                                    writer.newLine(); // 插入换行符
-                                    writer.append("sentence - "+(flagNum/2)+" end ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
-                                    writer.newLine(); // 插入换行符
-                                    writer.newLine(); // 插入换行符
-//                        writer.flush();
-                                }
-                            }
-                            writer.append(content);
-                            writer.newLine(); // 插入换行符
-
-
-                            writer.flush();
-
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }finally {
-                            if (writer != null) {
-                                try {
-                                    writer.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                        synchronized (lock) {
-                            lock.notify(); // 唤醒工作线程继续执行
                         }
                     }
 
                 } else {
-                    android.util.Log.d(TAG, "评测:评测结束解析"+"\n"+"解析结果为空");
-//                    YUtils.showToast("系统检测为乱说类型，打分失败");
+                    Log.e("EvaluatorResult", "评测:评测结束解析\n解析结果为空");
                 }
             }
         }
 
         @Override
         public void onError(SpeechError error) {
-
-            if(error != null) {
-                android.util.Log.d(TAG, "评测:error:"+ error.getErrorCode() + "," + error.getErrorDescription());
-//                YUtils.showToast("系统检测为乱说类型，打分失败");
-            } else {
-                android.util.Log.d(TAG, "评测:evaluator over");
-            }
+            Log.e("评测出错", error+"");
         }
 
         @Override
         public void onBeginOfSpeech() {
-            // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
-            android.util.Log.d(TAG, "评测:evaluator begin");
+            Log.d(TAG, "评测:evaluator begin");
         }
 
         @Override
         public void onEndOfSpeech() {
-            // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
-            android.util.Log.d(TAG, "评测:evaluator stoped");
+            Log.d(TAG, "评测:evaluator stoped");
         }
 
         @Override
         public void onVolumeChanged(int volume, byte[] data) {
-            android.util.Log.d(TAG, "评测:当前音量：" + volume);
-            android.util.Log.d(TAG, "评测:返回音频数据："+data.length);
+            Log.d(TAG, "评测:当前音量：" + volume);
+            Log.d(TAG, "评测:返回音频数据：" + data.length);
         }
 
         @Override
         public void onEvent(int eventType, int arg1, int arg2, Bundle obj) {
-            // 以下代码用于获取与云端的会话id，当业务出错时将会话id提供给技术支持人员，可用于查询会话日志，定位出错原因
             if (SpeechEvent.EVENT_SESSION_ID == eventType) {
                 String sid = obj.getString(SpeechEvent.KEY_EVENT_SESSION_ID);
                 Log.d(TAG, "session id =" + sid);
             }
         }
-
     };
+
+    /**
+     * @param :
+     * @return void
+     * @author Lee
+     * @description 读取测评结果文件
+     * @date 2024/5/30 9:56
+     */
+    private void displayResultsFromFile() {
+        Activity activity = getActivity();
+        if (activity == null) return;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(activity.getExternalFilesDir(null), "evaluation_results.txt");
+                StringBuilder fileContent = new StringBuilder();
+                if (file.exists()) {
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            fileContent.append(line).append("\n");
+                        }
+
+                        // 显示Toast需要在UI线程执行
+                        String finalContent = fileContent.toString();
+                        activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
+                    } catch (IOException e) {
+                        Log.e(TAG, "读取文件时发生错误", e);
+                    }
+                } else {
+                    activity.runOnUiThread(() -> Toast.makeText(activity, "File does not exist", Toast.LENGTH_SHORT).show());
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mIse == null) {
+            mIse = SpeechEvaluator.createEvaluator(getContext(), null);
+        } else{
+            Log.e("mIse onResume", "Error");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (null != mIse) {
+            mIse.destroy();
+//            mIse = null;
+        }
+    }
+//    private EvaluatorListener mEvaluatorListener = new EvaluatorListener() {
+//
+//        @Override
+//        public void onResult(EvaluatorResult result, boolean isLast) {
+//            Log.e("EvaluatorResult", "" + isLast);
+//
+//            if (isLast) {
+//                StringBuilder builder = new StringBuilder();
+//                builder.append(result.getResultString());
+//                mLastResult = builder.toString();
+//                XmlResultParser resultParser = new XmlResultParser();
+//                Result scoreResult = resultParser.parse(mLastResult);
+////                Result scoreResult = resultParser.parse(mLastResult);
+//
+//                Log.e("EvaluatorResult", "评测:评测结束"+"\n"+mLastResult);
+//                if (null != scoreResult) {
+//
+//
+//                    Log.e("EvaluatorResult", "评测:评测结束解析"+"\n"+scoreResult.language);
+//                    if ((scoreResult.is_rejected&&scoreResult.total_score<0.5)||scoreResult.accuracy_score<0.5){
+//                        if(TextUtils.isEmpty(scoreResult.except_info)){
+////                            YUtils.showToast("系统检测为乱说类型，打分失败");
+//
+//                        }else {
+////                            android.util.Log.e(TAG, "hk :" + isLast);
+//                            if (scoreResult.except_info.equals("28673")){
+////                                YUtils.showToast("系统检测为无语音或音量小，打分失败");
+//                                Log.e("EvaluatorResult","系统检测为无语音或音量小，打分失败");
+//                            }else if (scoreResult.except_info.equals("28676")){
+////                                YUtils.showToast("系统检测为乱说类型，打分失败");
+//                                Log.e(TAG,"系统检测为乱说类型，打分失败");
+//                            }else if (scoreResult.except_info.equals("28680")){
+////                                YUtils.showToast("系统检测为信噪比低类型，打分失败");
+//                                Log.e(TAG,"系统检测为信噪比低类型，打分失败");
+//                            }else if (scoreResult.except_info.equals("28690")){
+////                                YUtils.showToast("系统检测为截幅类型，打分失败");
+//                                Log.e(TAG,"系统检测为截幅类型，打分失败");
+//                            }else if (scoreResult.except_info.equals("28689")){
+////                                YUtils.showToast("未检测到音频输入，请检测音频或录音设备是否正常");
+//                                Log.e(TAG,"未检测到音频输入，请检测音频或录音设备是否正常");
+//                            }else {
+////                                YUtils.showToast(scoreResult.except_info);
+//                                Log.e(TAG,scoreResult.except_info);
+//                            }
+//                        }
+//
+//                        BufferedWriter writer = null;
+//                        try {
+//
+//                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
+//                            Log.e(TAG,"mTestContent ="+mTestContent);
+//                            stringBuilder.append("  ------系统检测为乱说!!!  ");
+//                            String content =stringBuilder.toString();
+//
+//
+//                            String fileName = "sentence_xf_transform.txt";
+//
+//                            // 获取外部存储器上的文件对象
+//                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
+//                            writer = new BufferedWriter(new FileWriter(file, true));
+//
+//
+//                            if(flag){
+//                                flag =false;
+//                                if(flagNum ==1){
+////                                    writer.append("sentence - "+1+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }else if(flagNum%2!=0){
+//                                    writer.newLine(); // 插入换行符
+////                                    writer.append("sentence - "+(flagNum/2)+" end ------");
+//                                    writer.newLine(); // 插入换行符
+////                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }
+//                            }
+//                            writer.append(content);
+//                            writer.newLine(); // 插入换行符
+//
+//
+//                            writer.flush();
+//
+//
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }finally {
+//                            if (writer != null) {
+//                                try {
+//                                    writer.close();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                        synchronized (lock) {
+//                            lock.notify(); // 唤醒工作线程继续执行
+//                        }
+//
+//                    }else if(scoreResult.accuracy_score<2){
+//
+//                        int score = isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult);
+//
+//                        BufferedWriter writer = null;
+//                        try {
+//
+//                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
+//                            Log.e(TAG,"mTestContent ="+mTestContent);
+//                            stringBuilder.append("  ------time_len (时长):  ")
+//                                    .append(scoreResult.time_len)
+//                                    .append("  ------ total_score(总分):  ")
+//                                    .append(scoreResult.total_score)
+//                                    .append("  ------ accuracy_score(准确度分):  ")
+//                                    .append(scoreResult.accuracy_score)
+//                                    .append("  ------ fluency_score(流利度):  ")
+//                                    .append(scoreResult.fluency_score)
+//                                    .append("  ------ integrity_score(完整性):  ")
+//                                    .append(scoreResult.integrity_score)
+//                                    .append("  ------ 转化分: ")
+//                                    .append(score);
+//                            String content =stringBuilder.toString();
+//
+//
+//                            String fileName = "sentence_xf_transform.txt";
+//
+//                            // 获取外部存储器上的文件对象
+//                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
+//                            writer = new BufferedWriter(new FileWriter(file, true));
+//
+//
+//                            if(flag){
+//                                flag =false;
+//                                if(flagNum ==1){
+//                                    writer.append("sentence - "+1+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }else if(flagNum%2!=0){
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.append("sentence - "+(flagNum/2)+" end ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }
+//                            }
+//                            writer.append(content);
+//                            writer.newLine(); // 插入换行符
+//
+//
+//                            writer.flush();
+//
+//
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }finally {
+//                            if (writer != null) {
+//                                try {
+//                                    writer.close();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//
+//                        synchronized (lock) {
+//                            lock.notify(); // 唤醒工作线程继续执行
+//                        }
+//                    }else {
+//
+//                        int score = isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult);
+//                        BufferedWriter writer = null;
+//                        try {
+//
+//                            StringBuilder stringBuilder =new StringBuilder(mTestContent);
+//                            Log.e(TAG,"mTestContent ="+mTestContent);
+//                            stringBuilder.append("  ------time_len (时长):  ")
+//                                    .append(scoreResult.time_len)
+//                                    .append("  ------ total_score(总分):  ")
+//                                    .append(scoreResult.total_score)
+//                                    .append("  ------ accuracy_score(准确度分):  ")
+//                                    .append(scoreResult.accuracy_score)
+//                                    .append("  ------ fluency_score(流利度):  ")
+//                                    .append(scoreResult.fluency_score)
+//                                    .append("  ------ integrity_score(完整性):  ")
+//                                    .append(scoreResult.integrity_score)
+//                                    .append("  ------ 转化分: ")
+//                                    .append(score);
+//                            String content =stringBuilder.toString();
+//
+//
+//                            String fileName = "sentence_xf_transform.txt";
+//
+//                            // 获取外部存储器上的文件对象
+//                            File file = new File(getActivity().getExternalFilesDir(null), fileName);
+//                            writer = new BufferedWriter(new FileWriter(file, true));
+//
+//
+//                            if(flag){
+//                                flag =false;
+//                                if(flagNum ==1){
+//                                    writer.append("sentence - "+1+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }else if(flagNum%2!=0){
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.append("sentence - "+(flagNum/2)+" end ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.append("sentence - "+(flagNum/2+1)+" start ------");
+//                                    writer.newLine(); // 插入换行符
+//                                    writer.newLine(); // 插入换行符
+////                        writer.flush();
+//                                }
+//                            }
+//                            writer.append(content);
+//                            writer.newLine(); // 插入换行符
+//
+//
+//                            writer.flush();
+//
+//
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }finally {
+//                            if (writer != null) {
+//                                try {
+//                                    writer.close();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//
+//                        synchronized (lock) {
+//                            lock.notify(); // 唤醒工作线程继续执行
+//                        }
+//                    }
+//
+//                } else {
+//                    android.util.Log.d(TAG, "评测:评测结束解析"+"\n"+"解析结果为空");
+////                    YUtils.showToast("系统检测为乱说类型，打分失败");
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void onError(SpeechError error) {
+//
+//            if(error != null) {
+//                android.util.Log.d(TAG, "评测:error:"+ error.getErrorCode() + "," + error.getErrorDescription());
+////                YUtils.showToast("系统检测为乱说类型，打分失败");
+//            } else {
+//                android.util.Log.d(TAG, "评测:evaluator over");
+//            }
+//        }
+//
+//        @Override
+//        public void onBeginOfSpeech() {
+//            // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
+//            android.util.Log.d(TAG, "评测:evaluator begin");
+//        }
+//
+//        @Override
+//        public void onEndOfSpeech() {
+//            // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
+//            android.util.Log.d(TAG, "评测:evaluator stoped");
+//        }
+//
+//        @Override
+//        public void onVolumeChanged(int volume, byte[] data) {
+//            android.util.Log.d(TAG, "评测:当前音量：" + volume);
+//            android.util.Log.d(TAG, "评测:返回音频数据："+data.length);
+//        }
+//
+//        @Override
+//        public void onEvent(int eventType, int arg1, int arg2, Bundle obj) {
+//            // 以下代码用于获取与云端的会话id，当业务出错时将会话id提供给技术支持人员，可用于查询会话日志，定位出错原因
+//            if (SpeechEvent.EVENT_SESSION_ID == eventType) {
+//                String sid = obj.getString(SpeechEvent.KEY_EVENT_SESSION_ID);
+//                Log.d(TAG, "session id =" + sid);
+//            }
+//        }
+//
+//    };
 
 
 }
