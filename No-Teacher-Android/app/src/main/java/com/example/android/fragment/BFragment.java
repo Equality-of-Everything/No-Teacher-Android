@@ -1,5 +1,7 @@
 package com.example.android.fragment;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.android.adapter.ReadTestPagerAdapter;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.ui.activity.SpellingActivity;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
@@ -45,7 +48,6 @@ public class BFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
         userId = TokenManager.getUserId(getContext());
-
         viewPager = view.findViewById(R.id.view_pager);
         nextButton = view.findViewById(R.id.next_button);
         backButton = view.findViewById(R.id.back_button);
@@ -75,40 +77,59 @@ public class BFragment extends Fragment {
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentPage++; // 增加页码
-                viewModel.setRecommendWords(getContext(), userId, currentPage); // 请求下一页数据
-
-                // 观察LiveData以处理新获取的数据
-                viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
-                    @Override
-                    public void onChanged(List<WordDetail> newWordDetails) {
-                        if (newWordDetails != null) {
-                            // 创建新的Fragment列表
-                            List<Fragment> additionalFragments = new ArrayList<>();
-                            for (WordDetail detail : newWordDetails) {
-                                additionalFragments.add(ReadTestPagerFragment.newInstance(detail.getParaphrasePicture(), detail.getWord(), detail.getParaphrase()));
-                            }
-
-                            // 将新Fragment添加到现有Adapter的Fragment列表中
-                            pagerAdapter.addFragments(additionalFragments);
-                            pagerAdapter.updateData(newWordDetails);
-
-                            // 更新ViewPager的当前项，确保在正确的页面上
-                            int nextPosition =currentPage*4 ;
-                            viewPager.setCurrentItem(nextPosition, true);
-
-                            // 更新按钮状态和页面编号
-                            updateButtonVisibility(nextPosition);
-
-                            updatePageNumber(nextPosition);
-//                            pagerAdapter.notifyDataSetChanged(); // 通知数据集变更
-                        }
-                    }
-                });
+                showSpellCheckDialog();
+            }
+            private void showSpellCheckDialog(){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("单词拼写检查")
+                        .setMessage("是否检查单词拼写？")
+                        .setPositiveButton("准备好了", (dialog, which) -> startSpellingActivity())
+                            // 处理用户点击“是”按钮的事件
+                        .setNegativeButton("复习一下", (dialog, which) -> dialog.dismiss())
+                            // 处理用户点击“否”按钮的事件
+                        .show();
+            }
+            private void startSpellingActivity() {
+                // 这里可以启动您的拼写测试Activity，并且可能需要传递当前页的WordDetail列表作为参数
+                // 注意：您需要定义一个用于接收拼写结果的接口或使用ActivityResultContracts
+                Intent intent = new Intent(getActivity(), SpellingActivity.class);
+                // 可能需要序列化WordDetail列表并放入Intent
+                startActivity(intent);
             }
         });
+
         return view;
     }
+//                currentPage++; // 增加页码
+//                viewModel.setRecommendWords(getContext(), userId, currentPage); // 请求下一页数据
+//
+//                // 观察LiveData以处理新获取的数据
+//                viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
+//                    @Override
+//                    public void onChanged(List<WordDetail> newWordDetails) {
+//                        if (newWordDetails != null) {
+//                            // 创建新的Fragment列表
+//                            List<Fragment> additionalFragments = new ArrayList<>();
+//                            for (WordDetail detail : newWordDetails) {
+//                                additionalFragments.add(ReadTestPagerFragment.newInstance(detail.getParaphrasePicture(), detail.getWord(), detail.getParaphrase()));
+//                            }
+//
+//                            // 将新Fragment添加到现有Adapter的Fragment列表中
+//                            pagerAdapter.addFragments(additionalFragments);
+//                            pagerAdapter.updateData(newWordDetails);
+//
+//                            // 更新ViewPager的当前项，确保在正确的页面上
+//                            int nextPosition =currentPage*4 ;
+//                            viewPager.setCurrentItem(nextPosition, true);
+//
+//                            // 更新按钮状态和页面编号
+//                            updateButtonVisibility(nextPosition);
+//
+//                            updatePageNumber(nextPosition);
+////                            pagerAdapter.notifyDataSetChanged(); // 通知数据集变更
+//                        }
+//                    }
+//               });
 
     // 在 ViewModel 数据变化时更新 ViewPager
     private void updateViewPagerWithWords(List<WordDetail> wordDetails) {
