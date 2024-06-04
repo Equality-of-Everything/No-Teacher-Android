@@ -53,8 +53,8 @@ public class WordClickableSpan extends ClickableSpan {
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
-        ds.setColor(ContextCompat.getColor(context, R.color.word_clickable_color)); // Set the desired text color
-        ds.setUnderlineText(false); // Remove underline
+        ds.setColor(ContextCompat.getColor(context, R.color.word_clickable_color));
+        ds.setUnderlineText(false);
     }
 
 
@@ -118,7 +118,7 @@ public class WordClickableSpan extends ClickableSpan {
                         }
                     }
 
-                    // Collect all examples
+                    // 获取所有例句
                     List<ExampleItem> exampleItems = new ArrayList<>();
                     for (Words.MeaningsDTO meaning : wordDetails.getMeanings()) {
                         for (Words.MeaningsDTO.DefinitionsDTO definition : meaning.getDefinitions()) {
