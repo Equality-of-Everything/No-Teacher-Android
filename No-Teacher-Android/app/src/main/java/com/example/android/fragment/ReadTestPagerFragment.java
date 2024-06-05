@@ -248,13 +248,13 @@ public class ReadTestPagerFragment extends Fragment {
         return view;
     }
 
-    public void setCurWord(String curWord) {
-        this.curWord = curWord;
-    }
-
-    public String getCurWord() {
-        return curWord;
-    }
+//    public void setCurWord(String curWord) {
+//        this.curWord = curWord;
+//    }
+//
+//    public String getCurWord() {
+//        return curWord;
+//    }
 
     /**
      * @param :

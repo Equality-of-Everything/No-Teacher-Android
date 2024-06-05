@@ -1,5 +1,6 @@
 package com.example.android.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +33,11 @@ import java.util.List;
  * @Date : Create in 2024/4/24 15:19
  * @Decription:
  */
+// BFragment.java
+
 public class BFragment extends Fragment {
+    private static final int SPELLING_REQUEST_CODE = 1;
+
     private ViewPager viewPager;
     private Button nextButton;
     private BFragmentViewModel viewModel;
@@ -39,14 +45,14 @@ public class BFragment extends Fragment {
     private Button moreButton;
     private TextView pageNumberTextView;
     private ReadTestPagerAdapter pagerAdapter;
-    private String userId ;
-    private int currentPage=0;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    private String userId;
+    private int currentPage = 0;
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_b, container, false);
-        //初始化viewModel
+
+        // 初始化viewModel
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
 
         userId = TokenManager.getUserId(getContext());
@@ -58,6 +64,7 @@ public class BFragment extends Fragment {
 
         nextButton.setOnClickListener(v -> nextPage());
         backButton.setOnClickListener(v -> prevPage());
+
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -65,39 +72,38 @@ public class BFragment extends Fragment {
                 updateButtonVisibility(position);
             }
         });
-        viewModel.setRecommendWords(getContext(), userId, currentPage);
-        //观察ViewModel中推荐单词列表的LiveData
+
+        // 观察ViewModel中推荐单词列表的LiveData
         viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
             @Override
             public void onChanged(List<WordDetail> wordDetails) {
-                if (wordDetails != null){
+                if (wordDetails != null) {
                     updateViewPagerWithWords(wordDetails);
                 }
             }
         });
 
+        // 首次加载单词数据
+        viewModel.setRecommendWords(getContext(), userId, currentPage);
+
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                showSpellCheckDialog();
+                showSpellCheckDialog();
                 loadMore();
             }
-            private void showSpellCheckDialog(){
+            private void showSpellCheckDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("单词拼写检查")
                         .setMessage("是否检查单词拼写？")
                         .setPositiveButton("准备好了", (dialog, which) -> startSpellingActivity())
-                            // 处理用户点击“是”按钮的事件
                         .setNegativeButton("复习一下", (dialog, which) -> dialog.dismiss())
-                            // 处理用户点击“否”按钮的事件
                         .show();
             }
             private void startSpellingActivity() {
-                // 这里可以启动您的拼写测试Activity，并且可能需要传递当前页的WordDetail列表作为参数
-                // 注意：您需要定义一个用于接收拼写结果的接口或使用ActivityResultContracts
+                // 启动拼写测试Activity，并等待返回结果
                 Intent intent = new Intent(getActivity(), SpellingActivity.class);
-                // 可能需要序列化WordDetail列表并放入Intent
-                startActivity(intent);
+                startActivityForResult(intent, SPELLING_REQUEST_CODE);
             }
             private void loadMore() {
                 currentPage++;
@@ -106,18 +112,22 @@ public class BFragment extends Fragment {
                 viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
                     @Override
                     public void onChanged(List<WordDetail> newWordDetails) {
+                        getView().post(new Runnable() {
+                            @Override
+                            public void run() {
                                 if (newWordDetails != null) {
                                     pagerAdapter.clearFragments();
                                     // 使用新的单词数据创建新的Fragment列表
                                     List<Fragment> updatedFragments = new ArrayList<>();
                                     for (WordDetail wordDetail : newWordDetails) {
-                                        ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getWord(), wordDetail.getParaphrase(), "");
+                                        ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
                                         updatedFragments.add(fragment);
                                     }
                                     pagerAdapter.updateData(updatedFragments);
+                                    viewPager.setAdapter(pagerAdapter);
+                                    pagerAdapter.notifyDataSetChanged();
                                     // 日志记录或调试用
                                     pagerAdapter.logFragmentsWords();
-
                                     // 跳转到第一个页面
                                     viewPager.setCurrentItem(0,false);
                                     updatePageNumber(0);
@@ -127,40 +137,41 @@ public class BFragment extends Fragment {
                                     // 错误处理，如提示用户加载失败
                                     Toast.makeText(getContext(), "加载数据失败，请重试", Toast.LENGTH_SHORT).show();
                                 }
-
+                            }
+                        });
                     }
                 });
+
             }
-            private List<Fragment> createFragmentsFromWordDetails(List<WordDetail> newWordDetails) {
-                List<Fragment> newFragments = new ArrayList<>();
-                for (WordDetail wordDetail : newWordDetails) {
-                    Fragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
-                    newFragments.add(fragment);
-                    Log.d("createFragmentsFromWordDetails", "Adding fragment for word: " + wordDetail.getWord());
-                }
-                return newFragments;
-            }
+
         });
 
         return view;
     }
 
-    // 在 ViewModel 数据变化时更新 ViewPager
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SPELLING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null && data.getBooleanExtra("need_refresh", false)) {
+                // 当从SpellingActivity返回且需要刷新数据时，刷新数据
+            }
+        }
+    }
+
+
+
     private void updateViewPagerWithWords(List<WordDetail> wordDetails) {
-        List<Fragment> updatedFragments  = new ArrayList<>();
+        List<Fragment> updatedFragments = new ArrayList<>();
         for (WordDetail wordDetail : wordDetails) {
             // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
-
             ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
-            updatedFragments .add(fragment);
-
-            updatedFragments.add(ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase()));
+            updatedFragments.add(fragment);
         }
 
-
         pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), updatedFragments);
-
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(0);
         viewPager.setCurrentItem(0, false); // 设置初始页面
         updatePageNumber(0);
     }
@@ -181,8 +192,8 @@ public class BFragment extends Fragment {
     }
 
     private void updatePageNumber(int position) {
-        int total=4;
-        pageNumberTextView.setText((position + 1) + "/"+total);
+        int total = pagerAdapter.getCount();
+        pageNumberTextView.setText((position + 1) + "/" + total);
     }
 
     private void updateButtonVisibility(int position) {

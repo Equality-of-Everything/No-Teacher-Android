@@ -2,8 +2,10 @@ package com.example.android.ui.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.fragment.BFragment;
 import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
@@ -25,6 +28,8 @@ public class SpellingActivity extends AppCompatActivity {
     private EditText editTextWord;
     private Button buttonPlayAudio;
     private Button buttonCheck;
+
+    private Button btnFin;//实验按钮
     private TextView textViewMeaning;
 
     private TextView textViewCorrectWord;
@@ -45,6 +50,8 @@ public class SpellingActivity extends AppCompatActivity {
         buttonCheck = findViewById(R.id.button2);
         textViewMeaning = findViewById(R.id.text_mean);
         textViewCorrectWord = findViewById(R.id.textViewCorrectWord);
+        btnFin  = findViewById(R.id.finish);
+
         correctWord = getNextWord(); // 初始化第一个单词
 //        nextButton = findViewById(R.id.button3);
 
@@ -70,6 +77,19 @@ public class SpellingActivity extends AppCompatActivity {
                 playAudio();
             }
         });
+
+        //实验完成按钮
+        btnFin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 设置返回数据
+                Intent resultIntent = new Intent();
+                setResult(RESULT_OK, resultIntent);
+                // 结束当前活动，返回到上一个活动
+                finish();
+            }
+        });
+
     }
 
     private void playAudio() {
