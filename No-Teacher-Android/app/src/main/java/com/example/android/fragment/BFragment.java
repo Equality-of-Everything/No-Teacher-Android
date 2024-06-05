@@ -77,20 +77,29 @@ public class BFragment extends Fragment {
         viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
             @Override
             public void onChanged(List<WordDetail> wordDetails) {
-                if (wordDetails != null) {
-                    updateViewPagerWithWords(wordDetails);
+                updateViewPagerWithWords(wordDetails);
+            }
+        });
+        viewModel.getLoadMoreFinished().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isFinished) {
+                if (isFinished) {
+                    viewPager.setCurrentItem(currentPage*4, false);
                 }
             }
         });
 
         // 首次加载单词数据
-        viewModel.setRecommendWords(getContext(), userId, currentPage);
+        viewModel.loadInitialWords(getContext(), userId, currentPage);
 
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showSpellCheckDialog();
-                loadMore();
+                viewModel.loadMoreWords(getContext(), userId, currentPage);
+                currentPage++;
+                Log.d("BFragment", "currentPage: " + currentPage);
+                updateButtonVisibility(viewPager.getCurrentItem());
             }
             private void showSpellCheckDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -105,62 +114,11 @@ public class BFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SpellingActivity.class);
                 startActivityForResult(intent, SPELLING_REQUEST_CODE);
             }
-            private void loadMore() {
-                currentPage++;
-                viewModel.setRecommendWords(getContext(), userId, currentPage); // 请求下一页数据
-                // 观察LiveData以处理新获取的数据
-                viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<WordDetail>>() {
-                    @Override
-                    public void onChanged(List<WordDetail> newWordDetails) {
-                        getView().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (newWordDetails != null) {
-                                    // 使用新的单词数据创建新的Fragment列表
-                                    List<Fragment> updatedFragments = new ArrayList<>();
-                                    for (WordDetail wordDetail : newWordDetails) {
-                                        ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
-
-                                        updatedFragments.add(fragment);
-                                    }
-                                    pagerAdapter.updateData(updatedFragments);
-
-                                    pagerAdapter.notifyDataSetChanged();
-                                    // 日志记录或调试用
-                                    pagerAdapter.logFragmentsWords();
-                                    // 跳转到第一个页面
-                                    viewPager.setCurrentItem(0,false);
-                                    updatePageNumber(0);
-                                    // 更新按钮状态
-                                    updateButtonVisibility(0);
-                                } else {
-                                    // 错误处理，如提示用户加载失败
-                                    Toast.makeText(getContext(), "加载数据失败，请重试", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                });
-
-            }
 
         });
 
         return view;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SPELLING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getBooleanExtra("need_refresh", false)) {
-                // 当从SpellingActivity返回且需要刷新数据时，刷新数据
-            }
-        }
-    }
-
-
-
     private void updateViewPagerWithWords(List<WordDetail> wordDetails) {
         List<Fragment> updatedFragments = new ArrayList<>();
         for (WordDetail wordDetail : wordDetails) {
