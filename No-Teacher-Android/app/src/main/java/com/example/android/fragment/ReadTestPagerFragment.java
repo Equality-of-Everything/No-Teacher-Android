@@ -8,6 +8,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -35,6 +37,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.android.util.IFlySpeechUtils;
 import com.example.android.util.TtsUtil;
+import com.example.android.view.RecordButton;
+import com.example.android.view.WaveView;
 import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
 import com.iflytek.cloud.ErrorCode;
@@ -60,6 +64,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @Auther : Tcy
@@ -68,6 +73,12 @@ import java.util.List;
  */
 public class ReadTestPagerFragment extends Fragment {
 
+
+    // 定义录音设置
+    private int sampleRateInHz = 44100; // 采样率
+    private int channelConfig = AudioFormat.CHANNEL_IN_MONO; // 单声道
+    private int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16 位 PCM 编码
+
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
@@ -75,6 +86,8 @@ public class ReadTestPagerFragment extends Fragment {
     private String imageUrl;
     private String text;
     private String countText;
+
+    private WaveView waveView;
 
     private Button btnSpeak;
 //    private TextToSpeech mTTS;
@@ -185,6 +198,7 @@ public class ReadTestPagerFragment extends Fragment {
         TextView textView2 = view.findViewById(R.id.textView2);
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
+        WaveView waveView = view.findViewById(R.id.wave_view);
 
         curWord = "hello";
         Glide.with(this)
@@ -224,6 +238,7 @@ public class ReadTestPagerFragment extends Fragment {
             initRecording();
         }
 
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,10 +246,12 @@ public class ReadTestPagerFragment extends Fragment {
 
                 if (!isRecording) {
                     startRecording();
+                    waveView.setVisibility(View.VISIBLE);
 
                     ToastManager.showCustomToast(getActivity(), "开始录音");
                 } else {
                     stopRecording();
+                    waveView.setVisibility(View.GONE); // 隐藏波形图
                     ToastManager.showCustomToast(getActivity(), "结束录音");
 
                     //开始句子测评
@@ -291,11 +308,73 @@ public class ReadTestPagerFragment extends Fragment {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
                 currentState = RecorderState.RECORDING;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isRecording = true;
+                        while (isRecording) {
+                            // 获取当前录音的音频数据
+                            short[] audioData = getAudioData();
+
+                            // 计算声音分贝
+                            double decibel = calculateDecibel(audioData);
+
+                            // 更新波形图的显示
+                            updateWaveView(decibel);
+
+                            // 控制更新频率
+                            try {
+                                Thread.sleep(100); // 控制更新频率为每100毫秒更新一次
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
                 currentState = RecorderState.ERROR;
             }
         }
+    }
+
+
+    private short[] getAudioData() {
+        // 音频数据缓冲区大小
+        int bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
+        // 创建 AudioRecord 对象
+        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRateInHz, channelConfig, audioFormat, bufferSize);
+
+        // 音频数据缓冲区
+        short[] audioData = new short[bufferSize];
+
+        // 开始录音
+        audioRecord.startRecording();
+
+        // 从音频输入设备读取音频数据到缓冲区
+        audioRecord.read(audioData, 0, bufferSize);
+
+        // 停止录音
+        audioRecord.stop();
+        audioRecord.release();
+
+        return audioData;
+    }
+
+
+    private double calculateDecibel(short[] audioData) {
+        // 计算声音分贝，这部分代码应该根据你的实际需求来编写
+        // 这里只是一个示例，实际上应该根据你的需求来计算声音分贝
+        // 这里暂时返回一个随机值作为示例
+        Random random = new Random();
+        return random.nextDouble() * 100; // 随机生成一个0到100的声音分贝值
+    }
+
+    private void updateWaveView(double decibel) {
+        // 更新波形图的显示，根据声音分贝来确定波形的高度
+        // 这部分代码应该根据你的 WaveView 实现来编写
+        // 这里只是一个示例，实际上应该根据你的 WaveView 实现来更新波形图的显示
+        waveView.updateWaveHeight(decibel); // 这里的 updateWaveHeight 方法需要根据你的实际情况进行调整
     }
 
     /**
@@ -706,48 +785,3 @@ public class ReadTestPagerFragment extends Fragment {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
