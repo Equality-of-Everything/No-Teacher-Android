@@ -136,8 +136,12 @@ public class BFragment extends Fragment {
         List<Fragment> updatedFragments  = new ArrayList<>();
         for (WordDetail wordDetail : wordDetails) {
             // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
-            updatedFragments .add(ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase()));
+            ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
+            fragment.setCurWord(wordDetail.getWord());
+            updatedFragments .add(fragment);
+
         }
+
 
         pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), updatedFragments);
         viewPager.setAdapter(pagerAdapter);

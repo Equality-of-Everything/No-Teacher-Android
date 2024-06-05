@@ -178,17 +178,6 @@ public class ReadTestPagerFragment extends Fragment {
         textView1.setText(text);
         textView2.setText(countText);
 
-        viewModel.getRecommendWordsLiveData().observe(getViewLifecycleOwner(), wordDetails ->  {
-
-            if (wordDetails != null){
-                for (WordDetail wordDetail : wordDetails) {
-                    // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
-                    curWord = wordDetail.getWord();
-                    Log.e("curWord", curWord);
-                }
-            }
-        });
-
         // Use TtsUtil to set up the TTS buttons
         TtsUtil.getTts1(text, btnSpeak);
 
@@ -242,6 +231,14 @@ public class ReadTestPagerFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void setCurWord(String curWord) {
+        this.curWord = curWord;
+    }
+
+    public String getCurWord() {
+        return curWord;
     }
 
     /**
@@ -355,6 +352,10 @@ public class ReadTestPagerFragment extends Fragment {
 //                        int ret = mIse.startEvaluating(isWords() ? "[word]\n" + format(mTestContent) : format(mTestContent), null, mEvaluatorListener);
                         if (mIse != null) {
                             String content;
+
+                            if (curWord != null){
+                                    Log.e("curWord", curWord);
+                            }
                             if (curWord.split(" ").length == 1) {
                                 content = "[word]\n" + curWord+"\n";
                             } else {
@@ -458,7 +459,7 @@ public class ReadTestPagerFragment extends Fragment {
      */
     private void setParams() {
         // 清空参数
-        mIse.setParameter(SpeechConstant.PARAMS, null);
+//        mIse.setParameter(SpeechConstant.PARAMS, null);
         // 设置评测语言
         language = "en_us";
         // 设置需要评测的类型
@@ -468,11 +469,11 @@ public class ReadTestPagerFragment extends Fragment {
         // 设置结果等级（中文仅支持complete）
         result_level =  "complete";
         // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
-        String vad_bos ="3000";
+        String vad_bos ="5000";
         // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
-        String vad_eos =  "3000";
+        String vad_eos =  "1800";
         // 语音输入超时时间，即用户最多可以连续说多长时间；
-        String speech_timeout =  "60000";
+        String speech_timeout =  "-1";
         //评测结果格式
         String result_type ="xml";
         //返回结果与分控制
@@ -495,8 +496,16 @@ public class ReadTestPagerFragment extends Fragment {
         String sample_rate = "16000";
 
         mIse.setParameter(SpeechConstant.LANGUAGE, language);
-//        mIse.setParameter("ent", "en_vip");
-//        mIse.setParameter(SpeechConstant.SUBJECT, "ise");
+        mIse.setParameter("ent", "en_vip");
+        mIse.setParameter(SpeechConstant.SUBJECT, "ise");
+
+        mIse.setParameter("plev", "0");
+
+        // 设置评分百分制 使用 ise_unite  rst  extra_ability 参数
+        mIse.setParameter("ise_unite", "1");
+        mIse.setParameter("rst", "entirety");
+        mIse.setParameter("extra_ability", "syll_phone_err_msg;pitch;multi_dimension");
+
 
         mIse.setParameter(SpeechConstant.ISE_CATEGORY, category);
         mIse.setParameter(SpeechConstant.TEXT_ENCODING, "utf-8");
@@ -507,12 +516,12 @@ public class ReadTestPagerFragment extends Fragment {
         mIse.setParameter(SpeechConstant.AUDIO_FORMAT_AUE,"opus");
         mIse.setParameter(SpeechConstant.AUDIO_SOURCE,audio_source);
 
-//        mIse.setParameter(SpeechConstant.AUDIO_FORMAT_AUE,"lame");
+        mIse.setParameter(SpeechConstant.AUDIO_FORMAT,"wav");
         mIse.setParameter(SpeechConstant.SAMPLE_RATE,sample_rate);
         mIse.setParameter(SpeechConstant.RESULT_TYPE,result_type);
         mIse.setParameter("extra_ability",extra_ability);
-        mIse.setParameter("rst",rst);
-        mIse.setParameter("plev",plev);
+//        mIse.setParameter("rst",rst);
+//        mIse.setParameter("plev",plev);
         mIse.setParameter("is_unite","0");
 //        mIse.setParameter("ent","en_vip");
 
@@ -520,7 +529,7 @@ public class ReadTestPagerFragment extends Fragment {
 //        mIse.setParameter(SpeechConstant.AUDIO_FORMAT,"wav");
 //        mIse.setParameter(SpeechConstant.ISE_AUDIO_PATH, Environment.getExternalStorageDirectory().getAbsolutePath() + "ise.wav");
         //通过writeaudio方式直接写入音频时才需要此设置
-        mIse.setParameter(SpeechConstant.AUDIO_SOURCE,"-1");
+//        mIse.setParameter(SpeechConstant.AUDIO_SOURCE,"-1");
     }
 
 
