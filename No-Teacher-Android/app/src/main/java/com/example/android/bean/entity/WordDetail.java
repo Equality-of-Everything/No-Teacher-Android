@@ -25,6 +25,9 @@ public class WordDetail {
         this.paraphrasePicture = paraphrasePicture;
     }
 
+    public WordDetail(String paraphrasePicture, String word, String paraphrase) {
+    }
+
     public int getId() {
         return id;
     }

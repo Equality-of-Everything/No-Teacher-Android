@@ -71,7 +71,7 @@ public class ReadTestPagerFragment extends Fragment {
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
-
+    private WordDetail wordDetail;
     private String imageUrl;
     private String text;
     private String countText;
@@ -135,6 +135,10 @@ public class ReadTestPagerFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public String getWord() {
+        // 正确获取并返回单词，这里假设单词通过Bundle传递
+        return getArguments().getString(ARG_TEXT);
+    }
 
 //    public static Fragment newInstance(WordDetail wordDetail) {
 //        ReadTestPagerFragment fragment = new ReadTestPagerFragment();
@@ -147,6 +151,14 @@ public class ReadTestPagerFragment extends Fragment {
 //    }
 
 
+    public String getCurWord() {
+        return curWord;
+    }
+
+    public void setCurWord(String curWord) {
+        this.curWord = curWord;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +166,9 @@ public class ReadTestPagerFragment extends Fragment {
             imageUrl = getArguments().getString(ARG_IMAGE_RES_ID);
             text = getArguments().getString(ARG_TEXT);
             countText = getArguments().getString(ARG_COUNT_TEXT);
+            wordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
+                    getArguments().getString("word"),
+                    getArguments().getString("paraphrase"));
         }
     }
 
@@ -233,13 +248,13 @@ public class ReadTestPagerFragment extends Fragment {
         return view;
     }
 
-    public void setCurWord(String curWord) {
-        this.curWord = curWord;
-    }
-
-    public String getCurWord() {
-        return curWord;
-    }
+//    public void setCurWord(String curWord) {
+//        this.curWord = curWord;
+//    }
+//
+//    public String getCurWord() {
+//        return curWord;
+//    }
 
     /**
      * @param :
