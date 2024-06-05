@@ -256,7 +256,7 @@ public class ReadTestPagerFragment extends Fragment {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        outputFilePath = directory.getAbsolutePath() + "/recording.mp3";
+        outputFilePath = directory.getAbsolutePath() + "/recording.wav";
         Log.e("Recording", "Output file path: " + outputFilePath);
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -303,7 +303,7 @@ public class ReadTestPagerFragment extends Fragment {
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                File file = new File(dir, "/recording.mp3");
+                File file = new File(dir, "/recording.wav");
 
                 mediaRecorder = new MediaRecorder(); // Reinitialize the MediaRecorder for subsequent recordings
                 initRecording(); // Reinitialize recording settings
@@ -347,7 +347,7 @@ public class ReadTestPagerFragment extends Fragment {
                 OutputStream outputStream = null;
 
                 try{
-                    File file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.example.no_teacher_andorid/cache/recording.mp3");
+                    File file = new File(Environment.getExternalStorageDirectory(), "Android/data/com.example.no_teacher_andorid/cache/recording.wav");
                     if (file.exists()) {
                         // 进行你的操作，比如播放音频或者处理音频数据
                         playAudio(file);
@@ -356,9 +356,9 @@ public class ReadTestPagerFragment extends Fragment {
                         if (mIse != null) {
                             String content;
                             if (curWord.split(" ").length == 1) {
-                                content = "[word]\n" + curWord;
+                                content = "[word]\n" + curWord+"\n";
                             } else {
-                                content = "[content]\n" + curWord;
+                                content = "[word]\n" + curWord+"\n";
                             }
                             int ret = mIse.startEvaluating(content, null, mEvaluatorListener);
                             Log.e("mIse", "mIse初始化完成，开始接入语音测评");
@@ -492,7 +492,7 @@ public class ReadTestPagerFragment extends Fragment {
         //录音源
         String audio_source = "1";
         //采样率
-        String sample_rate = "8000";
+        String sample_rate = "16000";
 
         mIse.setParameter(SpeechConstant.LANGUAGE, language);
 //        mIse.setParameter("ent", "en_vip");
