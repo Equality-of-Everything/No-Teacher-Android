@@ -22,7 +22,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             >
             <ImageView
                 android:layout_width="100dp"
@@ -66,6 +66,16 @@
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="成长记录"
+        android:fontFamily="@font/text2"
+        android:textSize="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        ></TextView>
 
 
 
@@ -114,38 +124,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-
-<!--    <TextView-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="关于"-->
-<!--        android:textSize="20sp"-->
-<!--        android:layout_marginLeft="30dp"-->
-<!--        android:fontFamily="@font/text2"-->
-<!--        >-->
-<!--    </TextView>-->
-
-<!--    <Button-->
-<!--        style="@style/Widget.Material3.Button.TextButton"-->
-<!--        android:text="  设置"-->
-<!--        android:textColor="#000"-->
-<!--        android:gravity="start|center_vertical"-->
-<!--        app:icon="@drawable/pen"-->
-<!--        android:layout_marginLeft="20dp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
-
-<!--    <Button-->
-<!--        style="@style/Widget.Material3.Button.TextButton"-->
-<!--        android:text="  版本"-->
-<!--        android:textColor="#000"-->
-<!--        android:gravity="start|center_vertical"-->
-<!--        app:icon="@drawable/pen"-->
-<!--        android:layout_marginLeft="20dp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
 
     <!--退出登录-->
     <Button
