@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.fragment.BFragment" />
+            type="com.example.android.viewmodel.BFragmentViewModel" />
     </data>
     <RelativeLayout
     android:layout_width="match_parent"

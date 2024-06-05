@@ -29,7 +29,11 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
 
     public void updateData(List<Fragment> newFragments) {
         this.fragments.clear(); // 假设你有一个成员变量来存储Fragment列表
+        if (fragments.isEmpty()) {
+            Log.d("YourTag", "Fragments list is empty after clearing.");
+        }
         this.fragments.addAll(newFragments);
+
         notifyDataSetChanged();
     }
 

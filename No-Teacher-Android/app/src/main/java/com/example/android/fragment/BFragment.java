@@ -116,15 +116,15 @@ public class BFragment extends Fragment {
                             @Override
                             public void run() {
                                 if (newWordDetails != null) {
-                                    pagerAdapter.clearFragments();
                                     // 使用新的单词数据创建新的Fragment列表
                                     List<Fragment> updatedFragments = new ArrayList<>();
                                     for (WordDetail wordDetail : newWordDetails) {
                                         ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
+
                                         updatedFragments.add(fragment);
                                     }
                                     pagerAdapter.updateData(updatedFragments);
-                                    viewPager.setAdapter(pagerAdapter);
+
                                     pagerAdapter.notifyDataSetChanged();
                                     // 日志记录或调试用
                                     pagerAdapter.logFragmentsWords();
