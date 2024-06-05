@@ -82,7 +82,7 @@ public class ReadTestPagerFragment extends Fragment {
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
-    private WordDetail wordDetail;
+    private WordDetail currentWordDetail;
     private String imageUrl;
     private String text;
     private String countText;
@@ -134,7 +134,6 @@ public class ReadTestPagerFragment extends Fragment {
     }
     private RecorderState currentState = RecorderState.IDLE;
 
-
     public ReadTestPagerFragment() {
         // Required empty public constructor
     }
@@ -152,26 +151,9 @@ public class ReadTestPagerFragment extends Fragment {
         // 正确获取并返回单词，这里假设单词通过Bundle传递
         return getArguments().getString(ARG_TEXT);
     }
-
-//    public static Fragment newInstance(WordDetail wordDetail) {
-//        ReadTestPagerFragment fragment = new ReadTestPagerFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_IMAGE_RES_ID, wordDetail.getParaphrasePicture());
-//        args.putString(ARG_TEXT, wordDetail.getWord());
-//        args.putString(ARG_COUNT_TEXT, wordDetail.getParaphrase());
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-
-    public String getCurWord() {
-        return curWord;
+    public String getCountText() {
+        return getArguments().getString(ARG_COUNT_TEXT);
     }
-
-    public void setCurWord(String curWord) {
-        this.curWord = curWord;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,9 +161,10 @@ public class ReadTestPagerFragment extends Fragment {
             imageUrl = getArguments().getString(ARG_IMAGE_RES_ID);
             text = getArguments().getString(ARG_TEXT);
             countText = getArguments().getString(ARG_COUNT_TEXT);
-            wordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
+            currentWordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
                     getArguments().getString("word"),
                     getArguments().getString("paraphrase"));
+            Log.d("LLLLLLLLL",getArguments().getString(ARG_TEXT));
         }
     }
 
@@ -264,14 +247,12 @@ public class ReadTestPagerFragment extends Fragment {
 
         return view;
     }
+    public WordDetail getCurrentWordDetail() {
+        // 假设您在创建Fragment时设置了WordDetail，并将其保存为成员变量
+        return currentWordDetail;
+    }
 
-//    public void setCurWord(String curWord) {
-//        this.curWord = curWord;
-//    }
-//
-//    public String getCurWord() {
-//        return curWord;
-//    }
+
 
     /**
      * @param :
