@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
 
@@ -56,7 +57,7 @@ public class SpellingActivity extends AppCompatActivity {
         buttonCheck.setOnClickListener(v -> {
             if (isNextWordMode) {
                 getNextWordAndUpdateUI();
-                playAudio();
+                playAudio();//刷新音频
             } else {
                 checkWord();
             }
@@ -74,23 +75,24 @@ public class SpellingActivity extends AppCompatActivity {
     private void playAudio() {
         if (buttonPlayAudio != null) {
             TtsUtil.getTts1(correctWord, buttonPlayAudio);
-            Toast.makeText(this, "当前单词是: " + correctWord, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void checkWord() {
         String userWord = editTextWord.getText().toString().trim();
         if (TextUtils.isEmpty(userWord)) {
-            Toast.makeText(this, "请输入单词", Toast.LENGTH_SHORT).show();
+            ToastManager.showCustomToast(this, "请输入单词");
+//            Toast.makeText(this, "请输入单词", Toast.LENGTH_SHORT).show();
         } else if (userWord.equalsIgnoreCase(correctWord)) {
-            Toast.makeText(this, "正确!", Toast.LENGTH_SHORT).show();
+            ToastManager.showCustomToast(this, "正确");
+//            Toast.makeText(this, "正确!", Toast.LENGTH_SHORT).show();
             editTextWord.setBackgroundColor(Color.TRANSPARENT);
             textViewCorrectWord.setVisibility(View.GONE);
 //            buttonCheck.setText("下一个");
             buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.next, 0, 0, 0);
             isNextWordMode = true;
-        } else {
-            Toast.makeText(this, "错误，请再试一次!", Toast.LENGTH_SHORT).show();
+        } else {ToastManager.showCustomToast(this, "错误");
+//            Toast.makeText(this, "错误，请再试一次!", Toast.LENGTH_SHORT).show();
             editTextWord.setBackgroundColor(Color.parseColor("#ffb5a0"));
             textViewCorrectWord.setText("正确的单词是: " + correctWord);
             textViewCorrectWord.setVisibility(View.VISIBLE);
