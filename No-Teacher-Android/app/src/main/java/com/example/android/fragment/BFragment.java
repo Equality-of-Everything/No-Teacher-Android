@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +45,12 @@ public class BFragment extends Fragment {
     private BFragmentViewModel viewModel;
     private Button backButton;
     private Button moreButton;
+
     private TextView pageNumberTextView;
     private ReadTestPagerAdapter pagerAdapter;
     private String userId;
+    private  List<String> WordList = new ArrayList<>();
+    private  List<String> MeaningList = new ArrayList<>();
     private int currentPage = 0;
 
     @Override
@@ -61,7 +66,6 @@ public class BFragment extends Fragment {
         backButton = view.findViewById(R.id.back_button);
         moreButton = view.findViewById(R.id.more_button);
         pageNumberTextView = view.findViewById(R.id.page_number_text_view);
-
         nextButton.setOnClickListener(v -> nextPage());
         backButton.setOnClickListener(v -> prevPage());
 
@@ -98,8 +102,17 @@ public class BFragment extends Fragment {
                 showSpellCheckDialog();
                 viewModel.loadMoreWords(getContext(), userId, currentPage);
                 currentPage++;
-                Log.d("BFragment", "currentPage: " + currentPage);
                 updateButtonVisibility(viewPager.getCurrentItem());
+                MeaningList.clear();
+                WordList.clear();
+                // 收集最后四页的WordDetail
+                for (int i = Math.max(0, viewPager.getCurrentItem() - 3); i <= viewPager.getCurrentItem(); i++) {
+                    ReadTestPagerFragment fragment = (ReadTestPagerFragment) pagerAdapter.instantiateItem(viewPager, i);
+                    MeaningList.add(fragment.getCountText());
+                    WordList.add(fragment.getWord());
+                    Log.d("DDDDDDDDD", String.valueOf(WordList));
+                    Log.d("DDDDDDDDD", String.valueOf(MeaningList));
+                }
             }
             private void showSpellCheckDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -112,7 +125,9 @@ public class BFragment extends Fragment {
             private void startSpellingActivity() {
                 // 启动拼写测试Activity，并等待返回结果
                 Intent intent = new Intent(getActivity(), SpellingActivity.class);
-                startActivityForResult(intent, SPELLING_REQUEST_CODE);
+                intent.putExtra("WORDS_LIST",(Serializable)WordList);
+                intent.putExtra("MEANING_LIST",(Serializable) MeaningList);
+                startActivity(intent);
             }
 
         });
