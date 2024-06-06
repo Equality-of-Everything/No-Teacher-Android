@@ -10,6 +10,7 @@ import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.bean.entity.WordDetailRecording;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
 
@@ -104,6 +105,10 @@ public interface ApiService {
     // 拿到用户阅读数据统计
     @GET("/dataCount/{userId}")
     Call<BaseResponse<List<ReadLogDataCount>>> getReadLongDataCount(@Path("userId") String userId);
+
+    //发送用户语音测评评分
+    @POST("/recording/insertData")
+    Call<BaseResponse<Void>> insertData(@Body WordDetailRecording wordDetailRecording);
 }
 
 

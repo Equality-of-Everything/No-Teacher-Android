@@ -25,7 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.bean.entity.WordDetailRecording;
+import com.example.android.util.TimestampTypeAdapter;
 import com.example.android.util.ToastManager;
+import com.example.android.util.TokenManager;
 import com.example.android.util.XmlResultParser;
 
 import androidx.core.app.ActivityCompat;
@@ -62,9 +65,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther : Tcy
@@ -79,10 +87,13 @@ public class ReadTestPagerFragment extends Fragment {
     private int channelConfig = AudioFormat.CHANNEL_IN_MONO; // 单声道
     private int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16 位 PCM 编码
 
+    private static final String ARG_WORD_ID = "word_id";
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
     private WordDetail currentWordDetail;
+
+    private int wordId;
     private String imageUrl;
     private String text;
     private String countText;
@@ -93,6 +104,10 @@ public class ReadTestPagerFragment extends Fragment {
 //    private TextToSpeech mTTS;
 
     private BFragmentViewModel viewModel;
+    private List<WordDetailRecording> scores = new ArrayList<>();
+    private String userId;
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
     //科大讯飞
     private SpeechEvaluator mIse;
@@ -107,12 +122,14 @@ public class ReadTestPagerFragment extends Fragment {
     private String result_level;
     private String mLastResult;
     private final Object lock = new Object();
-    private List<String> lines ;
+    private List<String> lines;
+
     {
         lines = new ArrayList<>();
     }
 
     //录制音频
+    private List<String> dataList = new ArrayList<>();
     private String curWord;//当前界面上显示的单词
 
     private MediaRecorder mediaRecorder;
@@ -124,6 +141,7 @@ public class ReadTestPagerFragment extends Fragment {
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 210;
     private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 220;
 
+
     private enum RecorderState {
         IDLE,
         INITIALIZING,
@@ -132,39 +150,50 @@ public class ReadTestPagerFragment extends Fragment {
         ERROR,
         STOPPED
     }
+
     private RecorderState currentState = RecorderState.IDLE;
 
     public ReadTestPagerFragment() {
         // Required empty public constructor
     }
 
-    public static ReadTestPagerFragment newInstance(String imageResId, String text, String countText) {
+    public static ReadTestPagerFragment newInstance(int wordId, String imageResId, String text, String countText) {
         ReadTestPagerFragment fragment = new ReadTestPagerFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_WORD_ID, wordId);
         args.putString(ARG_IMAGE_RES_ID, imageResId);
         args.putString(ARG_TEXT, text);
         args.putString(ARG_COUNT_TEXT, countText);
         fragment.setArguments(args);
         return fragment;
     }
+
     public String getWord() {
         // 正确获取并返回单词，这里假设单词通过Bundle传递
         return getArguments().getString(ARG_TEXT);
     }
+
     public String getCountText() {
         return getArguments().getString(ARG_COUNT_TEXT);
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
+            wordId = getArguments().getInt(ARG_WORD_ID);
             imageUrl = getArguments().getString(ARG_IMAGE_RES_ID);
             text = getArguments().getString(ARG_TEXT);
+            Log.e("CurWord", text);
+
             countText = getArguments().getString(ARG_COUNT_TEXT);
+
             currentWordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
                     getArguments().getString("word"),
                     getArguments().getString("paraphrase"));
-            Log.d("LLLLLLLLL",getArguments().getString(ARG_TEXT));
+            Log.d("LLLLLLLLL", getArguments().getString(ARG_TEXT));
+
         }
     }
 
@@ -184,6 +213,7 @@ public class ReadTestPagerFragment extends Fragment {
         WaveView waveView = view.findViewById(R.id.wave_view);
 
         curWord = "hello";
+        userId = TokenManager.getUserId(getContext());
         Glide.with(this)
                 .load(imageUrl)
                 .into(imageView);
@@ -196,7 +226,7 @@ public class ReadTestPagerFragment extends Fragment {
 //        SpeechUtility.createUtility(getContext(), SpeechConstant.APPID +"=" + "5e62dc3d");
         mIse = SpeechEvaluator.createEvaluator(getContext(), null);
 
-        if(mIse != null) {
+        if (mIse != null) {
             setParams();
         } else {
             Log.e("mIse", "语音评测初始化失败");
@@ -247,11 +277,11 @@ public class ReadTestPagerFragment extends Fragment {
 
         return view;
     }
+
     public WordDetail getCurrentWordDetail() {
         // 假设您在创建Fragment时设置了WordDetail，并将其保存为成员变量
         return currentWordDetail;
     }
-
 
 
     /**
@@ -295,15 +325,7 @@ public class ReadTestPagerFragment extends Fragment {
                         isRecording = true;
                         while (isRecording) {
                             // 获取当前录音的音频数据
-                            short[] audioData = getAudioData();
 
-                            // 计算声音分贝
-                            double decibel = calculateDecibel(audioData);
-
-                            // 更新波形图的显示
-                            updateWaveView(decibel);
-
-                            // 控制更新频率
                             try {
                                 Thread.sleep(100); // 控制更新频率为每100毫秒更新一次
                             } catch (InterruptedException e) {
@@ -318,30 +340,6 @@ public class ReadTestPagerFragment extends Fragment {
             }
         }
     }
-
-
-    private short[] getAudioData() {
-        // 音频数据缓冲区大小
-        int bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
-        // 创建 AudioRecord 对象
-        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRateInHz, channelConfig, audioFormat, bufferSize);
-
-        // 音频数据缓冲区
-        short[] audioData = new short[bufferSize];
-
-        // 开始录音
-        audioRecord.startRecording();
-
-        // 从音频输入设备读取音频数据到缓冲区
-        audioRecord.read(audioData, 0, bufferSize);
-
-        // 停止录音
-        audioRecord.stop();
-        audioRecord.release();
-
-        return audioData;
-    }
-
 
     private double calculateDecibel(short[] audioData) {
         // 计算声音分贝，这部分代码应该根据你的实际需求来编写
@@ -428,9 +426,7 @@ public class ReadTestPagerFragment extends Fragment {
                         if (mIse != null) {
                             String content;
 
-                            if (curWord != null){
-                                    Log.e("curWord", curWord);
-                            }
+
                             if (curWord.split(" ").length == 1) {
                                 content = "[word]\n" + curWord+"\n";
                             } else {
@@ -552,9 +548,9 @@ public class ReadTestPagerFragment extends Fragment {
         //评测结果格式
         String result_type ="xml";
         //返回结果与分控制
-        String rst = "entirety";
+//        String rst = "entirety";
         //plev:：0（给出全部信息，英文包含accuracy_score、serr_msg、 syll_accent、fluency_score、standard_score、pitch等信息的返回）
-        String plev = "0";
+//        String plev = "0";
         /**
          * 拓展能力（生效条件ise_unite="1", rst="entirety"）
          * 多维度分信息显示（准确度分、流畅度分、完整度打分）
@@ -648,10 +644,17 @@ public class ReadTestPagerFragment extends Fragment {
                                 .append("  ------ integrity_score(完整性):  ")
                                 .append(scoreResult.integrity_score)
                                 .append("  ------ 转化分: ")
-                                .append(isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult));
+                                .append(IFlySpeechUtils.getWordScore(scoreResult));
+
+                        String id = UUID.randomUUID().toString();
+//                        new Timestamp(System.currentTimeMillis())
+                        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+                        String formattedDate = dateFormat.format(currentTimestamp);
+
+                        WordDetailRecording score = new WordDetailRecording(id, userId, wordId, (int)scoreResult.total_score, Timestamp.valueOf(formattedDate));
+                        viewModel.insertData(getContext());
 
                         String content = contentBuilder.toString();
-
                         String fileName = "evaluation_results.txt";
                         File file = new File(getActivity().getExternalFilesDir(null), fileName);
                         writer = new BufferedWriter(new FileWriter(file, true));

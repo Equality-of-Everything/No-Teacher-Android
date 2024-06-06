@@ -41,15 +41,7 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-    public void logFragmentsWords() {
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof ReadTestPagerFragment) {
-                String word = ((ReadTestPagerFragment) fragment).getWord();
-                Log.d("PagerAdapter", "Fragment at position " + i + " has word: " + word);
-            }
-        }
-    }
+
     public void clearFragments() {
         fragments.clear(); // fragments假设是Adapter中维护的Fragment列表
     }

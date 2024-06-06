@@ -1,5 +1,7 @@
 package com.example.android.bean.entity;
 
+import androidx.lifecycle.LiveData;
+
 import java.sql.Timestamp;
 
 /**
@@ -20,7 +22,7 @@ public class WordDetailRecording {
 
     private Timestamp time;
 
-    public WordDetailRecording() {
+    public WordDetailRecording(LiveData<String> id, String userId, LiveData<Integer> wordId, LiveData<Integer> score, LiveData<Timestamp> time) {
 
     }
 
