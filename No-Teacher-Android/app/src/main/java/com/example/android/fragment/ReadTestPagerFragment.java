@@ -723,8 +723,15 @@ public class ReadTestPagerFragment extends Fragment {
                         finalContent = fileContent.toString();
                         activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
 //                        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
-                        scoreText.setVisibility(finalContent!=null?View.VISIBLE:View.INVISIBLE);
-                        scoreText.setText(finalContent);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                scoreText.setVisibility(finalContent!=null?View.VISIBLE:View.INVISIBLE);
+                                scoreText.setText(finalContent);
+                            }
+                        });
+
+
                     } catch (IOException e) {
                         Log.e(TAG, "读取文件时发生错误", e);
                     }
