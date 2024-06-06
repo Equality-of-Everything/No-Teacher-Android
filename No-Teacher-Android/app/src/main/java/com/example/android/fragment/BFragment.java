@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -24,6 +28,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.android.adapter.ReadTestPagerAdapter;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.ui.activity.MainActivity;
 import com.example.android.ui.activity.SpellingActivity;
 import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.BFragmentViewModel;
@@ -74,6 +79,7 @@ public class BFragment extends Fragment {
         nextButton.setOnClickListener(v -> nextPage());
         backButton.setOnClickListener(v -> prevPage());
 
+
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -105,9 +111,10 @@ public class BFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showSpellCheckDialog();
-                viewModel.loadMoreWords(getContext(), userId, currentPage);
-                currentPage++;
-                updateButtonVisibility(viewPager.getCurrentItem());
+//                viewModel.loadMoreWords(getContext(), userId, currentPage);
+//                currentPage++;
+//                updateButtonVisibility(viewPager.getCurrentItem());
+//                loadMoreWords();
                 MeaningList.clear();
                 WordList.clear();
                 // 收集最后四页的WordDetail
@@ -121,21 +128,33 @@ public class BFragment extends Fragment {
             }
             private void showSpellCheckDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("单词拼写检查")
+                builder.setTitle("拼写")
                         .setMessage("是否检查单词拼写？")
                         .setPositiveButton("准备好了", (dialog, which) -> startSpellingActivity())
                         .setNegativeButton("复习一下", (dialog, which) -> dialog.dismiss())
                         .show();
             }
+            ActivityResultLauncher<Intent> spellingActivityResultLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult result) {
+                            if (result.getResultCode() == Activity.RESULT_OK) {
+                                loadMoreWords();
+                            }
+                        }
+                    }
+            );
             private void startSpellingActivity() {
                 // 启动拼写测试Activity，并等待返回结果
                 Intent intent = new Intent(getActivity(), SpellingActivity.class);
                 intent.putExtra("WORDS_LIST",(Serializable)WordList);
                 intent.putExtra("MEANING_LIST",(Serializable) MeaningList);
-                startActivity(intent);
+                spellingActivityResultLauncher.launch(intent);
             }
 
         });
+
 
         return view;
     }
@@ -156,6 +175,12 @@ public class BFragment extends Fragment {
         viewPager.setOffscreenPageLimit(0);
         viewPager.setCurrentItem(0, false); // 设置初始页面
         updatePageNumber(0);
+    }
+
+    private void loadMoreWords() {
+        viewModel.loadMoreWords(getContext(), userId, currentPage);
+        currentPage++;
+        updateButtonVisibility(viewPager.getCurrentItem());
     }
 
     private void nextPage() {

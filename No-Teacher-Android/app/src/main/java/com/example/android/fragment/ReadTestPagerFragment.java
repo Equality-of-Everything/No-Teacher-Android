@@ -99,7 +99,8 @@ public class ReadTestPagerFragment extends Fragment {
     private String countText;
 
     private WaveView waveView;
-
+    private String finalContent;
+    private TextView scoreText;
     private Button btnSpeak;
 //    private TextToSpeech mTTS;
 
@@ -210,8 +211,7 @@ public class ReadTestPagerFragment extends Fragment {
         TextView textView2 = view.findViewById(R.id.textView2);
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
-        WaveView waveView = view.findViewById(R.id.wave_view);
-
+        scoreText = view.findViewById(R.id.textView3);
         curWord = "hello";
         userId = TokenManager.getUserId(getContext());
         Glide.with(this)
@@ -259,12 +259,9 @@ public class ReadTestPagerFragment extends Fragment {
 
                 if (!isRecording) {
                     startRecording();
-                    waveView.setVisibility(View.VISIBLE);
-
                     ToastManager.showCustomToast(getActivity(), "开始录音");
                 } else {
                     stopRecording();
-                    waveView.setVisibility(View.GONE); // 隐藏波形图
                     ToastManager.showCustomToast(getActivity(), "结束录音");
 
                     //开始句子测评
@@ -319,28 +316,14 @@ public class ReadTestPagerFragment extends Fragment {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
                 currentState = RecorderState.RECORDING;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        isRecording = true;
-                        while (isRecording) {
-                            // 获取当前录音的音频数据
 
-                            try {
-                                Thread.sleep(100); // 控制更新频率为每100毫秒更新一次
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }).start();
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
                 currentState = RecorderState.ERROR;
             }
         }
     }
-
+    
     private double calculateDecibel(short[] audioData) {
         // 计算声音分贝，这部分代码应该根据你的实际需求来编写
         // 这里只是一个示例，实际上应该根据你的需求来计算声音分贝
@@ -355,6 +338,7 @@ public class ReadTestPagerFragment extends Fragment {
         // 这里只是一个示例，实际上应该根据你的 WaveView 实现来更新波形图的显示
         waveView.updateWaveHeight(decibel); // 这里的 updateWaveHeight 方法需要根据你的实际情况进行调整
     }
+
 
     /**
      * @param :
@@ -736,8 +720,11 @@ public class ReadTestPagerFragment extends Fragment {
                         }
 
                         // 显示Toast需要在UI线程执行
-                        String finalContent = fileContent.toString();
+                        finalContent = fileContent.toString();
                         activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
+//                        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+                        scoreText.setVisibility(finalContent!=null?View.VISIBLE:View.INVISIBLE);
+                        scoreText.setText(finalContent);
                     } catch (IOException e) {
                         Log.e(TAG, "读取文件时发生错误", e);
                     }

@@ -67,11 +67,15 @@
             android:layout_gravity="center_horizontal"
             app:icon="@drawable/voice" />
 
-        <com.example.android.view.WaveView
-            android:id="@+id/wave_view"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            />
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="0"
+            android:visibility="invisible"></TextView>
+
 
     </LinearLayout>
 </layout>
