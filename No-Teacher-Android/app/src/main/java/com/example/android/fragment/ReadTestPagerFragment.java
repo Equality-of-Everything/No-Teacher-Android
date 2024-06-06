@@ -79,6 +79,7 @@ public class ReadTestPagerFragment extends Fragment {
     private int channelConfig = AudioFormat.CHANNEL_IN_MONO; // 单声道
     private int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16 位 PCM 编码
 
+
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
