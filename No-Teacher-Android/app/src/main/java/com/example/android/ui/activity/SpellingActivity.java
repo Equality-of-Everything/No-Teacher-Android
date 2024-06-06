@@ -34,6 +34,7 @@ public class SpellingActivity extends AppCompatActivity {
     private Button buttonPlayAudio;
     private Button buttonCheck;
 
+    private boolean isLastWordCorrectlyEntered = false;
     private Button btnFin;//实验按钮
     private TextView textViewMeaning;
 
@@ -62,6 +63,7 @@ public class SpellingActivity extends AppCompatActivity {
 
         //        nextButton = findViewById(R.id.button3);
         buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.tick, 0, 0, 0);
+
         if (getIntent()!=null){
             ArrayList<String> wordList = (ArrayList<String>) getIntent().getSerializableExtra("WORDS_LIST");
             ArrayList<String> meaningList = (ArrayList<String>) getIntent().getSerializableExtra("MEANING_LIST");
@@ -141,6 +143,11 @@ public class SpellingActivity extends AppCompatActivity {
         } else if (userWord.equalsIgnoreCase(correctWord)) {
             ToastManager.showCustomToast(this, "正确");
 //            Toast.makeText(this, "正确!", Toast.LENGTH_SHORT).show();
+//            if (currentWordIndex < WordList.size() - 1){
+//                btnFin.setVisibility(View.GONE);
+//            }else if (currentWordIndex == WordList.size() - 1){
+//                btnFin.setVisibility(View.VISIBLE);
+//            }
             editTextWord.setBackgroundColor(Color.TRANSPARENT);
             textViewCorrectWord.setVisibility(View.GONE);
 //            buttonCheck.setText("下一个");
@@ -170,6 +177,8 @@ public class SpellingActivity extends AppCompatActivity {
         editTextWord.setText("");
         editTextWord.setBackgroundColor(Color.TRANSPARENT);
         textViewCorrectWord.setVisibility(View.GONE);
+        btnFin.setVisibility(currentWordIndex == WordList.size() - 1 ? View.VISIBLE : View.GONE);
+        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
 //        buttonCheck.setText("检查");
         buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.tick, 0, 0, 0);
         isNextWordMode = false;
