@@ -13,6 +13,9 @@ import com.example.android.adapter.ViewHolder.CategoryViewHolder;
 import com.example.no_teacher_andorid.R;
 import java.util.List;
 
+/**
+ * 类别的adapter
+ */
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder>{
     private Context context;
     private List<String> categories;

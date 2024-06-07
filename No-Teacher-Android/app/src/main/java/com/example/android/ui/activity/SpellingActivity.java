@@ -10,18 +10,23 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.bean.entity.WordDetail;
 import com.example.android.fragment.BFragment;
 import com.example.android.util.ToastManager;
 import com.example.android.util.TtsUtil;
 import com.example.no_teacher_andorid.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 public class SpellingActivity extends AppCompatActivity {
 
@@ -29,15 +34,18 @@ public class SpellingActivity extends AppCompatActivity {
     private Button buttonPlayAudio;
     private Button buttonCheck;
 
+    private boolean isLastWordCorrectlyEntered = false;
     private Button btnFin;//实验按钮
     private TextView textViewMeaning;
 
     private TextView textViewCorrectWord;
-
+    private TextView meaning;
     private String correctWord;
+    private int currentWordIndex = 0;
 
     private boolean isNextWordMode = false;
-    private String meaning = "This is an example word."; // 替换为单词的意思
+    private List<String> WordList = new ArrayList<>();
+    private List<String> ParaphraseList= new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,16 +58,45 @@ public class SpellingActivity extends AppCompatActivity {
         buttonCheck = findViewById(R.id.button2);
         textViewMeaning = findViewById(R.id.text_mean);
         textViewCorrectWord = findViewById(R.id.textViewCorrectWord);
+        meaning = findViewById(R.id.text_mean);
         btnFin  = findViewById(R.id.finish);
 
-        correctWord = getNextWord(); // 初始化第一个单词
-//        nextButton = findViewById(R.id.button3);
-
+        //        nextButton = findViewById(R.id.button3);
         buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.tick, 0, 0, 0);
 
-        // 设置单词意思
-        textViewMeaning.setText(meaning);
+        if (getIntent()!=null){
+            ArrayList<String> wordList = (ArrayList<String>) getIntent().getSerializableExtra("WORDS_LIST");
+            ArrayList<String> meaningList = (ArrayList<String>) getIntent().getSerializableExtra("MEANING_LIST");
+            if (meaningList != null && !meaningList.isEmpty()) {
+                // 成功接收到数据，现在可以遍历或使用receivedWords列表
+                ParaphraseList.clear();
+                for (String meaning : meaningList) {
+                    // 将单词和释义分别添加到列表中
+                    ParaphraseList.add(meaning);
+                    Log.d("DDDDDDDDDDD", String.valueOf(ParaphraseList));
+                }
+            } else {
+                // 没有接收到数据或列表为空，处理这种情况
+            }
+            if (wordList != null && !wordList.isEmpty()) {
+                // 成功接收到数据，现在可以遍历或使用receivedWords列表
+                WordList.clear();
 
+                for (String word : wordList) {
+                    // 将单词和释义分别添加到列表中
+                    WordList.add(word);
+                    Log.d("DDDDDDDDDDD", String.valueOf(WordList));
+                }
+            } else {
+                // 没有接收到数据或列表为空，处理这种情况
+                Toast.makeText(this, "没有接收到单词数据", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            // Intent为空，处理异常情况
+            Toast.makeText(this, "Intent数据为空", Toast.LENGTH_SHORT).show();
+        }
+        correctWord = WordList.get(0);
+        meaning.setText(ParaphraseList.get(0));
         // 检查单词按钮点击事件
         buttonCheck.setOnClickListener(v -> {
             if (isNextWordMode) {
@@ -78,11 +115,11 @@ public class SpellingActivity extends AppCompatActivity {
             }
         });
 
-        //实验完成按钮
+        //拼写完成按钮
         btnFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 设置返回数据
+                // 设置返回码
                 Intent resultIntent = new Intent();
                 setResult(RESULT_OK, resultIntent);
                 // 结束当前活动，返回到上一个活动
@@ -106,11 +143,21 @@ public class SpellingActivity extends AppCompatActivity {
         } else if (userWord.equalsIgnoreCase(correctWord)) {
             ToastManager.showCustomToast(this, "正确");
 //            Toast.makeText(this, "正确!", Toast.LENGTH_SHORT).show();
+//            if (currentWordIndex < WordList.size() - 1){
+//                btnFin.setVisibility(View.GONE);
+//            }else if (currentWordIndex == WordList.size() - 1){
+//                btnFin.setVisibility(View.VISIBLE);
+//            }
             editTextWord.setBackgroundColor(Color.TRANSPARENT);
             textViewCorrectWord.setVisibility(View.GONE);
 //            buttonCheck.setText("下一个");
             buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.next, 0, 0, 0);
             isNextWordMode = true;
+            if (currentWordIndex == WordList.size() - 1) {
+                //最后一个单词检查正确后隐藏下一个按钮，显示完成拼写
+                btnFin.setVisibility(currentWordIndex == WordList.size() - 1 ? View.VISIBLE : View.GONE);
+                buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+            }
         } else {ToastManager.showCustomToast(this, "错误");
 //            Toast.makeText(this, "错误，请再试一次!", Toast.LENGTH_SHORT).show();
             editTextWord.setBackgroundColor(Color.parseColor("#ffb5a0"));
@@ -120,14 +167,18 @@ public class SpellingActivity extends AppCompatActivity {
     }
 
     private String getNextWord() {
-        String[] wordList = {"apple", "banana", "orange", "grape", "watermelon"};
-        Random random = new Random();
-        int index = random.nextInt(wordList.length);
-        return wordList[index];
+        String word = WordList.get(currentWordIndex);
+        return word;
+    }
+    private String getNextParaphrase() {
+        String paraphrase = ParaphraseList.get(currentWordIndex);
+        return paraphrase;
     }
 
     private void getNextWordAndUpdateUI() {
+        currentWordIndex++;
         correctWord = getNextWord();
+        meaning.setText(getNextParaphrase());
         editTextWord.setText("");
         editTextWord.setBackgroundColor(Color.TRANSPARENT);
         textViewCorrectWord.setVisibility(View.GONE);

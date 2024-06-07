@@ -59,13 +59,38 @@
 
         <!-- 按钮 -->
 
-        <Button
-            style="?attr/materialIconButtonFilledStyle"
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/voice"
-            android:layout_gravity="center_horizontal"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <com.example.android.view.WaveView
+                android:id="@+id/waveView"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@android:color/white"
+                android:padding="8dp"
+                tools:ignore="MissingConstraints"
+                android:layout_centerHorizontal="true" />
+            <!-- 按钮 -->
+            <Button
+                android:id="@+id/button2"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:icon="@drawable/voice"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:text="0"
+            android:visibility="invisible"></TextView>
     </LinearLayout>
 </layout>

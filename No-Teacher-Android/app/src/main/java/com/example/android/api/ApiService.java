@@ -113,6 +113,10 @@ public interface ApiService {
     // 获取柱状图数据，获取最近七天
     @GET("recording/{userId}")
     Call<BaseResponse<List<WordDetailRecording>>> getRecordingDataWeek(@Path("userId") String userId);
+
+    //发送用户语音测评评分
+    @POST("/recording/insertData")
+    Call<BaseResponse<Void>> insertData(@Body WordDetailRecording wordDetailRecording);
 }
 
 

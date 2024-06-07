@@ -5,9 +5,15 @@ import static android.service.controls.ControlsProviderService.TAG;
 import static java.lang.String.format;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -18,12 +24,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.bean.entity.WordDetailRecording;
+import com.example.android.util.TimestampTypeAdapter;
 import com.example.android.util.ToastManager;
+import com.example.android.util.TokenManager;
 import com.example.android.util.XmlResultParser;
 
 import androidx.core.app.ActivityCompat;
@@ -35,6 +45,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.android.util.IFlySpeechUtils;
 import com.example.android.util.TtsUtil;
+import com.example.android.view.WaveView;
 import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
 import com.iflytek.cloud.ErrorCode;
@@ -58,8 +69,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther : Tcy
@@ -68,18 +85,30 @@ import java.util.List;
  */
 public class ReadTestPagerFragment extends Fragment {
 
+
+
+    private static final String ARG_WORD_ID = "word_id";
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
     private static final String ARG_COUNT_TEXT = "count_text";
-    private WordDetail wordDetail;
+    private WordDetail currentWordDetail;
+
+    private int wordId;
     private String imageUrl;
     private String text;
     private String countText;
 
+    private WaveView waveView;
+    private String finalContent;
+    private TextView scoreText;
     private Button btnSpeak;
 //    private TextToSpeech mTTS;
 
     private BFragmentViewModel viewModel;
+    private List<WordDetailRecording> scores = new ArrayList<>();
+    private String userId;
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
     //科大讯飞
     private SpeechEvaluator mIse;
@@ -94,12 +123,14 @@ public class ReadTestPagerFragment extends Fragment {
     private String result_level;
     private String mLastResult;
     private final Object lock = new Object();
-    private List<String> lines ;
+    private List<String> lines;
+
     {
         lines = new ArrayList<>();
     }
 
     //录制音频
+    private List<String> dataList = new ArrayList<>();
     private String curWord;//当前界面上显示的单词
 
     private MediaRecorder mediaRecorder;
@@ -111,6 +142,7 @@ public class ReadTestPagerFragment extends Fragment {
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 210;
     private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 220;
 
+
     private enum RecorderState {
         IDLE,
         INITIALIZING,
@@ -119,59 +151,54 @@ public class ReadTestPagerFragment extends Fragment {
         ERROR,
         STOPPED
     }
-    private RecorderState currentState = RecorderState.IDLE;
 
+    private RecorderState currentState = RecorderState.IDLE;
 
     public ReadTestPagerFragment() {
         // Required empty public constructor
     }
 
-    public static ReadTestPagerFragment newInstance(String imageResId, String text, String countText) {
+    public static ReadTestPagerFragment newInstance(int wordId, String imageResId, String text, String countText) {
         ReadTestPagerFragment fragment = new ReadTestPagerFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_WORD_ID, wordId);
         args.putString(ARG_IMAGE_RES_ID, imageResId);
         args.putString(ARG_TEXT, text);
         args.putString(ARG_COUNT_TEXT, countText);
         fragment.setArguments(args);
         return fragment;
     }
+
     public String getWord() {
         // 正确获取并返回单词，这里假设单词通过Bundle传递
         return getArguments().getString(ARG_TEXT);
     }
 
-//    public static Fragment newInstance(WordDetail wordDetail) {
-//        ReadTestPagerFragment fragment = new ReadTestPagerFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_IMAGE_RES_ID, wordDetail.getParaphrasePicture());
-//        args.putString(ARG_TEXT, wordDetail.getWord());
-//        args.putString(ARG_COUNT_TEXT, wordDetail.getParaphrase());
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-
-    public String getCurWord() {
-        return curWord;
-    }
-
-    public void setCurWord(String curWord) {
-        this.curWord = curWord;
+    public String getCountText() {
+        return getArguments().getString(ARG_COUNT_TEXT);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
+            wordId = getArguments().getInt(ARG_WORD_ID);
             imageUrl = getArguments().getString(ARG_IMAGE_RES_ID);
             text = getArguments().getString(ARG_TEXT);
+            Log.e("CurWord", text);
+
             countText = getArguments().getString(ARG_COUNT_TEXT);
-            wordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
+
+            currentWordDetail = new WordDetail(getArguments().getString("paraphrasePicture"),
                     getArguments().getString("word"),
                     getArguments().getString("paraphrase"));
+            Log.d("LLLLLLLLL", getArguments().getString(ARG_TEXT));
+
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
@@ -179,14 +206,31 @@ public class ReadTestPagerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
         //初始化viewModel
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
+        int waveHeightA = 30; // 波浪A的振幅
+        float waveACycle = 0.04f; // 波浪A的周期
+        int waveSpeedA = 3; // 波浪A的速度
+        int waveHeightB = 15; // 波浪B的振幅
+        float waveBCycle = 0.05f; // 波浪B的周期
+        int waveSpeedB = 5; // 波浪B的速度
+        int waveColor = Color.parseColor("#d6e3ff"); // 波浪的颜色
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.white_background3); // 圆形遮罩的位图
 
         ImageView imageView = view.findViewById(R.id.imageView);
         TextView textView1 = view.findViewById(R.id.textView);
         TextView textView2 = view.findViewById(R.id.textView2);
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
+        scoreText = view.findViewById(R.id.textView3);
+        waveView = view.findViewById(R.id.waveView);
+        waveView.setWaveParameters(waveHeightA, waveACycle, waveSpeedA, waveHeightB, waveBCycle, waveSpeedB, waveColor);
+        waveView.setBallBitmap(bitmap);
+
+//点击button2之前一直隐藏
+        waveView.setVisibility(View.GONE);
+
 
         curWord = "hello";
+        userId = TokenManager.getUserId(getContext());
         Glide.with(this)
                 .load(imageUrl)
                 .into(imageView);
@@ -199,7 +243,7 @@ public class ReadTestPagerFragment extends Fragment {
 //        SpeechUtility.createUtility(getContext(), SpeechConstant.APPID +"=" + "5e62dc3d");
         mIse = SpeechEvaluator.createEvaluator(getContext(), null);
 
-        if(mIse != null) {
+        if (mIse != null) {
             setParams();
         } else {
             Log.e("mIse", "语音评测初始化失败");
@@ -224,37 +268,61 @@ public class ReadTestPagerFragment extends Fragment {
             initRecording();
         }
 
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 if (!isRecording) {
                     startRecording();
-
                     ToastManager.showCustomToast(getActivity(), "开始录音");
+
+                    // 显示 WaveView
+                    waveView.setVisibility(View.VISIBLE);
+                    button2.setVisibility(View.GONE); // 隐藏按钮
+
+                    // 设置 WaveView 点击事件
+                    waveView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            stopRecording();
+                            ToastManager.showCustomToast(getActivity(), "结束录音");
+
+                            // 开始句子测评
+                            startSentenceTest();
+
+                            // 隐藏 WaveView
+                            waveView.setVisibility(View.GONE);
+                            button2.setVisibility(View.VISIBLE); // 显示按钮
+
+                            isRecording = false; // 更新录音状态
+                        }
+                    });
                 } else {
                     stopRecording();
                     ToastManager.showCustomToast(getActivity(), "结束录音");
 
-                    //开始句子测评
+                    // 开始句子测评
                     startSentenceTest();
+
+                    // 隐藏 WaveView
+                    waveView.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE); // 显示按钮
+
+                    isRecording = false; // 更新录音状态
                 }
                 isRecording = !isRecording;
-
             }
         });
+
 
         return view;
     }
 
-//    public void setCurWord(String curWord) {
-//        this.curWord = curWord;
-//    }
-//
-//    public String getCurWord() {
-//        return curWord;
-//    }
+    public WordDetail getCurrentWordDetail() {
+        // 假设您在创建Fragment时设置了WordDetail，并将其保存为成员变量
+        return currentWordDetail;
+    }
+
 
     /**
      * @param :
@@ -291,12 +359,15 @@ public class ReadTestPagerFragment extends Fragment {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
                 currentState = RecorderState.RECORDING;
+
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
                 currentState = RecorderState.ERROR;
             }
         }
     }
+
+
 
     /**
      * @param :
@@ -368,9 +439,7 @@ public class ReadTestPagerFragment extends Fragment {
                         if (mIse != null) {
                             String content;
 
-                            if (curWord != null){
-                                    Log.e("curWord", curWord);
-                            }
+
                             if (curWord.split(" ").length == 1) {
                                 content = "[word]\n" + curWord+"\n";
                             } else {
@@ -492,9 +561,9 @@ public class ReadTestPagerFragment extends Fragment {
         //评测结果格式
         String result_type ="xml";
         //返回结果与分控制
-        String rst = "entirety";
+//        String rst = "entirety";
         //plev:：0（给出全部信息，英文包含accuracy_score、serr_msg、 syll_accent、fluency_score、standard_score、pitch等信息的返回）
-        String plev = "0";
+//        String plev = "0";
         /**
          * 拓展能力（生效条件ise_unite="1", rst="entirety"）
          * 多维度分信息显示（准确度分、流畅度分、完整度打分）
@@ -588,10 +657,17 @@ public class ReadTestPagerFragment extends Fragment {
                                 .append("  ------ integrity_score(完整性):  ")
                                 .append(scoreResult.integrity_score)
                                 .append("  ------ 转化分: ")
-                                .append(isWords() ? IFlySpeechUtils.getWordScore(scoreResult) : IFlySpeechUtils.getSentenceScore(scoreResult));
+                                .append(IFlySpeechUtils.getWordScore(scoreResult));
+
+                        String id = UUID.randomUUID().toString();
+//                        new Timestamp(System.currentTimeMillis())
+                        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+                        String formattedDate = dateFormat.format(currentTimestamp);
+
+                        WordDetailRecording score = new WordDetailRecording(id, userId, wordId, (int)scoreResult.total_score, Timestamp.valueOf(formattedDate));
+                        viewModel.insertData(getContext());
 
                         String content = contentBuilder.toString();
-
                         String fileName = "evaluation_results.txt";
                         File file = new File(getActivity().getExternalFilesDir(null), fileName);
                         writer = new BufferedWriter(new FileWriter(file, true));
@@ -673,8 +749,18 @@ public class ReadTestPagerFragment extends Fragment {
                         }
 
                         // 显示Toast需要在UI线程执行
-                        String finalContent = fileContent.toString();
+                        finalContent = fileContent.toString();
                         activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
+//                        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                scoreText.setVisibility(finalContent!=null?View.VISIBLE:View.INVISIBLE);
+                                scoreText.setText(finalContent);
+                            }
+                        });
+
+
                     } catch (IOException e) {
                         Log.e(TAG, "读取文件时发生错误", e);
                     }
@@ -706,48 +792,3 @@ public class ReadTestPagerFragment extends Fragment {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

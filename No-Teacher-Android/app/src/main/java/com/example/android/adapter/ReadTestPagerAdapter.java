@@ -27,23 +27,8 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
         this.fragments = fragments;
     }
 
-    public void updateData(List<Fragment> newFragments) {
-        this.fragments.clear(); // 假设你有一个成员变量来存储Fragment列表
-        if (fragments.isEmpty()) {
-            Log.d("YourTag", "Fragments list is empty after clearing.");
-        }
-        this.fragments.addAll(newFragments);
 
-        notifyDataSetChanged();
-    }
 
-    public List<WordDetail> getWordDetails() {
-        return wordDetails;
-    }
-
-    public void setWordDetails(List<WordDetail> wordDetails) {
-        this.wordDetails = wordDetails;
-    }
 
     @NonNull
     @Override
@@ -56,15 +41,7 @@ public class ReadTestPagerAdapter extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-    public void logFragmentsWords() {
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof ReadTestPagerFragment) {
-                String word = ((ReadTestPagerFragment) fragment).getWord();
-                Log.d("PagerAdapter", "Fragment at position " + i + " has word: " + word);
-            }
-        }
-    }
+
     public void clearFragments() {
         fragments.clear(); // fragments假设是Adapter中维护的Fragment列表
     }
