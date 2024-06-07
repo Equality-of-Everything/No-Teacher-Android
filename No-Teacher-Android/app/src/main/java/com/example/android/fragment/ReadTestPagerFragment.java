@@ -366,21 +366,7 @@ public class ReadTestPagerFragment extends Fragment {
             }
         }
     }
-    
-    private double calculateDecibel(short[] audioData) {
-        // 计算声音分贝，这部分代码应该根据你的实际需求来编写
-        // 这里只是一个示例，实际上应该根据你的需求来计算声音分贝
-        // 这里暂时返回一个随机值作为示例
-        Random random = new Random();
-        return random.nextDouble() * 100; // 随机生成一个0到100的声音分贝值
-    }
 
-    private void updateWaveView(double decibel) {
-        // 更新波形图的显示，根据声音分贝来确定波形的高度
-        // 这部分代码应该根据你的 WaveView 实现来编写
-        // 这里只是一个示例，实际上应该根据你的 WaveView 实现来更新波形图的显示
-        waveView.updateWaveHeight(decibel); // 这里的 updateWaveHeight 方法需要根据你的实际情况进行调整
-    }
 
 
     /**
