@@ -115,11 +115,11 @@ public class SpellingActivity extends AppCompatActivity {
             }
         });
 
-        //实验完成按钮
+        //拼写完成按钮
         btnFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 设置返回数据
+                // 设置返回码
                 Intent resultIntent = new Intent();
                 setResult(RESULT_OK, resultIntent);
                 // 结束当前活动，返回到上一个活动
@@ -153,6 +153,11 @@ public class SpellingActivity extends AppCompatActivity {
 //            buttonCheck.setText("下一个");
             buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.next, 0, 0, 0);
             isNextWordMode = true;
+            if (currentWordIndex == WordList.size() - 1) {
+                //最后一个单词检查正确后隐藏下一个按钮，显示完成拼写
+                btnFin.setVisibility(currentWordIndex == WordList.size() - 1 ? View.VISIBLE : View.GONE);
+                buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+            }
         } else {ToastManager.showCustomToast(this, "错误");
 //            Toast.makeText(this, "错误，请再试一次!", Toast.LENGTH_SHORT).show();
             editTextWord.setBackgroundColor(Color.parseColor("#ffb5a0"));
@@ -177,8 +182,6 @@ public class SpellingActivity extends AppCompatActivity {
         editTextWord.setText("");
         editTextWord.setBackgroundColor(Color.TRANSPARENT);
         textViewCorrectWord.setVisibility(View.GONE);
-        btnFin.setVisibility(currentWordIndex == WordList.size() - 1 ? View.VISIBLE : View.GONE);
-        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
 //        buttonCheck.setText("检查");
         buttonCheck.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.tick, 0, 0, 0);
         isNextWordMode = false;

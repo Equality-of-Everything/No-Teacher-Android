@@ -13,6 +13,9 @@ import com.example.no_teacher_andorid.R;
 
 import java.util.List;
 
+/**
+ * 难度值adapter
+ */
 public class DifficultyAdapter extends RecyclerView.Adapter<DifficultyViewHolder>{
     private Context context;
     private List<Integer> difficultyItems;

@@ -100,15 +100,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/mean_card"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="153dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="78dp"
-        android:layout_marginEnd="153dp"
         android:layout_marginBottom="216dp"
-        android:visibility="invisible"
-        android:text="完成听写"></Button>
+        android:text="完成听写"
+        android:visibility="invisible"></Button>
 
 
 </RelativeLayout>
