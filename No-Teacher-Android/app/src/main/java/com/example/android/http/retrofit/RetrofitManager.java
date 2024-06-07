@@ -2,6 +2,9 @@ package com.example.android.http.retrofit;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +45,10 @@ public class RetrofitManager {
      */
 
     private RetrofitManager(final Context context,String url) {
+        Gson customGson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+
         File httpCacheDirectory = new File(context.getExternalCacheDir(), "responses");
         //设置缓存 10M
         Cache cache = new Cache(httpCacheDirectory, maxSizeCache);
@@ -55,7 +62,7 @@ public class RetrofitManager {
         retrofit = new Retrofit.Builder()
                 .client(client) //设置HTTP客户端
                 .baseUrl(url) //设置基础URL
-                .addConverterFactory(GsonConverterFactory.create()) //添加Gson转换器
+                .addConverterFactory(GsonConverterFactory.create(customGson)) //添加Gson转换器
                 .build(); //构建Retrofit对象
     }
 

@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,11 @@ import android.widget.TextView;
 
 import com.example.android.bean.entity.BarEntity;
 import com.example.android.bean.entity.SourceEntity;
+import com.example.android.bean.entity.WordDetailRecording;
+import com.example.android.util.TokenManager;
 import com.example.android.view.BarGroup;
 import com.example.android.view.BarView;
+import com.example.android.viewmodel.CalenderViewModel;
 import com.example.no_teacher_andorid.R;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -39,6 +43,8 @@ public class ColumnActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private int initPopHeight = 0;
     private MaterialToolbar topAppBar ;
+    private CalenderViewModel calenderViewModel;
+    private List<WordDetailRecording> wordDetailRecordings_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class ColumnActivity extends AppCompatActivity {
         setContentView(R.layout.activity_column);
         barGroup = findViewById(R.id.bar_group);
         root = findViewById(R.id.bar_scroll);
+        calenderViewModel = new CalenderViewModel();
+        calenderViewModel.getRecordingDataWeek(this, TokenManager.getUserId(this));
         popView = LayoutInflater.from(this).inflate(R.layout.pop_bg, null);
         //返回事件
         topAppBar=findViewById(R.id.topAppBar);
@@ -55,8 +63,16 @@ public class ColumnActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        wordDetailRecordings_data = new ArrayList<>();
 
-        setBarChart();
+        calenderViewModel.getWordDetailRecordingWeekLiveData().observe(this,wordDetailRecordings -> {
+            if (wordDetailRecordings != null) {
+                wordDetailRecordings_data = wordDetailRecordings;
+                setBarChart();
+            }
+        });
+
+
     }
 
     private void setBarChart() {
@@ -65,7 +81,8 @@ public class ColumnActivity extends AppCompatActivity {
         popView = LayoutInflater.from(this).inflate(R.layout.pop_bg, null);
 
         final SourceEntity sourceEntity = new SourceEntity();
-        sourceEntity.parseData();
+        sourceEntity.parseData(wordDetailRecordings_data);
+
         setYAxis(sourceEntity.getList());
 
         barGroup.removeAllViews();
@@ -79,7 +96,7 @@ public class ColumnActivity extends AppCompatActivity {
         }
 
         // 固定最大值为250
-        sourceMax = 250;
+        sourceMax = 10;
 
         for (int i = 0; i < size; i++) {
             BarEntity barEntity = new BarEntity();
@@ -118,7 +135,7 @@ public class ColumnActivity extends AppCompatActivity {
                         lp.topMargin = Math.abs(baseLineHeight - barItem.getHeight());
                         root.setLayoutParams(lp);
                     }
-                }, 0);
+                }, 100);
 
                 for (int i = 0; i < size; i++) {
                     final BarView barItem = (BarView) barGroup.getChildAt(i).findViewById(R.id.barView);
@@ -160,11 +177,11 @@ public class ColumnActivity extends AppCompatActivity {
         TextView tv_num4 = findViewById(R.id.tv_num4);
         TextView tv_num5 = findViewById(R.id.tv_num5);
 
-        tv_num1.setText(String.valueOf(50));
-        tv_num2.setText(String.valueOf(100));
-        tv_num3.setText(String.valueOf(150));
-        tv_num4.setText(String.valueOf(200));
-        tv_num5.setText(String.valueOf(250));
+        tv_num1.setText(String.valueOf(2));
+        tv_num2.setText(String.valueOf(4));
+        tv_num3.setText(String.valueOf(6));
+        tv_num4.setText(String.valueOf(8));
+        tv_num5.setText(String.valueOf(10));
     }
     private void showPop(final View barItem, final float top) {
         if (popupWindow != null)

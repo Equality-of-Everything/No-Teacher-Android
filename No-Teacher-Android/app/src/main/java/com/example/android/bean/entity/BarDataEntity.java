@@ -39,24 +39,26 @@ public class BarDataEntity implements Serializable {
         }
     }
 
-    public List<Type> parseData(){
+    public List<Type> parseData(List<Type> types){
         typeList = new ArrayList<>();
 
         // 定义三个固定的品类及其比例
-        Type type1 = new Type();
-        type1.setTypeName("优秀");
-        type1.setTypeScale(150);
-        typeList.add(type1);
+//        Type type1 = new Type();
+//        type1.setTypeName("优秀");
+//        type1.setTypeScale(150);
+//        typeList.add(type1);
+//
+//        Type type2 = new Type();
+//        type2.setTypeName("良好");
+//        type2.setTypeScale(60);
+//        typeList.add(type2);
+//
+//        Type type3 = new Type();
+//        type3.setTypeName("一般");
+//        type3.setTypeScale(90);
+//        typeList.add(type3);
 
-        Type type2 = new Type();
-        type2.setTypeName("良好");
-        type2.setTypeScale(60);
-        typeList.add(type2);
-
-        Type type3 = new Type();
-        type3.setTypeName("一般");
-        type3.setTypeScale(90);
-        typeList.add(type3);
+        typeList.addAll(types);
 
         return typeList;
     }

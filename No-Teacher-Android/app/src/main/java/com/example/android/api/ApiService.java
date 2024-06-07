@@ -10,6 +10,7 @@ import com.example.android.bean.entity.Result;
 import com.example.android.bean.entity.User;
 import com.example.android.bean.entity.UserLevel;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.bean.entity.WordDetailRecording;
 import com.example.android.http.request.VerifyEmailRequest;
 import com.example.android.http.retrofit.BaseResponse;
 
@@ -104,6 +105,14 @@ public interface ApiService {
     // 拿到用户阅读数据统计
     @GET("/dataCount/{userId}")
     Call<BaseResponse<List<ReadLogDataCount>>> getReadLongDataCount(@Path("userId") String userId);
+
+    // 拿到用户评分统计数据
+    @GET("recording/{userId}/{month}")
+    Call<BaseResponse<List<WordDetailRecording>>> getRecoringData(@Path("userId") String userId, @Path("month") String month);
+
+    // 获取柱状图数据，获取最近七天
+    @GET("recording/{userId}")
+    Call<BaseResponse<List<WordDetailRecording>>> getRecordingDataWeek(@Path("userId") String userId);
 }
 
 

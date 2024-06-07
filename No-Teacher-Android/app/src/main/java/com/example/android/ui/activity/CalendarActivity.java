@@ -25,6 +25,10 @@ import com.example.android.viewmodel.HomeViewModel;
 import com.example.no_teacher_andorid.R;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.google.android.material.appbar.MaterialToolbar;
 
 
@@ -35,11 +39,23 @@ public class CalendarActivity extends AppCompatActivity {
     private DecimalFormat format = new DecimalFormat("#.##");
     private CalenderViewModel calenderViewModel;
     private HomeViewModel homeViewModel;
+    private List<BarDataEntity.Type> types = new ArrayList<>();
+
+    AtomicInteger excellent = new AtomicInteger();
+    AtomicInteger good = new AtomicInteger();
+    AtomicInteger normal = new AtomicInteger();
+    BarDataEntity.Type type1 = new BarDataEntity.Type();
+    final BarDataEntity.Type type2 = new BarDataEntity.Type();
+    final BarDataEntity.Type type3 = new BarDataEntity.Type();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        type1.setTypeName("优秀");
+        type2.setTypeName("良好");
+        type3.setTypeName("一般");
 
         calendarView = findViewById(R.id.calendarView);
         topAppBar =findViewById(R.id.topAppBar);
@@ -58,13 +74,13 @@ public class CalendarActivity extends AppCompatActivity {
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 // 处理日期选择事件
                 String selectedDate = year + "年"  +(month + 1) + "月" + dayOfMonth+"日";
-                showCustomDialog(selectedDate);
+                showCustomDialog(selectedDate,month+1+"",dayOfMonth);
             }
         });
     }
 
 
-    private void showCustomDialog(String selectedDate) {
+    private void showCustomDialog(String selectedDate,String month,int dayOfMonth) {
         // 创建自定义对话框
         Dialog dialog = new Dialog(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -76,7 +92,6 @@ public class CalendarActivity extends AppCompatActivity {
         TextView tvReadWordCount = dialogView.findViewById(R.id.text_count);
         calenderViewModel.getReadlogDataCountLiveData().observe(this, readLogDataCounts -> {
             readLogDataCounts.forEach(readLogDataCount -> {
-                    Log.e("AAAAAAAAAAAAAAAAA", readLogDataCount.getToday().toLocaleString().contains(selectedDate) + "");
                 if (readLogDataCount.getToday().toLocaleString().contains(selectedDate)) {
                     tvReadTime.setText(readLogDataCount.getTotalReadDuration() / 1000 / 60 + "");
                     if (readLogDataCount.getTotalReadWordNum() == null) {
@@ -93,19 +108,52 @@ public class CalendarActivity extends AppCompatActivity {
 
             });
 
+
+        calenderViewModel.getRecordingCountData(this,TokenManager.getUserId(this),month);
+
+        calenderViewModel.getWordDetailRecordingLiveData().observe(this, wordDetailRecordings -> {
+
+            wordDetailRecordings.forEach(wordDetailRecording -> {
+                if (wordDetailRecording.getTime().getDate()==dayOfMonth) {
+                    if (0 <= wordDetailRecording.getScore() && wordDetailRecording.getScore() <= 60) {
+                        normal.getAndIncrement();
+                    } else if (60 < wordDetailRecording.getScore() && wordDetailRecording.getScore() <= 80) {
+                        good.getAndIncrement();
+                    }else{
+                        excellent.getAndIncrement();
+                    }
+                }
+
+            });
+        });
+
+        type1.setTypeScale(excellent.get());
+        type2.setTypeScale(good.get());
+        type3.setTypeScale(normal.get());
+        types.add(type1);
+        types.add(type2);
+        types.add(type3);
+
         tvSelectedDate.setText(selectedDate);
 
         LinearLayout barChartContainer = dialogView.findViewById(R.id.bar_chart_container);
         bindData(barChartContainer);
-
         tvSelectedDate.setText(selectedDate);
         dialog.show();
+        dialog.setOnDismissListener(dialog1 -> {
+            normal.set(0);
+            good.set(0);
+            excellent.set(0);
+            types.clear();
+        });
+
     }
+
 
     private void bindData(LinearLayout container) {
         container.removeAllViews();
         BarDataEntity data = new BarDataEntity();
-        data.parseData();
+        data.parseData(types);
         if (data == null || data.getTypeList() == null) {
             return;
         }
