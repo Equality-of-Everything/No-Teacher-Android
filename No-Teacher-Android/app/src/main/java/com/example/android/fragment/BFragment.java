@@ -142,7 +142,7 @@ public class BFragment extends Fragment {
             );
             private void startSpellingActivity() {
                 // 启动拼写测试Activity，并等待返回结果
-                Intent intent = new Intent(getActivity(), SpellingActivity.class);
+                Intent intent = new Intent(requireActivity(), SpellingActivity.class);
                 intent.putExtra("WORDS_LIST",(Serializable)WordList);
                 intent.putExtra("MEANING_LIST",(Serializable) MeaningList);
                 spellingActivityResultLauncher.launch(intent);

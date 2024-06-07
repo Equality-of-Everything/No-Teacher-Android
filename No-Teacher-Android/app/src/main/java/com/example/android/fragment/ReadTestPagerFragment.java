@@ -5,9 +5,13 @@ import static android.service.controls.ControlsProviderService.TAG;
 import static java.lang.String.format;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaPlayer;
@@ -20,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +42,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.android.util.IFlySpeechUtils;
 import com.example.android.util.TtsUtil;
-import com.example.android.view.RecordButton;
 import com.example.android.view.WaveView;
 import com.example.android.viewmodel.BFragmentViewModel;
 import com.example.no_teacher_andorid.R;
@@ -74,10 +78,6 @@ import java.util.Random;
 public class ReadTestPagerFragment extends Fragment {
 
 
-    // 定义录音设置
-    private int sampleRateInHz = 44100; // 采样率
-    private int channelConfig = AudioFormat.CHANNEL_IN_MONO; // 单声道
-    private int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16 位 PCM 编码
 
     private static final String ARG_IMAGE_RES_ID = "image_res_id";
     private static final String ARG_TEXT = "text";
@@ -169,6 +169,7 @@ public class ReadTestPagerFragment extends Fragment {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
@@ -176,6 +177,14 @@ public class ReadTestPagerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_voice_test, container, false);
         //初始化viewModel
         viewModel = new ViewModelProvider(this).get(BFragmentViewModel.class);
+        int waveHeightA = 30; // 波浪A的振幅
+        float waveACycle = 0.04f; // 波浪A的周期
+        int waveSpeedA = 3; // 波浪A的速度
+        int waveHeightB = 15; // 波浪B的振幅
+        float waveBCycle = 0.05f; // 波浪B的周期
+        int waveSpeedB = 5; // 波浪B的速度
+        int waveColor = Color.parseColor("#d6e3ff"); // 波浪的颜色
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.white_background3); // 圆形遮罩的位图
 
         ImageView imageView = view.findViewById(R.id.imageView);
         TextView textView1 = view.findViewById(R.id.textView);
@@ -183,6 +192,14 @@ public class ReadTestPagerFragment extends Fragment {
         Button btnSpeak = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
         scoreText = view.findViewById(R.id.textView3);
+        waveView = view.findViewById(R.id.waveView);
+        waveView.setWaveParameters(waveHeightA, waveACycle, waveSpeedA, waveHeightB, waveBCycle, waveSpeedB, waveColor);
+        waveView.setBallBitmap(bitmap);
+
+//点击button2之前一直隐藏
+        waveView.setVisibility(View.GONE);
+
+
         curWord = "hello";
         Glide.with(this)
                 .load(imageUrl)
@@ -225,22 +242,48 @@ public class ReadTestPagerFragment extends Fragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 if (!isRecording) {
                     startRecording();
                     ToastManager.showCustomToast(getActivity(), "开始录音");
+
+                    // 显示 WaveView
+                    waveView.setVisibility(View.VISIBLE);
+                    button2.setVisibility(View.GONE); // 隐藏按钮
+
+                    // 设置 WaveView 点击事件
+                    waveView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            stopRecording();
+                            ToastManager.showCustomToast(getActivity(), "结束录音");
+
+                            // 开始句子测评
+                            startSentenceTest();
+
+                            // 隐藏 WaveView
+                            waveView.setVisibility(View.GONE);
+                            button2.setVisibility(View.VISIBLE); // 显示按钮
+
+                            isRecording = false; // 更新录音状态
+                        }
+                    });
                 } else {
                     stopRecording();
                     ToastManager.showCustomToast(getActivity(), "结束录音");
 
-                    //开始句子测评
+                    // 开始句子测评
                     startSentenceTest();
+
+                    // 隐藏 WaveView
+                    waveView.setVisibility(View.GONE);
+                    button2.setVisibility(View.VISIBLE); // 显示按钮
+
+                    isRecording = false; // 更新录音状态
                 }
                 isRecording = !isRecording;
-
             }
         });
+
 
         return view;
     }
