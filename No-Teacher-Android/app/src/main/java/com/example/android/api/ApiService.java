@@ -116,7 +116,7 @@ public interface ApiService {
 
     //发送用户语音测评评分
     @POST("/recording/insertData")
-    Call<BaseResponse<Void>> insertData(@Body WordDetailRecording wordDetailRecording);
+    Call<BaseResponse<Void>> insertData(@QueryMap HashMap<String, String> params);
 }
 
 

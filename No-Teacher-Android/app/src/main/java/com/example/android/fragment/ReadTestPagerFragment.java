@@ -664,8 +664,10 @@ public class ReadTestPagerFragment extends Fragment {
                         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
                         String formattedDate = dateFormat.format(currentTimestamp);
 
-                        WordDetailRecording score = new WordDetailRecording(id, userId, wordId, (int)scoreResult.total_score, Timestamp.valueOf(formattedDate));
-                        viewModel.insertData(getContext());
+                        WordDetailRecording score = new WordDetailRecording(id, userId, (int) wordId, (int)scoreResult.total_score, currentTimestamp);
+                        Log.e("viewModel", "id" + id + "; userId" + userId + "; wordId" + wordId + "; scoreResult" + scoreResult.total_score + "; currentTimestamp" + currentTimestamp);
+
+                        viewModel.insertData(getContext(), score);
 
                         String content = contentBuilder.toString();
                         String fileName = "evaluation_results.txt";
