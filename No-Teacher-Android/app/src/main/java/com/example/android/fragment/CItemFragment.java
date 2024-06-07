@@ -96,6 +96,7 @@ public class CItemFragment extends Fragment{
                 adapter = new ArticleAdapter(getActivity(), R.layout.citem_list_article, articles);
                 //设置适配器
                 articleRV.setAdapter(adapter);
+                //文章详情点击事件
                 articleRV.setOnItemClickListener((parent, view, position, id) -> {
                     Article clickedArticle = articles.get(position);
                     Intent intent = new Intent(getActivity(), ReadActivity.class);
@@ -110,7 +111,7 @@ public class CItemFragment extends Fragment{
 //        viewModel.fetchArticles(getActivity(),lexile,currentPage);
         Log.e("typeIdAAAAAAA", typeId +""+lexile);
         if (typeId == FIRST_CATEGORY_ID) {
-            // 对第一个类别使用特殊的方法获取数据
+            // 对第一个类别使用特殊的方法获取数据，**精选
             viewModel.fetchArticles(getActivity(), lexile, currentPage);
         } else {
             // 对其他类别使用常规方法获取数据
