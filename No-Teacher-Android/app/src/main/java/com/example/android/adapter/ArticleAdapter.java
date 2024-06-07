@@ -17,11 +17,8 @@ import com.example.no_teacher_andorid.R;
 import java.util.List;
 
 /**
- * @Author : Tcy
- * @Date : Created in 2024/5/7 8:11
- * @Decription :
+ * 主页面和c_fragment共同使用
  */
-
 public class ArticleAdapter extends ArrayAdapter<Article> {
     private List<Article> articles;
     private Context mContext;

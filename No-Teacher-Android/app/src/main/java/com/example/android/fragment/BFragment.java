@@ -1,5 +1,8 @@
 package com.example.android.fragment;
 
+import static com.example.android.util.TokenManager.saveWordsAndIds;
+import static com.example.android.util.TokenManager.saveYuYinWordAndIds;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -33,7 +36,9 @@ import com.example.no_teacher_andorid.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther : Tcy
@@ -155,11 +160,15 @@ public class BFragment extends Fragment {
     }
     private void updateViewPagerWithWords(List<WordDetail> wordDetails) {
         List<Fragment> updatedFragments = new ArrayList<>();
+        Map<String, Integer> wordMap = new HashMap<>();
         for (WordDetail wordDetail : wordDetails) {
             // 假设 ReadTestPagerFragment 有一个接受 WordDetail 构造函数
-            ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
+            ReadTestPagerFragment fragment = ReadTestPagerFragment.newInstance(wordDetail.getId(), wordDetail.getParaphrasePicture(), wordDetail.getWord(), wordDetail.getParaphrase());
+
+            wordMap.put(wordDetail.getWord(), wordDetail.getId());
             updatedFragments.add(fragment);
         }
+        saveYuYinWordAndIds(wordMap, getActivity());
 
         pagerAdapter = new ReadTestPagerAdapter(getChildFragmentManager(), updatedFragments);
         viewPager.setAdapter(pagerAdapter);

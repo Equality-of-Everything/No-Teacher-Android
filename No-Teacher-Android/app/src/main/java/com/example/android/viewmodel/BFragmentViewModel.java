@@ -4,14 +4,20 @@ import static com.example.android.constants.BuildConfig.WORD_SERVICE;
 
 import android.content.Context;
 import android.util.Log;
+
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.android.api.ApiService;
 import com.example.android.bean.entity.WordDetail;
+import com.example.android.bean.entity.WordDetailRecording;
 import com.example.android.http.retrofit.BaseResponse;
 import com.example.android.http.retrofit.RetrofitManager;
+import com.example.android.util.TokenManager;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,6 +29,11 @@ public class BFragmentViewModel extends ViewModel {
     private MutableLiveData<List<WordDetail>> recommendWordsLiveData = new MutableLiveData<>();
     private int currentPage;
     private MutableLiveData<Boolean> loadMoreFinished = new MutableLiveData<>(false);
+
+    private MutableLiveData<String> id = new MutableLiveData<>();
+    private MutableLiveData<Integer> wordId = new MutableLiveData<>();
+    private MutableLiveData<Integer> score = new MutableLiveData<>();
+    private MutableLiveData<Timestamp> time = new MutableLiveData<>();
 
     public MutableLiveData<Boolean> getLoadMoreFinished() {
         return loadMoreFinished;
@@ -38,6 +49,38 @@ public class BFragmentViewModel extends ViewModel {
     public void loadInitialWords(Context context, String userId,Integer currentPage) {
         currentPage = 0;
         setRecommendWords(context, userId, currentPage);
+    }
+
+    public LiveData<String> getId() {
+        return id;
+    }
+
+    public void SetId() {
+        this.id.setValue(id.getValue());
+    }
+
+    public LiveData<Integer> getWordId() {
+        return wordId;
+    }
+
+    public void setWordId() {
+        this.wordId.setValue(wordId.getValue());
+    }
+
+    public LiveData<Integer> getScore() {
+        return score;
+    }
+
+    public void setScore() {
+        this.score.setValue(score.getValue());
+    }
+
+    public LiveData<Timestamp> getTime() {
+        return time;
+    }
+
+    public void setTime() {
+        this.time.setValue(time.getValue());
     }
 
     // 加载更多数据
@@ -87,4 +130,46 @@ public class BFragmentViewModel extends ViewModel {
                 });
 
     }
+
+    /**
+     * @param context:
+     * @return void
+     * @author Lee
+     * @description 发送语音测评后的数据
+     * @date 2024/6/6 10:02
+     */
+    public void insertData(Context context) {
+        WordDetailRecording score = new WordDetailRecording(getId(), TokenManager.getUserId(context), getWordId(), getScore(), getTime());
+
+        RetrofitManager.getInstance(null, WORD_SERVICE)
+                .getApi(ApiService.class)
+                .insertData(score)
+                .enqueue(new Callback<BaseResponse<Void>>() {
+                             @Override
+                             public void onResponse(Call<BaseResponse<Void>> call, Response<BaseResponse<Void>> response) {
+                                 if (response.isSuccessful() && response.body() != null) {
+                                     boolean flag = response.body().isFlag();
+
+                                     if(flag) {
+                                         Log.e("ZZZ", "true");
+                                     }
+                                 } else {
+                                     Log.e("ZZZ", "出错");
+                                 }
+                             }
+
+                             @Override
+                             public void onFailure(Call<BaseResponse<Void>> call, Throwable t) {
+                                Log.e("ZZZZ", "未请求到后端");
+                             }
+                         }
+                );
+    }
 }
+
+
+
+
+
+
+
