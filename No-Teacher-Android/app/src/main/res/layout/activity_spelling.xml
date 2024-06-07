@@ -70,8 +70,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:layout_gravity="center_horizontal"
             android:layout_alignParentRight="true" />
+        <Button
+            android:id="@+id/finish"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:text="完成听写"
+            android:visibility="invisible"></Button>
     </RelativeLayout>
 
 
@@ -85,26 +93,25 @@
         android:layout_marginRight="20dp"
         app:cardBackgroundColor="?attr/colorSurface"
         >
-        <TextView
-            android:id="@+id/text_mean"
-            android:layout_margin="20dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="意思">
-        </TextView>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_mean"
+                android:layout_margin="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textSize="20sp"
+                android:fontFamily="@font/text2"
+                android:text="意思">
+            </TextView>
+
+        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
 
-    <Button
-        android:id="@+id/finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mean_card"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="78dp"
-        android:layout_marginBottom="216dp"
-        android:text="完成听写"
-        android:visibility="invisible"></Button>
 
 
 </RelativeLayout>
