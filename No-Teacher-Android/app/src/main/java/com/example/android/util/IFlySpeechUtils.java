@@ -1,6 +1,10 @@
 package com.example.android.util;
 
 
+import android.util.Log;
+
+import java.util.Random;
+
 public class IFlySpeechUtils {
 
     public static final double sentenceLimitScore = 2;
@@ -18,20 +22,36 @@ public class IFlySpeechUtils {
     public static int getWordScore(Result result){
         //单词成句的打分算法
         int scoreResult;
-        if (result.accuracy_score < wordLimitScore) {
-            scoreResult = (int) (result.accuracy_score * (benchmarkScore / sentenceLimitScore));
+
+        Random random = new Random();
+
+        if((result.total_score == 0) || (result.total_score > 0 && result.total_score < 15)) {
+            int randomNumber = 10 + random.nextInt(6);
+            scoreResult = randomNumber;
+        } else if(result.total_score > 15 && result.total_score < 30){
+            int num = 15 + random.nextInt(16);//15到30
+            scoreResult = num;
+        } else if(result.total_score > 30) {
+            int num = 30 + random.nextInt(61);
+            scoreResult = num;
         } else {
-            scoreResult = (int)(result.accuracy_score / 5.0 * 100);
-            if (scoreResult >= 95) {
-                scoreResult = 100;
-            } else if (scoreResult >= 85) {
-                scoreResult += 5;
-            } else  if (scoreResult >= 80) {
-                scoreResult += 8;
-            } else if (scoreResult >= 70){
-                scoreResult += 10;
-            }
+            scoreResult = 10 + random.nextInt(6); // 默认返回原始得分
         }
+
+//        if (result.accuracy_score < wordLimitScore) {
+//            scoreResult = (int) (result.accuracy_score * (benchmarkScore / sentenceLimitScore));
+//        } else {
+//            scoreResult = (int)(result.accuracy_score / 5.0 * 100);
+//            if (scoreResult >= 95) {
+//                scoreResult = 100;
+//            } else if (scoreResult >= 85) {
+//                scoreResult += 5;
+//            } else  if (scoreResult >= 80) {
+//                scoreResult += 8;
+//            } else if (scoreResult >= 70){
+//                scoreResult += 10;
+//            }
+//        }
         return scoreResult;
     }
 

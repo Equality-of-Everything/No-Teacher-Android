@@ -769,7 +769,7 @@ public class ReadTestPagerFragment extends Fragment {
                         // 显示Toast需要在UI线程执行
                         finalContent = fileContent.toString();
 
-                        activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
+//                        activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
 //                        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
