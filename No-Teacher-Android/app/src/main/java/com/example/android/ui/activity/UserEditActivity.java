@@ -25,6 +25,7 @@ import com.example.android.util.TokenManager;
 import com.example.android.viewmodel.UserEditViewModel;
 import com.example.no_teacher_andorid.R;
 import com.example.no_teacher_andorid.databinding.ActivityUserEditBinding;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
@@ -58,6 +59,7 @@ public class UserEditActivity extends AppCompatActivity {
     private String userBirthday;
     private String userSex;
     private String userAvatar;
+    private MaterialToolbar back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,13 @@ public class UserEditActivity extends AppCompatActivity {
 
         userId = TokenManager.getUserId(this);
         userEditViewModel.setUserId(userId);
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         String avatar = TokenManager.getUserAvatar(this);
         if(avatar != null) {
             Glide.with(this)
