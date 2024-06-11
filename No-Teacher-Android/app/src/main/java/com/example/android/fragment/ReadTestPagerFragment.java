@@ -138,6 +138,7 @@ public class ReadTestPagerFragment extends Fragment {
     private String outputFilePath;
     private int recordingIndex = 1;
     private boolean isRecording = false;
+    private static String totalScore;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION = 210;
     private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 220;
@@ -642,8 +643,13 @@ public class ReadTestPagerFragment extends Fragment {
                 Log.e("EvaluatorResult", "评测结束\n" + mLastResult);
                 if (scoreResult != null) {
 
+                    // 获取转化分
+                    totalScore = String.valueOf(IFlySpeechUtils.getWordScore(scoreResult));
+                    Log.e("EvaluatorResult", "转化分: " + totalScore);
+
                     //显示语音评测结果
                     BufferedWriter writer = null;
+
                     try {
                         StringBuilder contentBuilder = new StringBuilder(mTestContent);
                         contentBuilder.append("  ------time_len (时长):  ")
@@ -679,6 +685,16 @@ public class ReadTestPagerFragment extends Fragment {
                         Log.d(TAG, "评测结果已写入文件: " + content);
 
                         displayResultsFromFile();//调用方法读取评测结果文件
+
+                        StringBuilder contentBuild = new StringBuilder(mTestContent);
+                        contentBuild.append(IFlySpeechUtils.getWordScore(scoreResult));
+
+                        String text = contentBuild.toString();
+                        String nameFile = "results.txt";
+                        File file1 = new File(getActivity().getExternalFilesDir(null), nameFile);
+
+
+
                     } catch (IOException e) {
                         Log.e(TAG, "写入文件时发生错误", e);
                     } finally {
@@ -752,13 +768,14 @@ public class ReadTestPagerFragment extends Fragment {
 
                         // 显示Toast需要在UI线程执行
                         finalContent = fileContent.toString();
+
                         activity.runOnUiThread(() -> Toast.makeText(activity, finalContent, Toast.LENGTH_LONG).show());
 //                        buttonCheck.setVisibility(currentWordIndex == WordList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                scoreText.setVisibility(finalContent!=null?View.VISIBLE:View.INVISIBLE);
-                                scoreText.setText(finalContent);
+                                scoreText.setVisibility(totalScore != null?View.VISIBLE:View.INVISIBLE);
+                                scoreText.setText(totalScore + "分");
                             }
                         });
 
