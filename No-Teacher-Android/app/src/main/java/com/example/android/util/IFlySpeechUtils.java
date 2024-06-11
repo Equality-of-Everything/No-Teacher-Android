@@ -29,13 +29,13 @@ public class IFlySpeechUtils {
             int randomNumber = 10 + random.nextInt(6);
             scoreResult = randomNumber;
         } else if(result.total_score > 15 && result.total_score < 30){
-            int num = 15 + random.nextInt(16);//15到30
+            int num = 20 + random.nextInt(31);//15到30
             scoreResult = num;
         } else if(result.total_score > 30) {
-            int num = 30 + random.nextInt(61);
+            int num = 50 + random.nextInt(50);
             scoreResult = num;
         } else {
-            scoreResult = 10 + random.nextInt(6); // 默认返回原始得分
+            scoreResult = 30 + random.nextInt(10); // 默认返回原始得分
         }
 
 //        if (result.accuracy_score < wordLimitScore) {
